@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -15,13 +15,11 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/UI/Root")]
 public class UIRoot : MonoBehaviour
 {
-	static List<UIRoot> mRoots = new List<UIRoot>();
+	static public List<UIRoot> list = new List<UIRoot>();
 
 	/// <summary>
 	/// List of all UIRoots present in the scene.
 	/// </summary>
-
-	static public List<UIRoot> list { get { return mRoots; } }
 
 	public enum Scaling
 	{
@@ -34,17 +32,10 @@ public class UIRoot : MonoBehaviour
 	/// Type of scaling used by the UIRoot.
 	/// </summary>
 
-	public Scaling scalingStyle = Scaling.FixedSize;
+	public Scaling scalingStyle = Scaling.PixelPerfect;
 
 	/// <summary>
-	/// Obsolete. Do not use.
-	/// </summary>
-
-	//[System.Obsolete("Use UIRoot's scalingStyle property instead")]
-	[HideInInspector] public bool automatic = false;
-
-	/// <summary>
-	/// Height of the screen when 'automatic' is turned off.
+	/// Height of the screen when the scaling style is set to FixedSize.
 	/// </summary>
 
 	public int manualHeight = 720;
@@ -64,6 +55,18 @@ public class UIRoot : MonoBehaviour
 	public int maximumHeight = 1536;
 
 	/// <summary>
+	/// Whether the final value will be adjusted by the device's DPI setting.
+	/// </summary>
+
+	public bool adjustByDPI = false;
+
+	/// <summary>
+	/// If set and the game is in portrait mode, the UI will shrink based on the screen's width instead of height.
+	/// </summary>
+
+	public bool shrinkPortraitUI = false;
+
+	/// <summary>
 	/// UI Root's active height, based on the size of the screen.
 	/// </summary>
 
@@ -71,21 +74,28 @@ public class UIRoot : MonoBehaviour
 	{
 		get
 		{
-			int height = Mathf.Max(2, Screen.height);
+			int h = Screen.height;
+			int height = Mathf.Max(2, h);
 			if (scalingStyle == Scaling.FixedSize) return manualHeight;
+			int w = Screen.width;
 
-#if UNITY_IPHONE || UNITY_ANDROID
+#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 			if (scalingStyle == Scaling.FixedSizeOnMobiles)
 				return manualHeight;
 #endif
-			if (height < minimumHeight) return minimumHeight;
-			if (height > maximumHeight) return maximumHeight;
-			return height;
+			if (height < minimumHeight) height = minimumHeight;
+			if (height > maximumHeight) height = maximumHeight;
+
+			// Portrait mode uses the maximum of width or height to shrink the UI
+			if (shrinkPortraitUI && h > w) height = Mathf.RoundToInt(height * ((float)h / w));
+
+			// Adjust the final value by the DPI setting
+			return adjustByDPI ? NGUIMath.AdjustByDPI(height) : height;
 		}
 	}
 
 	/// <summary>
-	/// Pixel size adjustment. Most of the time it's at 1, unless 'automatic' is turned off.
+	/// Pixel size adjustment. Most of the time it's at 1, unless the scaling style is set to FixedSize.
 	/// </summary>
 
 	public float pixelSizeAdjustment { get { return GetPixelSizeAdjustment(Screen.height); } }
@@ -122,22 +132,11 @@ public class UIRoot : MonoBehaviour
 
 	Transform mTrans;
 
-	void Awake ()
-	{
-		mTrans = transform;
-		mRoots.Add(this);
+	protected virtual void Awake () { mTrans = transform; }
+	protected virtual void OnEnable () { list.Add(this); }
+	protected virtual void OnDisable () { list.Remove(this); }
 
-		// Backwards compatibility
-		if (automatic)
-		{
-			scalingStyle = Scaling.PixelPerfect;
-			automatic = false;
-		}
-	}
-
-	void OnDestroy () { mRoots.Remove(this); }
-
-	void Start ()
+	protected virtual void Start ()
 	{
 		UIOrthoCamera oc = GetComponentInChildren<UIOrthoCamera>();
 
@@ -153,6 +152,10 @@ public class UIRoot : MonoBehaviour
 
 	void Update ()
 	{
+#if UNITY_EDITOR
+		if (!Application.isPlaying && gameObject.layer != 0)
+			UnityEditor.EditorPrefs.SetInt("NGUI Layer", gameObject.layer);
+#endif
 		if (mTrans != null)
 		{
 			float calcActiveHeight = activeHeight;
@@ -179,10 +182,15 @@ public class UIRoot : MonoBehaviour
 
 	static public void Broadcast (string funcName)
 	{
-		for (int i = 0, imax = mRoots.Count; i < imax; ++i)
+#if UNITY_EDITOR
+		if (Application.isPlaying)
+#endif
 		{
-			UIRoot root = mRoots[i];
-			if (root != null) root.BroadcastMessage(funcName, SendMessageOptions.DontRequireReceiver);
+			for (int i = 0, imax = list.Count; i < imax; ++i)
+			{
+				UIRoot root = list[i];
+				if (root != null) root.BroadcastMessage(funcName, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 	}
 
@@ -199,9 +207,9 @@ public class UIRoot : MonoBehaviour
 		}
 		else
 		{
-			for (int i = 0, imax = mRoots.Count; i < imax; ++i)
+			for (int i = 0, imax = list.Count; i < imax; ++i)
 			{
-				UIRoot root = mRoots[i];
+				UIRoot root = list[i];
 				if (root != null) root.BroadcastMessage(funcName, param, SendMessageOptions.DontRequireReceiver);
 			}
 		}

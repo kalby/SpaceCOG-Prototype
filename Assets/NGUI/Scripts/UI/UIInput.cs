@@ -1,18 +1,39 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
+#if !UNITY_EDITOR && (UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY)
+#define MOBILE
+#endif
+
 using UnityEngine;
+using System.Collections.Generic;
+using System.Text;
 
 /// <summary>
-/// Editable text input field.
+/// Input field makes it possible to enter custom information within the UI.
 /// </summary>
 
-[AddComponentMenu("NGUI/UI/Input (Basic)")]
+[AddComponentMenu("NGUI/UI/Input Field")]
 public class UIInput : MonoBehaviour
 {
-	public delegate char Validator (string currentText, char nextChar);
+	public enum InputType
+	{
+		Standard,
+		AutoCorrect,
+		Password,
+	}
+
+	public enum Validation
+	{
+		None,
+		Integer,
+		Float,
+		Alphanumeric,
+		Username,
+		Name,
+	}
 
 	public enum KeyboardType
 	{
@@ -26,70 +47,55 @@ public class UIInput : MonoBehaviour
 		EmailAddress = 7,
 	}
 
-	public delegate void OnSubmit (string inputString);
+	public delegate char OnValidate (string text, int charIndex, char addedChar);
 
 	/// <summary>
-	/// Current input, available inside OnSubmit callbacks.
+	/// Currently active input field. Only valid during callbacks.
 	/// </summary>
 
 	static public UIInput current;
 
 	/// <summary>
-	/// Text label modified by this input.
+	/// Currently selected input field, if any.
+	/// </summary>
+
+	static public UIInput selection;
+
+	/// <summary>
+	/// Text label used to display the input's value.
 	/// </summary>
 
 	public UILabel label;
 
 	/// <summary>
+	/// Type of data expected by the input field.
+	/// </summary>
+
+	public InputType inputType = InputType.Standard;
+
+	/// <summary>
+	/// Keyboard type applies to mobile keyboards that get shown.
+	/// </summary>
+
+	public KeyboardType keyboardType = KeyboardType.Default;
+
+	/// <summary>
+	/// What kind of validation to use with the input field's data.
+	/// </summary>
+
+	public Validation validation = Validation.None;
+
+	/// <summary>
 	/// Maximum number of characters allowed before input no longer works.
 	/// </summary>
 
-	public int maxChars = 0;
+	public int characterLimit = 0; 
 
 	/// <summary>
-	/// Visual carat character appended to the end of the text when typing.
+	/// Field in player prefs used to automatically save the value.
 	/// </summary>
 
-	public string caratChar = "|";
-
-	/// <summary>
-	/// Delegate used for validation.
-	/// </summary>
-
-	public Validator validator;
-
-	/// <summary>
-	/// Type of the touch screen keyboard used on iOS and Android devices.
-	/// </summary>
-
-	public KeyboardType type = KeyboardType.Default;
-
-	/// <summary>
-	/// Whether this input field should hide its text.
-	/// </summary>
-
-	public bool isPassword = false;
-
-	/// <summary>
-	/// Whether to use auto-correction on mobile devices.
-	/// </summary>
-
-	public bool autoCorrect = false;
-
-	/// <summary>
-	/// Whether the label's text value will be used as the input's text value on start.
-	/// By default the label is just a tooltip of sorts, letting you choose helpful
-	/// half-transparent text such as "Press Enter to start typing", while the actual
-	/// value of the input field will remain empty.
-	/// </summary>
-
-	public bool useLabelTextAtStart = false;
-
-	/// <summary>
-	/// Color of the label when the input field has focus.
-	/// </summary>
-
-	public Color activeColor = Color.white;
+	public string savedAs;
 
 	/// <summary>
 	/// Object to select when Tab key gets pressed.
@@ -98,85 +104,72 @@ public class UIInput : MonoBehaviour
 	public GameObject selectOnTab;
 
 	/// <summary>
-	/// Event receiver that will be notified when the input field submits its data (enter gets pressed).
+	/// Color of the label when the input field has focus.
 	/// </summary>
 
-	public GameObject eventReceiver;
+	public Color activeTextColor = Color.white;
 
 	/// <summary>
-	/// Function that will be called on the event receiver when the input field submits its data.
+	/// Color used by the caret symbol.
 	/// </summary>
 
-	public string functionName = "OnSubmit";
+	public Color caretColor = new Color(1f, 1f, 1f, 0.8f);
 
 	/// <summary>
-	/// Delegate that will be notified when the input field submits its data (by default that's when Enter gets pressed).
+	/// Color used by the selection rectangle.
 	/// </summary>
 
-	public OnSubmit onSubmit;
+	public Color selectionColor = new Color(1f, 223f / 255f, 141f / 255f, 0.5f);
 
-	string mText = "";
-	string mDefaultText = "";
-	Color mDefaultColor = Color.white;
-	UIWidget.Pivot mPivot = UIWidget.Pivot.Left;
-	float mPosition = 0f;
+	/// <summary>
+	/// Event delegates triggered when the input field submits its data.
+	/// </summary>
 
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-	TouchScreenKeyboard mKeyboard;
+	public List<EventDelegate> onSubmit = new List<EventDelegate>();
+
+	/// <summary>
+	/// Event delegates triggered when the input field's text changes for any reason.
+	/// </summary>
+
+	public List<EventDelegate> onChange = new List<EventDelegate>();
+
+	/// <summary>
+	/// Custom validation callback.
+	/// </summary>
+
+	public OnValidate onValidate;
+
+	/// <summary>
+	/// Input field's value.
+	/// </summary>
+
+	[SerializeField][HideInInspector] protected string mValue;
+
+	protected string mDefaultText = "";
+	protected Color mDefaultColor = Color.white;
+	protected float mPosition = 0f;
+	protected bool mDoInit = true;
+	protected UIWidget.Pivot mPivot = UIWidget.Pivot.TopLeft;
+	protected bool mLoadSavedValue = true;
+
+	static protected int mDrawStart = 0;
+
+#if MOBILE
+	static protected TouchScreenKeyboard mKeyboard;
 #else
-	string mLastIME = "";
+	protected int mSelectionStart = 0;
+	protected int mSelectionEnd = 0;
+	protected UITexture mHighlight = null;
+	protected UITexture mCaret = null;
+	protected Texture2D mBlankTex = null;
+	protected float mNextBlink = 0f;
+	protected float mLastAlpha = 0f;
+
+	static protected string mLastIME = "";
 #endif
 
 	/// <summary>
-	/// Input field's current text value.
-	/// </summary>
-
-	public virtual string text
-	{
-		get
-		{
-			if (mDoInit) Init();
-			return mText;
-		}
-		set
-		{
-			if (mDoInit) Init();
-			mText = value;
-
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-			if (mKeyboard != null) mKeyboard.text = text;
-#endif
-			if (label != null)
-			{
-				if (string.IsNullOrEmpty(value)) value = mDefaultText;
-
-				label.supportEncoding = false;
-				label.text = selected ? value + caratChar : value;
-				label.showLastPasswordChar = selected;
-				label.color = (selected || value != mDefaultText) ? activeColor : mDefaultColor;
-			}
-		}
-	}
-
-	/// <summary>
-	/// Whether the input is currently selected.
-	/// </summary>
-
-	public bool selected
-	{
-		get
-		{
-			return UICamera.selectedObject == gameObject;
-		}
-		set
-		{
-			if (!value && UICamera.selectedObject == gameObject) UICamera.selectedObject = null;
-			else if (value) UICamera.selectedObject = gameObject;
-		}
-	}
-
-	/// <summary>
-	/// Set the default text of an input.
+	/// Default text used by the input's label.
 	/// </summary>
 
 	public string defaultText
@@ -187,350 +180,1158 @@ public class UIInput : MonoBehaviour
 		}
 		set
 		{
-			if (label.text == mDefaultText) label.text = value;
+			if (mDoInit) Init();
 			mDefaultText = value;
+			UpdateLabel();
+		}
+	}
+
+	[System.Obsolete("Use UIInput.value instead")]
+	public string text { get { return this.value; } set { this.value = value; } }
+
+	/// <summary>
+	/// Input field's current text value.
+	/// </summary>
+
+	public string value
+	{
+		get
+		{
+#if UNITY_EDITOR
+			if (!Application.isPlaying) return "";
+#endif
+			if (mDoInit) Init();
+			return mValue;
+		}
+		set
+		{
+#if UNITY_EDITOR
+			if (!Application.isPlaying) return;
+#endif
+			if (mDoInit) Init();
+			mDrawStart = 0;
+
+#if MOBILE && !UNITY_3_5
+			// BB10's implementation has a bug in Unity
+			if (Application.platform == RuntimePlatform.BB10Player)
+				value = value.Replace("\\b", "\b");
+#endif
+			// Validate all input
+			value = Validate(value);
+#if MOBILE
+			if (isSelected && mKeyboard != null && mCached != value)
+			{
+				mKeyboard.text = value;
+				mCached = value;
+			}
+
+			if (mValue != value)
+			{
+				mValue = value;
+				mLoadSavedValue = false;
+				if (!isSelected) SaveToPlayerPrefs(value);
+				UpdateLabel();
+				ExecuteOnChange();
+			}
+#else
+			if (mValue != value)
+			{
+				mValue = value;
+				mLoadSavedValue = false;
+
+				if (isSelected)
+				{
+					if (string.IsNullOrEmpty(value))
+					{
+						mSelectionStart = 0;
+						mSelectionEnd = 0;
+					}
+					else
+					{
+						mSelectionStart = value.Length;
+						mSelectionEnd = mSelectionStart;
+					}
+				}
+				else SaveToPlayerPrefs(value);
+
+				UpdateLabel();
+				ExecuteOnChange();
+			}
+#endif
+		}
+	}
+
+	[System.Obsolete("Use UIInput.isSelected instead")]
+	public bool selected { get { return isSelected; } set { isSelected = value; } }
+
+	/// <summary>
+	/// Whether the input is currently selected.
+	/// </summary>
+
+	public bool isSelected
+	{
+		get
+		{
+			return selection == this;
+		}
+		set
+		{
+			if (!value) { if (isSelected) UICamera.selectedObject = null; }
+			else UICamera.selectedObject = gameObject;
+		}
+	}
+
+#if MOBILE
+	/// <summary>
+	/// Current position of the cursor.
+	/// </summary>
+
+	public int cursorPosition { get { return value.Length; } set {} }
+
+	/// <summary>
+	/// Index of the character where selection begins.
+	/// </summary>
+
+	public int selectionStart { get { return value.Length; } set {} }
+
+	/// <summary>
+	/// Index of the character where selection ends.
+	/// </summary>
+
+	public int selectionEnd { get { return value.Length; } set {} }
+
+	/// <summary>
+	/// Caret, in case it's needed.
+	/// </summary>
+
+	public UITexture caret { get { return null; } }
+#else
+	/// <summary>
+	/// Current position of the cursor.
+	/// </summary>
+
+	public int cursorPosition
+	{
+		get
+		{
+			return isSelected ? mSelectionEnd : value.Length;
+		}
+		set
+		{
+			if (isSelected)
+			{
+				mSelectionEnd = value;
+				UpdateLabel();
+			}
 		}
 	}
 
 	/// <summary>
-	/// Labels used for input shouldn't support color encoding.
+	/// Index of the character where selection begins.
+	/// </summary>
+
+	public int selectionStart
+	{
+		get
+		{
+			return isSelected ? mSelectionStart : value.Length;
+		}
+		set
+		{
+			if (isSelected)
+			{
+				mSelectionStart = value;
+				UpdateLabel();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Index of the character where selection ends.
+	/// </summary>
+
+	public int selectionEnd
+	{
+		get
+		{
+			return isSelected ? mSelectionEnd : value.Length;
+		}
+		set
+		{
+			if (isSelected)
+			{
+				mSelectionEnd = value;
+				UpdateLabel();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Caret, in case it's needed.
+	/// </summary>
+
+	public UITexture caret { get { return mCaret; } }
+#endif
+
+	/// <summary>
+	/// Validate the specified text, returning the validated version.
+	/// </summary>
+
+	public string Validate (string val)
+	{
+		if (string.IsNullOrEmpty(val)) return "";
+
+		StringBuilder sb = new StringBuilder(val.Length);
+
+		for (int i = 0; i < val.Length; ++i)
+		{
+			char c = val[i];
+			if (onValidate != null) c = onValidate(sb.ToString(), sb.Length, c);
+			else if (validation != Validation.None) c = Validate(sb.ToString(), sb.Length, c);
+			if (c != 0) sb.Append(c);
+		}
+
+		if (characterLimit > 0 && sb.Length > characterLimit)
+			return sb.ToString(0, characterLimit);
+		return sb.ToString();
+	}
+
+	/// <summary>
+	/// Automatically set the value by loading it from player prefs if possible.
+	/// </summary>
+
+	void Start ()
+	{
+		if (mLoadSavedValue) LoadValue();
+		else value = mValue.Replace("\\n", "\n");
+	}
+
+	/// <summary>
+	/// Labels used for input shouldn't support rich text.
 	/// </summary>
 
 	protected void Init ()
 	{
-		if (mDoInit)
+		if (mDoInit && label != null)
 		{
 			mDoInit = false;
-			if (label == null) label = GetComponentInChildren<UILabel>();
+			mDefaultText = label.text;
+			mDefaultColor = label.color;
+			label.supportEncoding = false;
 
-			if (label != null)
+			if (label.alignment == NGUIText.Alignment.Justified)
 			{
-				if (useLabelTextAtStart) mText = label.text;
-				mDefaultText = label.text;
-				mDefaultColor = label.color;
-				label.supportEncoding = false;
-				label.password = isPassword;
-				mPivot = label.pivot;
-				mPosition = label.cachedTransform.localPosition.x;
+				label.alignment = NGUIText.Alignment.Left;
+				Debug.LogWarning("Input fields using labels with justified alignment are not supported at this time", this);
 			}
-			else enabled = false;
+
+			mPivot = label.pivot;
+			mPosition = label.cachedTransform.localPosition.x;
+			UpdateLabel();
 		}
 	}
 
-	bool mDoInit = true;
-
 	/// <summary>
-	/// If the object is currently highlighted, it should also be selected.
+	/// Save the specified value to player prefs.
 	/// </summary>
 
-	void OnEnable () { if (UICamera.IsHighlighted(gameObject)) OnSelect(true); }
+	protected void SaveToPlayerPrefs (string val)
+	{
+		if (!string.IsNullOrEmpty(savedAs))
+		{
+			if (string.IsNullOrEmpty(val)) PlayerPrefs.DeleteKey(savedAs);
+			else PlayerPrefs.SetString(savedAs, val);
+		}
+	}
 
 	/// <summary>
-	/// Remove the selection.
+	/// Selection event, sent by the EventSystem.
 	/// </summary>
 
-	void OnDisable () { if (UICamera.IsHighlighted(gameObject)) OnSelect(false); }
+	protected virtual void OnSelect (bool isSelected)
+	{
+		if (isSelected) OnSelectEvent();
+		else OnDeselectEvent();
+	}
 
 	/// <summary>
-	/// Selection event, sent by UICamera.
+	/// Notification of the input field gaining selection.
 	/// </summary>
 
-	void OnSelect (bool isSelected)
+	protected void OnSelectEvent ()
+	{
+		selection = this;
+
+		if (mDoInit) Init();
+
+		if (label != null && NGUITools.GetActive(this))
+		{
+			label.color = activeTextColor;
+#if MOBILE
+			if (Application.platform == RuntimePlatform.IPhonePlayer ||
+				Application.platform == RuntimePlatform.Android
+#if UNITY_WP8
+				|| Application.platform == RuntimePlatform.WP8Player
+#endif
+#if UNITY_BLACKBERRY
+				|| Application.platform == RuntimePlatform.BB10Player
+#endif
+			)
+			{
+				mKeyboard = (inputType == InputType.Password) ?
+					TouchScreenKeyboard.Open(mValue, TouchScreenKeyboardType.Default, false, false, true) :
+					TouchScreenKeyboard.Open(mValue, (TouchScreenKeyboardType)((int)keyboardType), inputType == InputType.AutoCorrect, label.multiLine, false, false, defaultText);
+			}
+			else
+#endif
+			{
+				Vector2 pos = (UICamera.current != null && UICamera.current.cachedCamera != null) ?
+					UICamera.current.cachedCamera.WorldToScreenPoint(label.worldCorners[0]) :
+					label.worldCorners[0];
+				pos.y = Screen.height - pos.y;
+				Input.imeCompositionMode = IMECompositionMode.On;
+				Input.compositionCursorPos = pos;
+#if !MOBILE
+				mSelectionStart = 0;
+				mSelectionEnd = string.IsNullOrEmpty(mValue) ? 0 : mValue.Length;
+#endif
+				mDrawStart = 0;
+			}
+			UpdateLabel();
+		}
+	}
+
+	/// <summary>
+	/// Notification of the input field losing selection.
+	/// </summary>
+
+	protected void OnDeselectEvent ()
 	{
 		if (mDoInit) Init();
 
-		if (label != null && enabled && NGUITools.GetActive(gameObject))
+		if (label != null && NGUITools.GetActive(this))
 		{
-			if (isSelected)
+			mValue = value;
+#if MOBILE
+			if (mKeyboard != null)
 			{
-				mText = (!useLabelTextAtStart && label.text == mDefaultText) ? "" : label.text;
-				label.color = activeColor;
-				if (isPassword) label.password = true;
-
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-				if (Application.platform == RuntimePlatform.IPhonePlayer ||
-					Application.platform == RuntimePlatform.Android
-#if UNITY_WP8 
-					|| Application.platform == RuntimePlatform.WP8Player
-#endif
-#if UNITY_BLACKBERRY
-					|| Application.platform == RuntimePlatform.BB10Player
-#endif
-)
-				{
-					if (isPassword)
-					{
-						mKeyboard = TouchScreenKeyboard.Open(mText, TouchScreenKeyboardType.Default, false, false, true);
-					}
-					else
-					{
-						mKeyboard = TouchScreenKeyboard.Open(mText, (TouchScreenKeyboardType)((int)type), autoCorrect);
-					}
-				}
-				else
-#endif
-				{
-					Input.imeCompositionMode = IMECompositionMode.On;
-					Transform t = label.cachedTransform;
-					Vector3 offset = label.pivotOffset;
-					offset.y += label.relativeSize.y;
-					offset = t.TransformPoint(offset);
-					Input.compositionCursorPos = UICamera.currentCamera.WorldToScreenPoint(offset);
-				}
-				UpdateLabel();
+				mKeyboard.active = false;
+				mKeyboard = null;
 			}
-			else
+#endif
+			if (string.IsNullOrEmpty(mValue))
 			{
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
-				if (mKeyboard != null)
-				{
-					mKeyboard.active = false;
-				}
-#endif
-				if (string.IsNullOrEmpty(mText))
-				{
-					label.text = mDefaultText;
-					label.color = mDefaultColor;
-					if (isPassword) label.password = false;
-				}
-				else label.text = mText;
-
-				label.showLastPasswordChar = false;
-				Input.imeCompositionMode = IMECompositionMode.Off;
-				RestoreLabel();
+				label.text = mDefaultText;
+				label.color = mDefaultColor;
 			}
+			else label.text = mValue;
+
+			Input.imeCompositionMode = IMECompositionMode.Auto;
+			RestoreLabelPivot();
 		}
+		
+		selection = null;
+		UpdateLabel();
 	}
 
-#if UNITY_IPHONE || UNITY_ANDROID || UNITY_WP8 || UNITY_BLACKBERRY
 	/// <summary>
-	/// Update the text and the label by grabbing it from the iOS/Android keyboard.
+	/// Update the text based on input.
 	/// </summary>
+
+#if MOBILE
+	string mCached = "";
 
 	void Update()
 	{
-		if (mKeyboard != null)
+		if (mKeyboard != null && isSelected)
 		{
 			string text = mKeyboard.text;
 
-			if (mText != text)
+			if (mCached != text)
 			{
-				mText = "";
-
-				for (int i = 0; i < text.Length; ++i)
-				{
-					char ch = text[i];
-					if (validator != null) ch = validator(mText, ch);
-					if (ch != 0) mText += ch;
-				}
-
-				if (maxChars > 0 && mText.Length > maxChars) mText = mText.Substring(0, maxChars);
-				UpdateLabel();
-				if (mText != text) mKeyboard.text = mText;
-				SendMessage("OnInputChanged", this, SendMessageOptions.DontRequireReceiver);
+				mCached = text;
+				value = text;
 			}
 
 			if (mKeyboard.done)
 			{
+#if !UNITY_3_5
+				if (!mKeyboard.wasCanceled)
+#endif
+					Submit();
 				mKeyboard = null;
-				current = this;
-				if (onSubmit != null) onSubmit(mText);
-				if (eventReceiver == null) eventReceiver = gameObject;
-				eventReceiver.SendMessage(functionName, mText, SendMessageOptions.DontRequireReceiver);
-				current = null;
-				selected = false;
+				isSelected = false;
+				mCached = "";
 			}
 		}
 	}
 #else
 	void Update ()
 	{
-		if (selected)
+#if UNITY_EDITOR
+		if (!Application.isPlaying) return;
+#endif
+		if (isSelected)
 		{
+			if (mDoInit) Init();
+
 			if (selectOnTab != null && Input.GetKeyDown(KeyCode.Tab))
 			{
 				UICamera.selectedObject = selectOnTab;
+				return;
 			}
 
-			// Note: this won't work in the editor. Only in the actual published app. Unity blocks control-keys in the editor.
-			if (Input.GetKeyDown(KeyCode.V) &&
-#if UNITY_STANDALONE_OSX
-				(Input.GetKey(KeyCode.LeftApple) || Input.GetKey(KeyCode.LeftApple)))
-#else
-				(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)))
-#endif
+			string ime = Input.compositionString;
+
+			// There seems to be an inconsistency between IME on Windows, and IME on OSX.
+			// On Windows, Input.inputString is always empty while IME is active. On the OSX it is not.
+			if (string.IsNullOrEmpty(ime) && !string.IsNullOrEmpty(Input.inputString))
 			{
-				Append(NGUITools.clipboard);
+				// Process input ignoring non-printable characters as they are not consistent.
+				// Windows has them, OSX may not. They get handled inside OnGUI() instead.
+				string s = Input.inputString;
+
+				for (int i = 0; i < s.Length; ++i)
+				{
+					char ch = s[i];
+					if (ch < ' ') continue;
+
+					// OSX inserts these characters for arrow keys
+					if (ch == '\uF700') continue;
+					if (ch == '\uF701') continue;
+					if (ch == '\uF702') continue;
+					if (ch == '\uF703') continue;
+
+					Insert(ch.ToString());
+				}
 			}
-			
-			if (mLastIME != Input.compositionString)
+
+			// Append IME composition
+			if (mLastIME != ime)
 			{
-				mLastIME = Input.compositionString;
+				mSelectionEnd = string.IsNullOrEmpty(ime) ? mSelectionStart : mValue.Length + ime.Length;
+				mLastIME = ime;
 				UpdateLabel();
+				ExecuteOnChange();
 			}
-		}
-	}
-#endif
 
-	/// <summary>
-	/// Input event, sent by UICamera.
-	/// </summary>
+			// Blink the caret
+			if (mCaret != null && mNextBlink < RealTime.time)
+			{
+				mNextBlink = RealTime.time + 0.5f;
+				mCaret.enabled = !mCaret.enabled;
+			}
 
-	void OnInput (string input)
-	{
-		if (mDoInit) Init();
-
-		if (selected && enabled && NGUITools.GetActive(gameObject))
-		{
-			// Mobile devices handle input in Update()
-			if (Application.platform == RuntimePlatform.Android) return;
-			if (Application.platform == RuntimePlatform.IPhonePlayer) return;
-			Append(input);
+			// If the label's final alpha changes, we need to update the drawn geometry,
+			// or the highlight widgets (which have their geometry set manually) won't update.
+			if (isSelected && mLastAlpha != label.finalAlpha)
+				UpdateLabel();
 		}
 	}
 
 	/// <summary>
-	/// Append the specified text to the end of the current.
+	/// Unfortunately Unity 4.3 and earlier doesn't offer a way to properly process events outside of OnGUI.
 	/// </summary>
 
-	void Append (string input)
+	void OnGUI ()
 	{
-		for (int i = 0, imax = input.Length; i < imax; ++i)
-		{
-			char c = input[i];
+		if (isSelected && Event.current.rawType == EventType.KeyDown)
+			ProcessEvent(Event.current);
+	}
 
-			if (c == '\b')
+	/// <summary>
+	/// Handle the specified event.
+	/// </summary>
+
+	bool ProcessEvent (Event ev)
+	{
+		if (label == null) return false;
+
+		RuntimePlatform rp = Application.platform;
+
+		bool isMac = (
+			rp == RuntimePlatform.OSXEditor ||
+			rp == RuntimePlatform.OSXPlayer ||
+			rp == RuntimePlatform.OSXWebPlayer);
+
+		bool ctrl = isMac ?
+			((ev.modifiers & EventModifiers.Command) != 0) :
+			((ev.modifiers & EventModifiers.Control) != 0);
+
+		bool shift = ((ev.modifiers & EventModifiers.Shift) != 0);
+
+		switch (ev.keyCode)
+		{
+			case KeyCode.Backspace:
 			{
-				// Backspace
-				if (mText.Length > 0)
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
 				{
-					mText = mText.Substring(0, mText.Length - 1);
-					SendMessage("OnInputChanged", this, SendMessageOptions.DontRequireReceiver);
-				}
-			}
-			else if (c == '\r' || c == '\n')
-			{
-				if (UICamera.current.submitKey0 == KeyCode.Return || UICamera.current.submitKey1 == KeyCode.Return)
-				{
-					// Not multi-line input, or control isn't held
-					if (!label.multiLine || (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl)))
+					if (mSelectionStart == mSelectionEnd)
 					{
-						// Enter
-						current = this;
-						if (onSubmit != null) onSubmit(mText);
-						if (eventReceiver == null) eventReceiver = gameObject;
-						eventReceiver.SendMessage(functionName, mText, SendMessageOptions.DontRequireReceiver);
-						current = null;
-						selected = false;
-						return;
+						if (mSelectionStart < 1) return true;
+						--mSelectionEnd;
 					}
+					Insert("");
 				}
+				return true;
+			}
 
-				// If we have an input validator, validate the input first
-				if (validator != null) c = validator(mText, c);
+			case KeyCode.Delete:
+			{
+				ev.Use();
 
-				// If the input is invalid, skip it
-				if (c == 0) continue;
-
-				// Append the character
-				if (c == '\n' || c == '\r')
+				if (!string.IsNullOrEmpty(mValue))
 				{
-					if (label.multiLine) mText += "\n";
+					if (mSelectionStart == mSelectionEnd)
+					{
+						if (mSelectionStart >= mValue.Length) return true;
+						++mSelectionEnd;
+					}
+					Insert("");
 				}
-				else mText += c;
-
-				// Notify the listeners
-				SendMessage("OnInputChanged", this, SendMessageOptions.DontRequireReceiver);
+				return true;
 			}
-			else if (c >= ' ')
+
+			case KeyCode.LeftArrow:
 			{
-				// If we have an input validator, validate the input first
-				if (validator != null) c = validator(mText, c);
+				ev.Use();
 
-				// If the input is invalid, skip it
-				if (c == 0) continue;
-
-				// Append the character and notify the "input changed" listeners.
-				mText += c;
-				SendMessage("OnInputChanged", this, SendMessageOptions.DontRequireReceiver);
-			}
-		}
-
-		// Ensure that we don't exceed the maximum length
-		UpdateLabel();
-	}
-
-	/// <summary>
-	/// Update the visual text label, capping it at maxChars correctly.
-	/// </summary>
-
-	void UpdateLabel ()
-	{
-		if (mDoInit) Init();
-		if (maxChars > 0 && mText.Length > maxChars) mText = mText.Substring(0, maxChars);
-
-		if (label.font != null)
-		{
-			// Start with the text and append the IME composition and carat chars
-			string processed;
-
-			if (isPassword && selected)
-			{
-				processed = "";
-				for (int i = 0, imax = mText.Length; i < imax; ++i) processed += "*";
-				processed += Input.compositionString + caratChar;
-			}
-			else processed = selected ? (mText + Input.compositionString + caratChar) : mText;
-
-			// Now wrap this text using the specified line width
-			label.supportEncoding = false;
-
-			if (!label.shrinkToFit)
-			{
-				Vector3 scale = label.cachedTransform.localScale;
-
-				if (label.multiLine)
+				if (!string.IsNullOrEmpty(mValue))
 				{
-					label.font.WrapText(processed, out processed, label.lineWidth / scale.x, label.lineHeight / scale.y, 0, false, UIFont.SymbolStyle.None);
+					mSelectionEnd = Mathf.Max(mSelectionEnd - 1, 0);
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.RightArrow:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					mSelectionEnd = Mathf.Min(mSelectionEnd + 1, mValue.Length);
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.PageUp:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					mSelectionEnd = 0;
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.PageDown:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					mSelectionEnd = mValue.Length;
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.Home:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					if (label.multiLine)
+					{
+						mSelectionEnd = label.GetCharacterIndex(mSelectionEnd, KeyCode.Home);
+					}
+					else mSelectionEnd = 0;
+
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.End:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					if (label.multiLine)
+					{
+						mSelectionEnd = label.GetCharacterIndex(mSelectionEnd, KeyCode.End);
+					}
+					else mSelectionEnd = mValue.Length;
+
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.UpArrow:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					mSelectionEnd = label.GetCharacterIndex(mSelectionEnd, KeyCode.UpArrow);
+					if (mSelectionEnd != 0) mSelectionEnd += mDrawStart;
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			case KeyCode.DownArrow:
+			{
+				ev.Use();
+
+				if (!string.IsNullOrEmpty(mValue))
+				{
+					mSelectionEnd = label.GetCharacterIndex(mSelectionEnd, KeyCode.DownArrow);
+					if (mSelectionEnd != label.processedText.Length) mSelectionEnd += mDrawStart;
+					else mSelectionEnd = mValue.Length;
+					if (!shift) mSelectionStart = mSelectionEnd;
+					UpdateLabel();
+				}
+				return true;
+			}
+
+			// Copy
+			case KeyCode.C:
+			{
+				if (ctrl)
+				{
+					ev.Use();
+					NGUITools.clipboard = GetSelection();
+				}
+				return true;
+			}
+
+			// Paste
+			case KeyCode.V:
+			{
+				if (ctrl)
+				{
+					ev.Use();
+					Insert(NGUITools.clipboard);
+				}
+				return true;
+			}
+
+			// Cut
+			case KeyCode.X:
+			{
+				if (ctrl)
+				{
+					ev.Use();
+					NGUITools.clipboard = GetSelection();
+					Insert("");
+				}
+				return true;
+			}
+
+			// Submit
+			case KeyCode.Return:
+			case KeyCode.KeypadEnter:
+			{
+				ev.Use();
+				
+				if (label.multiLine && !ctrl && label.overflowMethod != UILabel.Overflow.ClampContent && validation == Validation.None)
+				{
+					Insert("\n");
 				}
 				else
 				{
-					string fit = label.font.GetEndOfLineThatFits(processed, label.lineWidth / scale.x, false, UIFont.SymbolStyle.None);
-
-					if (fit != processed)
-					{
-						processed = fit;
-						Vector3 pos = label.cachedTransform.localPosition;
-						pos.x = mPosition + label.lineWidth;
-
-						if (mPivot == UIWidget.Pivot.Left) label.pivot = UIWidget.Pivot.Right;
-						else if (mPivot == UIWidget.Pivot.TopLeft) label.pivot = UIWidget.Pivot.TopRight;
-						else if (mPivot == UIWidget.Pivot.BottomLeft) label.pivot = UIWidget.Pivot.BottomRight;
-
-						label.cachedTransform.localPosition = pos;
-					}
-					else RestoreLabel();
+					UICamera.currentScheme = UICamera.ControlScheme.Controller;
+					UICamera.currentKey = ev.keyCode;
+					Submit();
+					UICamera.currentKey = KeyCode.None;
 				}
+				return true;
 			}
+		}
+		return false;
+	}
 
-			// Update the label's visible text
-			label.text = processed;
-			label.showLastPasswordChar = selected;
+	/// <summary>
+	/// Insert the specified text string into the current input value, respecting selection and validation.
+	/// </summary>
+
+	protected virtual void Insert (string text)
+	{
+		string left = GetLeftText();
+		string right = GetRightText();
+		int rl = right.Length;
+
+		StringBuilder sb = new StringBuilder(left.Length + right.Length + text.Length);
+		sb.Append(left);
+
+		// Append the new text
+		for (int i = 0, imax = text.Length; i < imax; ++i)
+		{
+			// Can't go past the character limit
+			if (characterLimit > 0 && sb.Length + rl >= characterLimit) break;
+
+			// If we have an input validator, validate the input first
+			char c = text[i];
+			if (onValidate != null) c = onValidate(sb.ToString(), sb.Length, c);
+			else if (validation != Validation.None) c = Validate(sb.ToString(), sb.Length, c);
+
+			// Append the character if it hasn't been invalidated
+			if (c != 0) sb.Append(c);
+		}
+
+		// Advance the selection
+		mSelectionStart = sb.Length;
+		mSelectionEnd = mSelectionStart;
+
+		// Append the text that follows it, ensuring that it's also validated after the inserted value
+		for (int i = 0, imax = right.Length; i < imax; ++i)
+		{
+			char c = right[i];
+			if (onValidate != null) c = onValidate(sb.ToString(), sb.Length, c);
+			else if (validation != Validation.None) c = Validate(sb.ToString(), sb.Length, c);
+			if (c != 0) sb.Append(c);
+		}
+
+		mValue = sb.ToString();
+		UpdateLabel();
+		ExecuteOnChange();
+	}
+
+	/// <summary>
+	/// Get the text to the left of the selection.
+	/// </summary>
+
+	protected string GetLeftText ()
+	{
+		int min = Mathf.Min(mSelectionStart, mSelectionEnd);
+		return (string.IsNullOrEmpty(mValue) || min < 0) ? "" : mValue.Substring(0, min);
+	}
+
+	/// <summary>
+	/// Get the text to the right of the selection.
+	/// </summary>
+
+	protected string GetRightText ()
+	{
+		int max = Mathf.Max(mSelectionStart, mSelectionEnd);
+		return (string.IsNullOrEmpty(mValue) || max >= mValue.Length) ? "" : mValue.Substring(max);
+	}
+
+	/// <summary>
+	/// Get currently selected text.
+	/// </summary>
+
+	protected string GetSelection ()
+	{
+		if (string.IsNullOrEmpty(mValue) || mSelectionStart == mSelectionEnd)
+		{
+			return "";
+		}
+		else
+		{
+			int min = Mathf.Min(mSelectionStart, mSelectionEnd);
+			int max = Mathf.Max(mSelectionStart, mSelectionEnd);
+			return mValue.Substring(min, max - min);
 		}
 	}
 
 	/// <summary>
-	/// Restore the input label's pivot point and position.
+	/// Helper function that retrieves the index of the character under the mouse.
 	/// </summary>
 
-	void RestoreLabel ()
+	protected int GetCharUnderMouse ()
+	{
+		Vector3[] corners = label.worldCorners;
+		Ray ray = UICamera.currentRay;
+		Plane p = new Plane(corners[0], corners[1], corners[2]);
+		float dist;
+		return p.Raycast(ray, out dist) ? mDrawStart + label.GetCharacterIndexAtPosition(ray.GetPoint(dist)) : 0;
+	}
+
+	/// <summary>
+	/// Move the caret on press.
+	/// </summary>
+
+	protected virtual void OnPress (bool isPressed)
+	{
+		if (isPressed && isSelected && label != null && UICamera.currentScheme == UICamera.ControlScheme.Mouse)
+		{
+			mSelectionEnd = GetCharUnderMouse();
+			if (!Input.GetKey(KeyCode.LeftShift) &&
+				!Input.GetKey(KeyCode.RightShift)) mSelectionStart = mSelectionEnd;
+			UpdateLabel();
+		}
+	}
+
+	/// <summary>
+	/// Drag selection.
+	/// </summary>
+
+	protected virtual void OnDrag (Vector2 delta)
+	{
+		if (label != null && UICamera.currentScheme == UICamera.ControlScheme.Mouse)
+		{
+			mSelectionEnd = GetCharUnderMouse();
+			UpdateLabel();
+		}
+	}
+
+	/// <summary>
+	/// Ensure we've released the dynamically created resources.
+	/// </summary>
+
+	void OnDisable () { Cleanup(); }
+
+	/// <summary>
+	/// Cleanup.
+	/// </summary>
+
+	protected virtual void Cleanup ()
+	{
+		if (mHighlight) mHighlight.enabled = false;
+		if (mCaret) mCaret.enabled = false;
+
+		if (mBlankTex)
+		{
+			NGUITools.Destroy(mBlankTex);
+			mBlankTex = null;
+		}
+	}
+#endif // !MOBILE
+
+	/// <summary>
+	/// Submit the input field's text.
+	/// </summary>
+
+	public void Submit ()
+	{
+		if (NGUITools.GetActive(this))
+		{
+			mValue = value;
+
+			if (current == null)
+			{
+				current = this;
+				EventDelegate.Execute(onSubmit);
+				current = null;
+			}
+			SaveToPlayerPrefs(mValue);
+		}
+	}
+
+	/// <summary>
+	/// Update the visual text label.
+	/// </summary>
+
+	public void UpdateLabel ()
 	{
 		if (label != null)
 		{
-			label.pivot = mPivot;
-			Vector3 pos = label.cachedTransform.localPosition;
-			pos.x = mPosition;
-			label.cachedTransform.localPosition = pos;
+			if (mDoInit) Init();
+			bool selected = isSelected;
+			string fullText = value;
+			bool isEmpty = string.IsNullOrEmpty(fullText) && string.IsNullOrEmpty(Input.compositionString);
+			label.color = (isEmpty && !selected) ? mDefaultColor : activeTextColor;
+			string processed;
+
+			if (isEmpty)
+			{
+				processed = selected ? "" : mDefaultText;
+				RestoreLabelPivot();
+			}
+			else
+			{
+				if (inputType == InputType.Password)
+				{
+					processed = "";
+
+					string asterisk = "*";
+
+					if (label.bitmapFont != null && label.bitmapFont.bmFont != null &&
+						label.bitmapFont.bmFont.GetGlyph('*') == null) asterisk = "x";
+
+					for (int i = 0, imax = fullText.Length; i < imax; ++i) processed += asterisk;
+				}
+				else processed = fullText;
+
+				// Start with text leading up to the selection
+				int selPos = selected ? Mathf.Min(processed.Length, cursorPosition) : 0;
+				string left = processed.Substring(0, selPos);
+
+				// Append the composition string and the cursor character
+				if (selected) left += Input.compositionString;
+
+				// Append the text from the selection onwards
+				processed = left + processed.Substring(selPos, processed.Length - selPos);
+
+				// Clamped content needs to be adjusted further
+				if (selected && label.overflowMethod == UILabel.Overflow.ClampContent)
+				{
+					// Determine what will actually fit into the given line
+					int offset = label.CalculateOffsetToFit(processed);
+
+					if (offset == 0)
+					{
+						mDrawStart = 0;
+						RestoreLabelPivot();
+					}
+					else if (selPos < mDrawStart)
+					{
+						mDrawStart = selPos;
+						SetPivotToLeft();
+					}
+					else if (offset < mDrawStart)
+					{
+						mDrawStart = offset;
+						SetPivotToLeft();
+					}
+					else
+					{
+						offset = label.CalculateOffsetToFit(processed.Substring(0, selPos));
+
+						if (offset > mDrawStart)
+						{
+							mDrawStart = offset;
+							SetPivotToRight();
+						}
+					}
+
+					// If necessary, trim the front
+					if (mDrawStart != 0)
+						processed = processed.Substring(mDrawStart, processed.Length - mDrawStart);
+				}
+				else
+				{
+					mDrawStart = 0;
+					RestoreLabelPivot();
+				}
+			}
+
+			label.text = processed;
+#if !MOBILE
+			if (selected)
+			{
+				int start = mSelectionStart - mDrawStart;
+				int end = mSelectionEnd - mDrawStart;
+
+				// Blank texture used by selection and caret
+				if (mBlankTex == null)
+				{
+					mBlankTex = new Texture2D(2, 2, TextureFormat.ARGB32, false);
+					for (int y = 0; y < 2; ++y)
+						for (int x = 0; x < 2; ++x)
+							mBlankTex.SetPixel(x, y, Color.white);
+					mBlankTex.Apply();
+				}
+
+				// Create the selection highlight
+				if (start != end)
+				{
+					if (mHighlight == null)
+					{
+						mHighlight = NGUITools.AddWidget<UITexture>(label.cachedGameObject);
+						mHighlight.name = "Input Highlight";
+						mHighlight.mainTexture = mBlankTex;
+						mHighlight.fillGeometry = false;
+						mHighlight.pivot = label.pivot;
+						mHighlight.SetAnchor(label.cachedTransform);
+					}
+					else
+					{
+						mHighlight.pivot = label.pivot;
+						mHighlight.mainTexture = mBlankTex;
+						mHighlight.MarkAsChanged();
+						mHighlight.enabled = true;
+					}
+				}
+
+				// Create the caret
+				if (mCaret == null)
+				{
+					mCaret = NGUITools.AddWidget<UITexture>(label.cachedGameObject);
+					mCaret.name = "Input Caret";
+					mCaret.mainTexture = mBlankTex;
+					mCaret.fillGeometry = false;
+					mCaret.pivot = label.pivot;
+					mCaret.SetAnchor(label.cachedTransform);
+				}
+				else
+				{
+					mCaret.pivot = label.pivot;
+					mCaret.mainTexture = mBlankTex;
+					mCaret.MarkAsChanged();
+					mCaret.enabled = true;
+				}
+
+				if (start != end)
+				{
+					label.PrintOverlay(start, end, mCaret.geometry, mHighlight.geometry, caretColor, selectionColor);
+					mHighlight.enabled = mHighlight.geometry.hasVertices;
+				}
+				else
+				{
+					label.PrintOverlay(start, end, mCaret.geometry, null, caretColor, selectionColor);
+					if (mHighlight != null) mHighlight.enabled = false;
+				}
+
+				// Reset the blinking time
+				mNextBlink = RealTime.time + 0.5f;
+				mLastAlpha = label.finalAlpha;
+			}
+			else Cleanup();
+#endif
 		}
+	}
+
+	/// <summary>
+	/// Set the label's pivot to the left.
+	/// </summary>
+
+	protected void SetPivotToLeft ()
+	{
+		Vector2 po = NGUIMath.GetPivotOffset(mPivot);
+		po.x = 0f;
+		label.pivot = NGUIMath.GetPivot(po);
+	}
+
+	/// <summary>
+	/// Set the label's pivot to the right.
+	/// </summary>
+
+	protected void SetPivotToRight ()
+	{
+		Vector2 po = NGUIMath.GetPivotOffset(mPivot);
+		po.x = 1f;
+		label.pivot = NGUIMath.GetPivot(po);
+	}
+
+	/// <summary>
+	/// Restore the input label's pivot point.
+	/// </summary>
+
+	protected void RestoreLabelPivot ()
+	{
+		if (label != null && label.pivot != mPivot)
+			label.pivot = mPivot;
+	}
+
+	/// <summary>
+	/// Validate the specified input.
+	/// </summary>
+
+	protected char Validate (string text, int pos, char ch)
+	{
+		// Validation is disabled
+		if (validation == Validation.None || !enabled) return ch;
+
+		if (validation == Validation.Integer)
+		{
+			// Integer number validation
+			if (ch >= '0' && ch <= '9') return ch;
+			if (ch == '-' && pos == 0 && !text.Contains("-")) return ch;
+		}
+		else if (validation == Validation.Float)
+		{
+			// Floating-point number
+			if (ch >= '0' && ch <= '9') return ch;
+			if (ch == '-' && pos == 0 && !text.Contains("-")) return ch;
+			if (ch == '.' && !text.Contains(".")) return ch;
+		}
+		else if (validation == Validation.Alphanumeric)
+		{
+			// All alphanumeric characters
+			if (ch >= 'A' && ch <= 'Z') return ch;
+			if (ch >= 'a' && ch <= 'z') return ch;
+			if (ch >= '0' && ch <= '9') return ch;
+		}
+		else if (validation == Validation.Username)
+		{
+			// Lowercase and numbers
+			if (ch >= 'A' && ch <= 'Z') return (char)(ch - 'A' + 'a');
+			if (ch >= 'a' && ch <= 'z') return ch;
+			if (ch >= '0' && ch <= '9') return ch;
+		}
+		else if (validation == Validation.Name)
+		{
+			char lastChar = (text.Length > 0) ? text[Mathf.Clamp(pos, 0, text.Length - 1)] : ' ';
+			char nextChar = (text.Length > 0) ? text[Mathf.Clamp(pos + 1, 0, text.Length - 1)] : '\n';
+
+			if (ch >= 'a' && ch <= 'z')
+			{
+				// Space followed by a letter -- make sure it's capitalized
+				if (lastChar == ' ') return (char)(ch - 'a' + 'A');
+				return ch;
+			}
+			else if (ch >= 'A' && ch <= 'Z')
+			{
+				// Uppercase letters are only allowed after spaces (and apostrophes)
+				if (lastChar != ' ' && lastChar != '\'') return (char)(ch - 'A' + 'a');
+				return ch;
+			}
+			else if (ch == '\'')
+			{
+				// Don't allow more than one apostrophe
+				if (lastChar != ' ' && lastChar != '\'' && nextChar != '\'' && !text.Contains("'")) return ch;
+			}
+			else if (ch == ' ')
+			{
+				// Don't allow more than one space in a row
+				if (lastChar != ' ' && lastChar != '\'' && nextChar != ' ' && nextChar != '\'') return ch;
+			}
+		}
+		return (char)0;
+	}
+
+	/// <summary>
+	/// Execute the OnChange callback.
+	/// </summary>
+
+	protected void ExecuteOnChange ()
+	{
+		if (current == null && EventDelegate.IsValid(onChange))
+		{
+			current = this;
+			EventDelegate.Execute(onChange);
+			current = null;
+		}
+	}
+
+	/// <summary>
+	/// Convenience function to be used as a callback that will clear the input field's focus.
+	/// </summary>
+
+	public void RemoveFocus () { isSelected = false; }
+
+	/// <summary>
+	/// Convenience function that can be used as a callback for On Change notification.
+	/// </summary>
+
+	public void SaveValue () { SaveToPlayerPrefs(mValue); }
+
+	/// <summary>
+	/// Convenience function that can forcefully reset the input field's value to what was saved earlier.
+	/// </summary>
+
+	public void LoadValue ()
+	{
+		if (!string.IsNullOrEmpty(savedAs) && PlayerPrefs.HasKey(savedAs))
+			value = PlayerPrefs.GetString(savedAs);
 	}
 }

@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -11,7 +11,7 @@ using System.Collections.Generic;
 /// </summary>
 
 [ExecuteInEditMode]
-[AddComponentMenu("NGUI/UI/Sprite")]
+[AddComponentMenu("NGUI/UI/NGUI Sprite")]
 public class UISprite : UIWidget
 {
 	public enum Type
@@ -20,6 +20,7 @@ public class UISprite : UIWidget
 		Sliced,
 		Tiled,
 		Filled,
+		Advanced,
 	}
 
 	public enum FillDirection
@@ -31,29 +32,78 @@ public class UISprite : UIWidget
 		Radial360,
 	}
 
+	public enum AdvancedType
+	{
+		Invisible,
+		Sliced,
+		Tiled,
+	}
+
+	public enum Flip
+	{
+		Nothing,
+		Horizontally,
+		Vertically,
+		Both,
+	}
+
 	// Cached and saved values
 	[HideInInspector][SerializeField] UIAtlas mAtlas;
 	[HideInInspector][SerializeField] string mSpriteName;
-	[HideInInspector][SerializeField] bool mFillCenter = true;
 	[HideInInspector][SerializeField] Type mType = Type.Simple;
 	[HideInInspector][SerializeField] FillDirection mFillDirection = FillDirection.Radial360;
+#if !UNITY_3_5
+	[Range(0f, 1f)]
+#endif
 	[HideInInspector][SerializeField] float mFillAmount = 1.0f;
 	[HideInInspector][SerializeField] bool mInvert = false;
+	[HideInInspector][SerializeField] Flip mFlip = Flip.Nothing;
 
-	protected UIAtlas.Sprite mSprite;
-	protected Rect mInner;
-	protected Rect mInnerUV;
-	protected Rect mOuter;
-	protected Rect mOuterUV;
-	protected Vector3 mScale = Vector3.one;
+	// Deprecated, no longer used
+	[HideInInspector][SerializeField] bool mFillCenter = true;
 
+	[System.NonSerialized]
+	protected UISpriteData mSprite;
+	protected Rect mInnerUV = new Rect();
+	protected Rect mOuterUV = new Rect();
+	
 	bool mSpriteSet = false;
+
+	/// <summary>
+	/// When the sprite type is advanced, this determines whether the center is tiled or sliced.
+	/// </summary>
+
+	public AdvancedType centerType = AdvancedType.Sliced;
+
+	/// <summary>
+	/// When the sprite type is advanced, this determines whether the left edge is tiled or sliced.
+	/// </summary>
+
+	public AdvancedType leftType = AdvancedType.Sliced;
+
+	/// <summary>
+	/// When the sprite type is advanced, this determines whether the right edge is tiled or sliced.
+	/// </summary>
+
+	public AdvancedType rightType = AdvancedType.Sliced;
+
+	/// <summary>
+	/// When the sprite type is advanced, this determines whether the bottom edge is tiled or sliced.
+	/// </summary>
+
+	public AdvancedType bottomType = AdvancedType.Sliced;
+
+	/// <summary>
+	/// When the sprite type is advanced, this determines whether the top edge is tiled or sliced.
+	/// </summary>
+
+	public AdvancedType topType = AdvancedType.Sliced;
 
 	/// <summary>
 	/// How the sprite is drawn.
 	/// </summary>
 
-	virtual public Type type
+	public virtual Type type
 	{
 		get
 		{
@@ -64,6 +114,26 @@ public class UISprite : UIWidget
 			if (mType != value)
 			{
 				mType = value;
+				MarkAsChanged();
+			}
+		}
+	}
+
+	/// <summary>
+	/// Sprite flip setting.
+	/// </summary>
+
+	public Flip flip
+	{
+		get
+		{
+			return mFlip;
+		}
+		set
+		{
+			if (mFlip != value)
+			{
+				mFlip = value;
 				MarkAsChanged();
 			}
 		}
@@ -112,7 +182,6 @@ public class UISprite : UIWidget
 					mSpriteName = "";
 					spriteName = sprite;
 					MarkAsChanged();
-					UpdateUVs(true);
 				}
 			}
 		}
@@ -148,7 +217,6 @@ public class UISprite : UIWidget
 				mSprite = null;
 				mChanged = true;
 				mSpriteSet = false;
-				if (isValid) UpdateUVs(true);
 			}
 		}
 	}
@@ -160,22 +228,25 @@ public class UISprite : UIWidget
 	public bool isValid { get { return GetAtlasSprite() != null; } }
 
 	/// <summary>
-	/// Inner set of UV coordinates.
-	/// </summary>
-
-	public Rect innerUV { get { UpdateUVs(false); return mInnerUV; } }
-
-	/// <summary>
-	/// Outer set of UV coordinates.
-	/// </summary>
-
-	public Rect outerUV { get { UpdateUVs(false); return mOuterUV; } }
-
-	/// <summary>
 	/// Whether the center part of the sprite will be filled or not. Turn it off if you want only to borders to show up.
 	/// </summary>
 
-	public bool fillCenter { get { return mFillCenter; } set { if (mFillCenter != value) { mFillCenter = value; MarkAsChanged(); } } }
+	[System.Obsolete("Use 'centerType' instead")]
+	public bool fillCenter
+	{
+		get
+		{
+			return centerType != AdvancedType.Invisible;
+		}
+		set
+		{
+			if (value != (centerType != AdvancedType.Invisible))
+			{
+				centerType = value ? AdvancedType.Sliced : AdvancedType.Invisible;
+				MarkAsChanged();
+			}
+		}
+	}
 
 	/// <summary>
 	/// Direction of the cut procedure.
@@ -240,61 +311,86 @@ public class UISprite : UIWidget
 	}
 
 	/// <summary>
-	/// Extra padding around the sprite, in pixels.
-	/// </summary>
-
-	public override Vector4 relativePadding
-	{
-		get
-		{
-			if (isValid && type == Type.Simple)
-			{
-				return new Vector4(mSprite.paddingLeft, mSprite.paddingTop, mSprite.paddingRight, mSprite.paddingBottom);
-			}
-			return base.relativePadding;
-		}
-	}
-
-	/// <summary>
-	/// Sliced sprites generally have a border.
+	/// Sliced sprites generally have a border. X = left, Y = bottom, Z = right, W = top.
 	/// </summary>
 
 	public override Vector4 border
 	{
 		get
 		{
-			if (type == Type.Sliced)
+			if (type == Type.Sliced || type == Type.Advanced)
 			{
-				UIAtlas.Sprite sp = GetAtlasSprite();
+				UISpriteData sp = GetAtlasSprite();
 				if (sp == null) return Vector2.zero;
-
-				Rect outer = sp.outer;
-				Rect inner = sp.inner;
-
-				Texture tex = mainTexture;
-
-				if (atlas.coordinates == UIAtlas.Coordinates.TexCoords && tex != null)
-				{
-					outer = NGUIMath.ConvertToPixels(outer, tex.width, tex.height, true);
-					inner = NGUIMath.ConvertToPixels(inner, tex.width, tex.height, true);
-				}
-				return new Vector4(inner.xMin - outer.xMin, inner.yMin - outer.yMin, outer.xMax - inner.xMax, outer.yMax - inner.yMax) * atlas.pixelSize;
+				return new Vector4(sp.borderLeft, sp.borderBottom, sp.borderRight, sp.borderTop);
 			}
 			return base.border;
 		}
 	}
 
 	/// <summary>
-	/// Whether this widget will automatically become pixel-perfect after resize operation finishes.
+	/// Minimum allowed width for this widget.
 	/// </summary>
 
-	public override bool pixelPerfectAfterResize { get { return type == Type.Sliced; } }
+	override public int minWidth
+	{
+		get
+		{
+			if (type == Type.Sliced || type == Type.Advanced)
+			{
+				Vector4 b = border;
+				if (atlas != null) b *= atlas.pixelSize;
+				int min = Mathf.RoundToInt(b.x + b.z);
+
+				UISpriteData sp = GetAtlasSprite();
+				if (sp != null) min += sp.paddingLeft + sp.paddingRight;
+
+				return Mathf.Max(base.minWidth, ((min & 1) == 1) ? min + 1 : min);
+			}
+			return base.minWidth;
+		}
+	}
+
+	/// <summary>
+	/// Minimum allowed height for this widget.
+	/// </summary>
+
+	override public int minHeight
+	{
+		get
+		{
+			if (type == Type.Sliced || type == Type.Advanced)
+			{
+				Vector4 b = border;
+				if (atlas != null) b *= atlas.pixelSize;
+				int min = Mathf.RoundToInt(b.y + b.w);
+
+				UISpriteData sp = GetAtlasSprite();
+				if (sp != null) min += sp.paddingTop + sp.paddingBottom;
+
+				return Mathf.Max(base.minHeight, ((min & 1) == 1) ? min + 1 : min);
+			}
+			return base.minHeight;
+		}
+	}
+
+#if UNITY_EDITOR
+	/// <summary>
+	/// Keep sane values.
+	/// </summary>
+
+	protected override void OnValidate ()
+	{
+		base.OnValidate();
+		mFillAmount = Mathf.Clamp01(mFillAmount);
+	}
+#endif
 
 	/// <summary>
 	/// Retrieve the atlas sprite referenced by the spriteName field.
 	/// </summary>
 
-	public UIAtlas.Sprite GetAtlasSprite ()
+	public UISpriteData GetAtlasSprite ()
 	{
 		if (!mSpriteSet) mSprite = null;
 
@@ -302,14 +398,14 @@ public class UISprite : UIWidget
 		{
 			if (!string.IsNullOrEmpty(mSpriteName))
 			{
-				UIAtlas.Sprite sp = mAtlas.GetSprite(mSpriteName);
+				UISpriteData sp = mAtlas.GetSprite(mSpriteName);
 				if (sp == null) return null;
 				SetAtlasSprite(sp);
 			}
 
 			if (mSprite == null && mAtlas.spriteList.Count > 0)
 			{
-				UIAtlas.Sprite sp = mAtlas.spriteList[0];
+				UISpriteData sp = mAtlas.spriteList[0];
 				if (sp == null) return null;
 				SetAtlasSprite(sp);
 
@@ -320,9 +416,6 @@ public class UISprite : UIWidget
 				}
 				mSpriteName = mSprite.name;
 			}
-
-			// If the sprite has been set, update the UVs
-			if (mSprite != null) UpdateUVs(true);
 		}
 		return mSprite;
 	}
@@ -331,7 +424,7 @@ public class UISprite : UIWidget
 	/// Set the atlas sprite directly.
 	/// </summary>
 
-	protected void SetAtlasSprite (UIAtlas.Sprite sp)
+	protected void SetAtlasSprite (UISpriteData sp)
 	{
 		mChanged = true;
 		mSpriteSet = true;
@@ -349,154 +442,90 @@ public class UISprite : UIWidget
 	}
 
 	/// <summary>
-	/// Update the texture UVs used by the widget.
-	/// </summary>
-
-	virtual public void UpdateUVs (bool force)
-	{
-		if ((type == Type.Sliced || type == Type.Tiled) && cachedTransform.localScale != mScale)
-		{
-			mScale = cachedTransform.localScale;
-			mChanged = true;
-		}
-
-		if (isValid && (force
-#if UNITY_EDITOR
-			|| !Application.isPlaying && (mOuter != mSprite.outer || mInner != mSprite.inner)
-#endif
-			))
-		{
-			Texture tex = mainTexture;
-
-			if (tex != null)
-			{
-				mInner = mSprite.inner;
-				mOuter = mSprite.outer;
-
-				mInnerUV = mInner;
-				mOuterUV = mOuter;
-
-				if (atlas.coordinates == UIAtlas.Coordinates.Pixels)
-				{
-					mOuterUV = NGUIMath.ConvertToTexCoords(mOuterUV, tex.width, tex.height);
-					mInnerUV = NGUIMath.ConvertToTexCoords(mInnerUV, tex.width, tex.height);
-				}
-			}
-		}
-	}
-
-	/// <summary>
 	/// Adjust the scale of the widget to make it pixel-perfect.
 	/// </summary>
 
 	public override void MakePixelPerfect ()
 	{
 		if (!isValid) return;
+		base.MakePixelPerfect();
 
-		UpdateUVs(false);
+		UISpriteData sp = GetAtlasSprite();
+		if (sp == null) return;
 
 		UISprite.Type t = type;
 
-		if (t == Type.Sliced)
+		if (t == Type.Simple || t == Type.Filled || !sp.hasBorder)
 		{
-			// Sliced sprite should have dimensions divisible by 2 for best results
-			Vector3 pos = cachedTransform.localPosition;
-			pos.x = Mathf.RoundToInt(pos.x);
-			pos.y = Mathf.RoundToInt(pos.y);
-			pos.z = Mathf.RoundToInt(pos.z);
-			cachedTransform.localPosition = pos;
-
-			Vector3 scale = cachedTransform.localScale;
-			scale.x = Mathf.RoundToInt(scale.x * 0.5f) << 1;
-			scale.y = Mathf.RoundToInt(scale.y * 0.5f) << 1;
-			scale.z = 1f;
-			cachedTransform.localScale = scale;
-		}
-		else if (t == Type.Tiled)
-		{
-			// Tiled sprite just needs whole integers
-			Vector3 pos = cachedTransform.localPosition;
-			pos.x = Mathf.RoundToInt(pos.x);
-			pos.y = Mathf.RoundToInt(pos.y);
-			pos.z = Mathf.RoundToInt(pos.z);
-			cachedTransform.localPosition = pos;
-
-			Vector3 scale = cachedTransform.localScale;
-			scale.x = Mathf.RoundToInt(scale.x);
-			scale.y = Mathf.RoundToInt(scale.y);
-			scale.z = 1f;
-			cachedTransform.localScale = scale;
-		}
-		else
-		{
-			// Other sprites should assume the original dimensions of the sprite
 			Texture tex = mainTexture;
-			Vector3 scale = cachedTransform.localScale;
 
-			if (tex != null)
+			if (tex != null && sp != null)
 			{
-				Rect rect = NGUIMath.ConvertToPixels(outerUV, tex.width, tex.height, true);
-				float pixelSize = atlas.pixelSize;
-				scale.x = Mathf.RoundToInt(rect.width * pixelSize) * Mathf.Sign(scale.x);
-				scale.y = Mathf.RoundToInt(rect.height * pixelSize) * Mathf.Sign(scale.y);
-				scale.z = 1f;
-				cachedTransform.localScale = scale;
+				int x = Mathf.RoundToInt(atlas.pixelSize * (sp.width + sp.paddingLeft + sp.paddingRight));
+				int y = Mathf.RoundToInt(atlas.pixelSize * (sp.height + sp.paddingTop + sp.paddingBottom));
+				
+				if ((x & 1) == 1) ++x;
+				if ((y & 1) == 1) ++y;
+
+				width = x;
+				height = y;
 			}
-
-			int width = Mathf.RoundToInt(Mathf.Abs(scale.x) * (1f + mSprite.paddingLeft + mSprite.paddingRight));
-			int height = Mathf.RoundToInt(Mathf.Abs(scale.y) * (1f + mSprite.paddingTop + mSprite.paddingBottom));
-
-			Vector3 pos = cachedTransform.localPosition;
-			pos.x = (Mathf.CeilToInt(pos.x * 4f) >> 2);
-			pos.y = (Mathf.CeilToInt(pos.y * 4f) >> 2);
-			pos.z = Mathf.RoundToInt(pos.z);
-
-			if (width % 2 == 1 && (pivot == Pivot.Top || pivot == Pivot.Center || pivot == Pivot.Bottom))
-				pos.x += 0.5f;
-
-			if (height % 2 == 1 && (pivot == Pivot.Left || pivot == Pivot.Center || pivot == Pivot.Right))
-				pos.y += 0.5f;
-
-			cachedTransform.localPosition = pos;
 		}
 	}
 
 	/// <summary>
-	/// Set the atlas and the sprite.
+	/// Auto-upgrade.
 	/// </summary>
 
-	protected override void OnStart ()
+	protected override void OnInit ()
 	{
-		if (mAtlas != null)
+		if (!mFillCenter)
 		{
-			UpdateUVs(true);
+			mFillCenter = true;
+			centerType = AdvancedType.Invisible;
+#if UNITY_EDITOR
+			NGUITools.SetDirty(this);
+#endif
 		}
+		base.OnInit();
 	}
 
 	/// <summary>
 	/// Update the UV coordinates.
 	/// </summary>
 
-	public override void Update ()
+	protected override void OnUpdate ()
 	{
-		base.Update();
+		base.OnUpdate();
 
 		if (mChanged || !mSpriteSet)
 		{
 			mSpriteSet = true;
 			mSprite = null;
 			mChanged = true;
-			UpdateUVs(true);
 		}
-		else UpdateUVs(false);
 	}
 
 	/// <summary>
-	/// Virtual function called by the UIScreen that fills the buffers.
+	/// Virtual function called by the UIPanel that fills the buffers.
 	/// </summary>
 
 	public override void OnFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
 	{
+		Texture tex = mainTexture;
+		if (tex == null) return;
+
+		if (mSprite == null) mSprite = atlas.GetSprite(spriteName);
+		if (mSprite == null) return;
+
+		mOuterUV.Set(mSprite.x, mSprite.y, mSprite.width, mSprite.height);
+		mInnerUV.Set(mSprite.x + mSprite.borderLeft, mSprite.y + mSprite.borderTop,
+			mSprite.width - mSprite.borderLeft - mSprite.borderRight,
+			mSprite.height - mSprite.borderBottom - mSprite.borderTop);
+
+		mOuterUV = NGUIMath.ConvertToTexCoords(mOuterUV, tex.width, tex.height);
+		mInnerUV = NGUIMath.ConvertToTexCoords(mInnerUV, tex.width, tex.height);
+
 		switch (type)
 		{
 			case Type.Simple:
@@ -514,31 +543,134 @@ public class UISprite : UIWidget
 			case Type.Tiled:
 			TiledFill(verts, uvs, cols);
 			break;
+
+			case Type.Advanced:
+			AdvancedFill(verts, uvs, cols);
+			break;
 		}
 	}
 
 #region Various fill functions
+
+	// Static variables to reduce garbage collection
+	static Vector2[] mTempPos = new Vector2[4];
+	static Vector2[] mTempUVs = new Vector2[4];
+
+	/// <summary>
+	/// Sprite's dimensions used for drawing. X = left, Y = bottom, Z = right, W = top.
+	/// This function automatically adds 1 pixel on the edge if the sprite's dimensions are not even.
+	/// It's used to achieve pixel-perfect sprites even when an odd dimension sprite happens to be centered.
+	/// </summary>
+
+	public override Vector4 drawingDimensions
+	{
+		get
+		{
+			Vector2 offset = pivotOffset;
+
+			float x0 = -offset.x * mWidth;
+			float y0 = -offset.y * mHeight;
+			float x1 = x0 + mWidth;
+			float y1 = y0 + mHeight;
+
+			if (GetAtlasSprite() != null && mType != Type.Tiled)
+			{
+				int padLeft = mSprite.paddingLeft;
+				int padBottom = mSprite.paddingBottom;
+				int padRight = mSprite.paddingRight;
+				int padTop = mSprite.paddingTop;
+
+				int w = mSprite.width + padLeft + padRight;
+				int h = mSprite.height + padBottom + padTop;
+				float px = 1f;
+				float py = 1f;
+
+				if (w > 0 && h > 0 && (mType == Type.Simple || mType == Type.Filled))
+				{
+					if ((w & 1) != 0) ++padRight;
+					if ((h & 1) != 0) ++padTop;
+
+					px = (1f / w) * mWidth;
+					py = (1f / h) * mHeight;
+				}
+
+				if (mFlip == Flip.Horizontally || mFlip == Flip.Both)
+				{
+					x0 += padRight * px;
+					x1 -= padLeft * px;
+				}
+				else
+				{
+					x0 += padLeft * px;
+					x1 -= padRight * px;
+				}
+
+				if (mFlip == Flip.Vertically || mFlip == Flip.Both)
+				{
+					y0 += padTop * py;
+					y1 -= padBottom * py;
+				}
+				else
+				{
+					y0 += padBottom * py;
+					y1 -= padTop * py;
+				}
+			}
+
+			Vector4 br = (mAtlas != null) ? border * mAtlas.pixelSize : Vector4.zero;
+
+			float fw = br.x + br.z;
+			float fh = br.y + br.w;
+
+			float vx = Mathf.Lerp(x0, x1 - fw, mDrawRegion.x);
+			float vy = Mathf.Lerp(y0, y1 - fh, mDrawRegion.y);
+			float vz = Mathf.Lerp(x0 + fw, x1, mDrawRegion.z);
+			float vw = Mathf.Lerp(y0 + fh, y1, mDrawRegion.w);
+
+			return new Vector4(vx, vy, vz, vw);
+		}
+	}
+
+	/// <summary>
+	/// Convenience function that returns the drawn UVs after flipping gets considered.
+	/// X = left, Y = bottom, Z = right, W = top.
+	/// </summary>
+
+	protected virtual Vector4 drawingUVs
+	{
+		get
+		{
+			switch (mFlip)
+			{
+				case Flip.Horizontally:	return new Vector4(mOuterUV.xMax, mOuterUV.yMin, mOuterUV.xMin, mOuterUV.yMax);
+				case Flip.Vertically:	return new Vector4(mOuterUV.xMin, mOuterUV.yMax, mOuterUV.xMax, mOuterUV.yMin);
+				case Flip.Both:			return new Vector4(mOuterUV.xMax, mOuterUV.yMax, mOuterUV.xMin, mOuterUV.yMin);
+				default:				return new Vector4(mOuterUV.xMin, mOuterUV.yMin, mOuterUV.xMax, mOuterUV.yMax);
+			}
+		}
+	}
+
 	/// <summary>
 	/// Regular sprite fill function is quite simple.
 	/// </summary>
 
 	protected void SimpleFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
 	{
-		Vector2 uv0 = new Vector2(mOuterUV.xMin, mOuterUV.yMin);
-		Vector2 uv1 = new Vector2(mOuterUV.xMax, mOuterUV.yMax);
+		Vector4 v = drawingDimensions;
+		Vector4 u = drawingUVs;
 
-		verts.Add(new Vector3(1f,  0f, 0f));
-		verts.Add(new Vector3(1f, -1f, 0f));
-		verts.Add(new Vector3(0f, -1f, 0f));
-		verts.Add(new Vector3(0f,  0f, 0f));
+		verts.Add(new Vector3(v.x, v.y));
+		verts.Add(new Vector3(v.x, v.w));
+		verts.Add(new Vector3(v.z, v.w));
+		verts.Add(new Vector3(v.z, v.y));
 
-		uvs.Add(uv1);
-		uvs.Add(new Vector2(uv1.x, uv0.y));
-		uvs.Add(uv0);
-		uvs.Add(new Vector2(uv0.x, uv1.y));
+		uvs.Add(new Vector2(u.x, u.y));
+		uvs.Add(new Vector2(u.x, u.w));
+		uvs.Add(new Vector2(u.z, u.w));
+		uvs.Add(new Vector2(u.z, u.y));
 
 		Color colF = color;
-		colF.a *= mPanel.alpha;
+		colF.a = finalAlpha;
 		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
 		
 		cols.Add(col);
@@ -553,82 +685,64 @@ public class UISprite : UIWidget
 
 	protected void SlicedFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
 	{
-		if (mOuterUV == mInnerUV)
+		if (!mSprite.hasBorder)
 		{
 			SimpleFill(verts, uvs, cols);
 			return;
 		}
 
-		Vector2[] v = new Vector2[4];
-		Vector2[] uv = new Vector2[4];
+		Vector4 dr = drawingDimensions;
+		Vector4 br = border * atlas.pixelSize;
 
-		Texture tex = mainTexture;
+		mTempPos[0].x = dr.x;
+		mTempPos[0].y = dr.y;
+		mTempPos[3].x = dr.z;
+		mTempPos[3].y = dr.w;
 
-		v[0] = Vector2.zero;
-		v[1] = Vector2.zero;
-		v[2] = new Vector2(1f, -1f);
-		v[3] = new Vector2(1f, -1f);
-
-		if (tex != null)
+		if (mFlip == Flip.Horizontally || mFlip == Flip.Both)
 		{
-			float pixelSize = atlas.pixelSize;
-			float borderLeft = (mInnerUV.xMin - mOuterUV.xMin) * pixelSize;
-			float borderRight = (mOuterUV.xMax - mInnerUV.xMax) * pixelSize;
-			float borderTop = (mInnerUV.yMax - mOuterUV.yMax) * pixelSize;
-			float borderBottom = (mOuterUV.yMin - mInnerUV.yMin) * pixelSize;
+			mTempPos[1].x = mTempPos[0].x + br.z;
+			mTempPos[2].x = mTempPos[3].x - br.x;
 
-			Vector3 scale = cachedTransform.localScale;
-			scale.x = Mathf.Max(0f, scale.x);
-			scale.y = Mathf.Max(0f, scale.y);
-
-			Vector2 sz = new Vector2(scale.x / tex.width, scale.y / tex.height);
-			Vector2 tl = new Vector2(borderLeft / sz.x, borderTop / sz.y);
-			Vector2 br = new Vector2(borderRight / sz.x, borderBottom / sz.y);
-
-			Pivot pv = pivot;
-
-			// We don't want the sliced sprite to become smaller than the summed up border size
-			if (pv == Pivot.Right || pv == Pivot.TopRight || pv == Pivot.BottomRight)
-			{
-				v[0].x = Mathf.Min(0f, 1f - (br.x + tl.x));
-				v[1].x = v[0].x + tl.x;
-				v[2].x = v[0].x + Mathf.Max(tl.x, 1f - br.x);
-				v[3].x = v[0].x + Mathf.Max(tl.x + br.x, 1f);
-			}
-			else
-			{
-				v[1].x = tl.x;
-				v[2].x = Mathf.Max(tl.x, 1f - br.x);
-				v[3].x = Mathf.Max(tl.x + br.x, 1f);
-			}
-
-			if (pv == Pivot.Bottom || pv == Pivot.BottomLeft || pv == Pivot.BottomRight)
-			{
-				v[0].y = Mathf.Max(0f, -1f - (br.y + tl.y));
-				v[1].y = v[0].y + tl.y;
-				v[2].y = v[0].y + Mathf.Min(tl.y, -1f - br.y);
-				v[3].y = v[0].y + Mathf.Min(tl.y + br.y, -1f);
-			}
-			else
-			{
-				v[1].y = tl.y;
-				v[2].y = Mathf.Min(tl.y, -1f - br.y);
-				v[3].y = Mathf.Min(tl.y + br.y, -1f);
-			}
-
-			uv[0] = new Vector2(mOuterUV.xMin, mOuterUV.yMax);
-			uv[1] = new Vector2(mInnerUV.xMin, mInnerUV.yMax);
-			uv[2] = new Vector2(mInnerUV.xMax, mInnerUV.yMin);
-			uv[3] = new Vector2(mOuterUV.xMax, mOuterUV.yMin);
+			mTempUVs[3].x = mOuterUV.xMin;
+			mTempUVs[2].x = mInnerUV.xMin;
+			mTempUVs[1].x = mInnerUV.xMax;
+			mTempUVs[0].x = mOuterUV.xMax;
 		}
 		else
 		{
-			// No texture -- just use zeroed out texture coordinates
-			for (int i = 0; i < 4; ++i) uv[i] = Vector2.zero;
+			mTempPos[1].x = mTempPos[0].x + br.x;
+			mTempPos[2].x = mTempPos[3].x - br.z;
+			
+			mTempUVs[0].x = mOuterUV.xMin;
+			mTempUVs[1].x = mInnerUV.xMin;
+			mTempUVs[2].x = mInnerUV.xMax;
+			mTempUVs[3].x = mOuterUV.xMax;
+		}
+
+		if (mFlip == Flip.Vertically || mFlip == Flip.Both)
+		{
+			mTempPos[1].y = mTempPos[0].y + br.w;
+			mTempPos[2].y = mTempPos[3].y - br.y;
+
+			mTempUVs[3].y = mOuterUV.yMin;
+			mTempUVs[2].y = mInnerUV.yMin;
+			mTempUVs[1].y = mInnerUV.yMax;
+			mTempUVs[0].y = mOuterUV.yMax;
+		}
+		else
+		{
+			mTempPos[1].y = mTempPos[0].y + br.y;
+			mTempPos[2].y = mTempPos[3].y - br.w;
+
+			mTempUVs[0].y = mOuterUV.yMin;
+			mTempUVs[1].y = mInnerUV.yMin;
+			mTempUVs[2].y = mInnerUV.yMax;
+			mTempUVs[3].y = mOuterUV.yMax;
 		}
 
 		Color colF = color;
-		colF.a *= mPanel.alpha;
+		colF.a = finalAlpha;
 		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
 
 		for (int x = 0; x < 3; ++x)
@@ -637,392 +751,25 @@ public class UISprite : UIWidget
 
 			for (int y = 0; y < 3; ++y)
 			{
-				if (!mFillCenter && x == 1 && y == 1) continue;
+				if (centerType == AdvancedType.Invisible && x == 1 && y == 1) continue;
 
 				int y2 = y + 1;
 
-				verts.Add(new Vector3(v[x2].x, v[y].y, 0f));
-				verts.Add(new Vector3(v[x2].x, v[y2].y, 0f));
-				verts.Add(new Vector3(v[x].x, v[y2].y, 0f));
-				verts.Add(new Vector3(v[x].x, v[y].y, 0f));
+				verts.Add(new Vector3(mTempPos[x].x, mTempPos[y].y));
+				verts.Add(new Vector3(mTempPos[x].x, mTempPos[y2].y));
+				verts.Add(new Vector3(mTempPos[x2].x, mTempPos[y2].y));
+				verts.Add(new Vector3(mTempPos[x2].x, mTempPos[y].y));
 
-				uvs.Add(new Vector2(uv[x2].x, uv[y].y));
-				uvs.Add(new Vector2(uv[x2].x, uv[y2].y));
-				uvs.Add(new Vector2(uv[x].x, uv[y2].y));
-				uvs.Add(new Vector2(uv[x].x, uv[y].y));
+				uvs.Add(new Vector2(mTempUVs[x].x, mTempUVs[y].y));
+				uvs.Add(new Vector2(mTempUVs[x].x, mTempUVs[y2].y));
+				uvs.Add(new Vector2(mTempUVs[x2].x, mTempUVs[y2].y));
+				uvs.Add(new Vector2(mTempUVs[x2].x, mTempUVs[y].y));
 
 				cols.Add(col);
 				cols.Add(col);
 				cols.Add(col);
 				cols.Add(col);
 			}
-		}
-	}
-
-	/// <summary>
-	/// Adjust the specified quad, making it be radially filled instead.
-	/// </summary>
-
-	protected bool AdjustRadial (Vector2[] xy, Vector2[] uv, float fill, bool invert)
-	{
-		// Nothing to fill
-		if (fill < 0.001f) return false;
-
-		// Nothing to adjust
-		if (!invert && fill > 0.999f) return true;
-
-		// Convert 0-1 value into 0 to 90 degrees angle in radians
-		float angle = Mathf.Clamp01(fill);
-		if (!invert) angle = 1f - angle;
-		angle *= 90f * Mathf.Deg2Rad;
-
-		// Calculate the effective X and Y factors
-		float fx = Mathf.Sin(angle);
-		float fy = Mathf.Cos(angle);
-
-		// Normalize the result, so it's projected onto the side of the rectangle
-		if (fx > fy)
-		{
-			fy *= 1f / fx;
-			fx = 1f;
-
-			if (!invert)
-			{
-				xy[0].y = Mathf.Lerp(xy[2].y, xy[0].y, fy);
-				xy[3].y = xy[0].y;
-
-				uv[0].y = Mathf.Lerp(uv[2].y, uv[0].y, fy);
-				uv[3].y = uv[0].y;
-			}
-		}
-		else if (fy > fx)
-		{
-			fx *= 1f / fy;
-			fy = 1f;
-
-			if (invert)
-			{
-				xy[0].x = Mathf.Lerp(xy[2].x, xy[0].x, fx);
-				xy[1].x = xy[0].x;
-
-				uv[0].x = Mathf.Lerp(uv[2].x, uv[0].x, fx);
-				uv[1].x = uv[0].x;
-			}
-		}
-		else
-		{
-			fx = 1f;
-			fy = 1f;
-		}
-
-		if (invert)
-		{
-			xy[1].y = Mathf.Lerp(xy[2].y, xy[0].y, fy);
-			uv[1].y = Mathf.Lerp(uv[2].y, uv[0].y, fy);
-		}
-		else
-		{
-			xy[3].x = Mathf.Lerp(xy[2].x, xy[0].x, fx);
-			uv[3].x = Mathf.Lerp(uv[2].x, uv[0].x, fx);
-		}
-		return true;
-	}
-
-	/// <summary>
-	/// Helper function that copies the contents of the array, rotated by the specified offset.
-	/// </summary>
-
-	protected void Rotate (Vector2[] v, int offset)
-	{
-		for (int i = 0; i < offset; ++i)
-		{
-			Vector2 v0 = new Vector2(v[3].x, v[3].y);
-
-			v[3].x = v[2].y;
-			v[3].y = v[2].x;
-
-			v[2].x = v[1].y;
-			v[2].y = v[1].x;
-
-			v[1].x = v[0].y;
-			v[1].y = v[0].x;
-
-			v[0].x = v0.y;
-			v[0].y = v0.x;
-		}
-	}
-
-	/// <summary>
-	/// Filled sprite fill function.
-	/// </summary>
-
-	protected void FilledFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
-	{
-		float x0 = 0f;
-		float y0 = 0f;
-		float x1 = 1f;
-		float y1 = -1f;
-
-		float u0 = mOuterUV.xMin;
-		float v0 = mOuterUV.yMin;
-		float u1 = mOuterUV.xMax;
-		float v1 = mOuterUV.yMax;
-
-		// Horizontal and vertical filled sprites are simple -- just end the sprite prematurely
-		if (mFillDirection == FillDirection.Horizontal || mFillDirection == FillDirection.Vertical)
-		{
-			float du = (u1 - u0) * mFillAmount;
-			float dv = (v1 - v0) * mFillAmount;
-
-			if (fillDirection == FillDirection.Horizontal)
-			{
-				if (mInvert)
-				{
-					x0 = (1f - mFillAmount);
-					u0 = u1 - du;
-				}
-				else
-				{
-					x1 *= mFillAmount;
-					u1 = u0 + du;
-				}
-			}
-			else if (fillDirection == FillDirection.Vertical)
-			{
-				if (mInvert)
-				{
-					y1 *= mFillAmount;
-					v0 = v1 - dv;
-				}
-				else
-				{
-					y0 = -(1f - mFillAmount);
-					v1 = v0 + dv;
-				}
-			}
-		}
-
-		// Starting quad for the sprite
-		Vector2[] xy = new Vector2[4];
-		Vector2[] uv = new Vector2[4];
-
-		xy[0] = new Vector2(x1, y0);
-		xy[1] = new Vector2(x1, y1);
-		xy[2] = new Vector2(x0, y1);
-		xy[3] = new Vector2(x0, y0);
-
-		uv[0] = new Vector2(u1, v1);
-		uv[1] = new Vector2(u1, v0);
-		uv[2] = new Vector2(u0, v0);
-		uv[3] = new Vector2(u0, v1);
-
-		Color colF = color;
-		colF.a *= mPanel.alpha;
-		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
-
-		if (fillDirection == FillDirection.Radial90)
-		{
-			// Adjust the quad radially, and if 'false' is returned (it's not visible), just exit
-			if (!AdjustRadial(xy, uv, mFillAmount, mInvert)) return;
-		}
-		else if (fillDirection == FillDirection.Radial180)
-		{
-			// Working in 0-1 coordinates is easier
-			Vector2[] oxy = new Vector2[4];
-			Vector2[] ouv = new Vector2[4];
-
-			for (int i = 0; i < 2; ++i)
-			{
-				oxy[0] = new Vector2(0f, 0f);
-				oxy[1] = new Vector2(0f, 1f);
-				oxy[2] = new Vector2(1f, 1f);
-				oxy[3] = new Vector2(1f, 0f);
-
-				ouv[0] = new Vector2(0f, 0f);
-				ouv[1] = new Vector2(0f, 1f);
-				ouv[2] = new Vector2(1f, 1f);
-				ouv[3] = new Vector2(1f, 0f);
-
-				// Each half must be rotated 90 degrees clockwise in order for it to fill properly
-				if (mInvert)
-				{
-					if (i > 0)
-					{
-						Rotate(oxy, i);
-						Rotate(ouv, i);
-					}
-				}
-				else if (i < 1)
-				{
-					Rotate(oxy, 1 - i);
-					Rotate(ouv, 1 - i);
-				}
-
-				// Each half must fill in only a part of the space
-				float x, y;
-
-				if (i == 1)
-				{
-					x = mInvert ? 0.5f : 1f;
-					y = mInvert ? 1f : 0.5f;
-				}
-				else
-				{
-					x = mInvert ? 1f : 0.5f;
-					y = mInvert ? 0.5f : 1f;
-				}
-
-				oxy[1].y = Mathf.Lerp(x, y, oxy[1].y);
-				oxy[2].y = Mathf.Lerp(x, y, oxy[2].y);
-				ouv[1].y = Mathf.Lerp(x, y, ouv[1].y);
-				ouv[2].y = Mathf.Lerp(x, y, ouv[2].y);
-
-				float amount = (mFillAmount) * 2 - i;
-				bool odd = (i % 2) == 1;
-
-				if (AdjustRadial(oxy, ouv, amount, !odd))
-				{
-					if (mInvert) odd = !odd;
-
-					// Add every other side in reverse order so they don't come out backface-culled due to rotation
-					if (odd)
-					{
-						for (int b = 0; b < 4; ++b)
-						{
-							x = Mathf.Lerp(xy[0].x, xy[2].x, oxy[b].x);
-							y = Mathf.Lerp(xy[0].y, xy[2].y, oxy[b].y);
-
-							float u = Mathf.Lerp(uv[0].x, uv[2].x, ouv[b].x);
-							float v = Mathf.Lerp(uv[0].y, uv[2].y, ouv[b].y);
-
-							verts.Add(new Vector3(x, y, 0f));
-							uvs.Add(new Vector2(u, v));
-							cols.Add(col);
-						}
-					}
-					else
-					{
-						for (int b = 3; b > -1; --b)
-						{
-							x = Mathf.Lerp(xy[0].x, xy[2].x, oxy[b].x);
-							y = Mathf.Lerp(xy[0].y, xy[2].y, oxy[b].y);
-
-							float u = Mathf.Lerp(uv[0].x, uv[2].x, ouv[b].x);
-							float v = Mathf.Lerp(uv[0].y, uv[2].y, ouv[b].y);
-
-							verts.Add(new Vector3(x, y, 0f));
-							uvs.Add(new Vector2(u, v));
-							cols.Add(col);
-						}
-					}
-				}
-			}
-			return;
-		}
-		else if (fillDirection == FillDirection.Radial360)
-		{
-			float[] matrix = new float[]
-			{
-				// x0 y0  x1   y1
-				0.5f, 1f, 0f, 0.5f, // quadrant 0
-				0.5f, 1f, 0.5f, 1f, // quadrant 1
-				0f, 0.5f, 0.5f, 1f, // quadrant 2
-				0f, 0.5f, 0f, 0.5f, // quadrant 3
-			};
-
-			Vector2[] oxy = new Vector2[4];
-			Vector2[] ouv = new Vector2[4];
-
-			for (int i = 0; i < 4; ++i)
-			{
-				oxy[0] = new Vector2(0f, 0f);
-				oxy[1] = new Vector2(0f, 1f);
-				oxy[2] = new Vector2(1f, 1f);
-				oxy[3] = new Vector2(1f, 0f);
-
-				ouv[0] = new Vector2(0f, 0f);
-				ouv[1] = new Vector2(0f, 1f);
-				ouv[2] = new Vector2(1f, 1f);
-				ouv[3] = new Vector2(1f, 0f);
-
-				// Each quadrant must be rotated 90 degrees clockwise in order for it to fill properly
-				if (mInvert)
-				{
-					if (i > 0)
-					{
-						Rotate(oxy, i);
-						Rotate(ouv, i);
-					}
-				}
-				else if (i < 3)
-				{
-					Rotate(oxy, 3 - i);
-					Rotate(ouv, 3 - i);
-				}
-
-				// Each quadrant must fill in only a quarter of the space
-				for (int b = 0; b < 4; ++b)
-				{
-					int index = (mInvert) ? (3 - i) * 4 : i * 4;
-
-					float fx0 = matrix[index];
-					float fy0 = matrix[index + 1];
-					float fx1 = matrix[index + 2];
-					float fy1 = matrix[index + 3];
-
-					oxy[b].x = Mathf.Lerp(fx0, fy0, oxy[b].x);
-					oxy[b].y = Mathf.Lerp(fx1, fy1, oxy[b].y);
-					ouv[b].x = Mathf.Lerp(fx0, fy0, ouv[b].x);
-					ouv[b].y = Mathf.Lerp(fx1, fy1, ouv[b].y);
-				}
-
-				float amount = (mFillAmount) * 4 - i;
-				bool odd = (i % 2) == 1;
-
-				if (AdjustRadial(oxy, ouv, amount, !odd))
-				{
-					if (mInvert) odd = !odd;
-
-					// Add every other side in reverse order so they don't come out backface-culled due to rotation
-					if (odd)
-					{
-						for (int b = 0; b < 4; ++b)
-						{
-							float x = Mathf.Lerp(xy[0].x, xy[2].x, oxy[b].x);
-							float y = Mathf.Lerp(xy[0].y, xy[2].y, oxy[b].y);
-							float u = Mathf.Lerp(uv[0].x, uv[2].x, ouv[b].x);
-							float v = Mathf.Lerp(uv[0].y, uv[2].y, ouv[b].y);
-
-							verts.Add(new Vector3(x, y, 0f));
-							uvs.Add(new Vector2(u, v));
-							cols.Add(col);
-						}
-					}
-					else
-					{
-						for (int b = 3; b > -1; --b)
-						{
-							float x = Mathf.Lerp(xy[0].x, xy[2].x, oxy[b].x);
-							float y = Mathf.Lerp(xy[0].y, xy[2].y, oxy[b].y);
-							float u = Mathf.Lerp(uv[0].x, uv[2].x, ouv[b].x);
-							float v = Mathf.Lerp(uv[0].y, uv[2].y, ouv[b].y);
-
-							verts.Add(new Vector3(x, y, 0f));
-							uvs.Add(new Vector2(u, v));
-							cols.Add(col);
-						}
-					}
-				}
-			}
-			return;
-		}
-
-		// Fill the buffer with the quad for the sprite
-		for (int i = 0; i < 4; ++i)
-		{
-			verts.Add(xy[i]);
-			uvs.Add(uv[i]);
-			cols.Add(col);
 		}
 	}
 
@@ -1035,78 +782,615 @@ public class UISprite : UIWidget
 		Texture tex = material.mainTexture;
 		if (tex == null) return;
 
-		Rect rect = mInner;
+		Vector4 v = drawingDimensions;
+		Vector4 u;
 
-		if (atlas.coordinates == UIAtlas.Coordinates.TexCoords)
+		if (mFlip == Flip.Horizontally || mFlip == Flip.Both)
 		{
-			rect = NGUIMath.ConvertToPixels(rect, tex.width, tex.height, true);
+			u.x = mInnerUV.xMax;
+			u.z = mInnerUV.xMin;
+		}
+		else
+		{
+			u.x = mInnerUV.xMin;
+			u.z = mInnerUV.xMax;
 		}
 
-		Vector2 scale = cachedTransform.localScale;
-		float pixelSize = atlas.pixelSize;
-		float width = Mathf.Abs(rect.width / scale.x) * pixelSize;
-		float height = Mathf.Abs(rect.height / scale.y) * pixelSize;
-
-		// Safety check. Useful so Unity doesn't run out of memory if the sprites are too small.
-		if (width * height < 0.0001f)
+		if (mFlip == Flip.Vertically || mFlip == Flip.Both)
 		{
-			Debug.LogWarning("The tiled sprite (" + NGUITools.GetHierarchy(gameObject) + ") is too small.\nConsider using a bigger one.");
-
-			width = 0.01f;
-			height = 0.01f;
+			u.y = mInnerUV.yMax;
+			u.w = mInnerUV.yMin;
+		}
+		else
+		{
+			u.y = mInnerUV.yMin;
+			u.w = mInnerUV.yMax;
 		}
 
-		Vector2 min = new Vector2(rect.xMin / tex.width, rect.yMin / tex.height);
-		Vector2 max = new Vector2(rect.xMax / tex.width, rect.yMax / tex.height);
-		Vector2 clipped = max;
+		Vector2 size = new Vector2(mInnerUV.width * tex.width, mInnerUV.height * tex.height);
+		size *= atlas.pixelSize;
+
+		// Don't tile really small sprites
+		if (size.x < 2f || size.y < 2f) return;
 
 		Color colF = color;
-		colF.a *= mPanel.alpha;
+		colF.a = finalAlpha;
 		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
-		float y = 0f;
 
-		while (y < 1f)
+		float x0 = v.x;
+		float y0 = v.y;
+
+		float u0 = u.x;
+		float v0 = u.y;
+
+		while (y0 < v.w)
 		{
-			float x = 0f;
-			clipped.x = max.x;
+			x0 = v.x;
+			float y1 = y0 + size.y;
+			float v1 = u.w;
 
-			float y2 = y + height;
-
-			if (y2 > 1f)
+			if (y1 > v.w)
 			{
-				clipped.y = min.y + (max.y - min.y) * (1f - y) / (y2 - y);
-				y2 = 1f;
+				v1 = Mathf.Lerp(u.y, u.w, (v.w - y0) / size.y);
+				y1 = v.w;
 			}
 
-			while (x < 1f)
+			while (x0 < v.z)
 			{
-				float x2 = x + width;
+				float x1 = x0 + size.x;
+				float u1 = u.z;
 
-				if (x2 > 1f)
+				if (x1 > v.z)
 				{
-					clipped.x = min.x + (max.x - min.x) * (1f - x) / (x2 - x);
-					x2 = 1f;
+					u1 = Mathf.Lerp(u.x, u.z, (v.z - x0) / size.x);
+					x1 = v.z;
 				}
 
-				verts.Add(new Vector3(x2, -y, 0f));
-				verts.Add(new Vector3(x2, -y2, 0f));
-				verts.Add(new Vector3(x, -y2, 0f));
-				verts.Add(new Vector3(x, -y, 0f));
+				verts.Add(new Vector3(x0, y0));
+				verts.Add(new Vector3(x0, y1));
+				verts.Add(new Vector3(x1, y1));
+				verts.Add(new Vector3(x1, y0));
 
-				uvs.Add(new Vector2(clipped.x, 1f - min.y));
-				uvs.Add(new Vector2(clipped.x, 1f - clipped.y));
-				uvs.Add(new Vector2(min.x, 1f - clipped.y));
-				uvs.Add(new Vector2(min.x, 1f - min.y));
+				uvs.Add(new Vector2(u0, v0));
+				uvs.Add(new Vector2(u0, v1));
+				uvs.Add(new Vector2(u1, v1));
+				uvs.Add(new Vector2(u1, v0));
 
 				cols.Add(col);
 				cols.Add(col);
 				cols.Add(col);
 				cols.Add(col);
 
-				x += width;
+				x0 += size.x;
 			}
-			y += height;
+			y0 += size.y;
 		}
+	}
+
+	/// <summary>
+	/// Filled sprite fill function.
+	/// </summary>
+
+	protected void FilledFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
+	{
+		if (mFillAmount < 0.001f) return;
+
+		Color colF = color;
+		colF.a = finalAlpha;
+		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
+		Vector4 v = drawingDimensions;
+		Vector4 u = drawingUVs;
+
+		// Horizontal and vertical filled sprites are simple -- just end the sprite prematurely
+		if (mFillDirection == FillDirection.Horizontal || mFillDirection == FillDirection.Vertical)
+		{
+			if (mFillDirection == FillDirection.Horizontal)
+			{
+				float fill = (u.z - u.x) * mFillAmount;
+
+				if (mInvert)
+				{
+					v.x = v.z - (v.z - v.x) * mFillAmount;
+					u.x = u.z - fill;
+				}
+				else
+				{
+					v.z = v.x + (v.z - v.x) * mFillAmount;
+					u.z = u.x + fill;
+				}
+			}
+			else if (mFillDirection == FillDirection.Vertical)
+			{
+				float fill = (u.w - u.y) * mFillAmount;
+
+				if (mInvert)
+				{
+					v.y = v.w - (v.w - v.y) * mFillAmount;
+					u.y = u.w - fill;
+				}
+				else
+				{
+					v.w = v.y + (v.w - v.y) * mFillAmount;
+					u.w = u.y + fill;
+				}
+			}
+		}
+
+		mTempPos[0] = new Vector2(v.x, v.y);
+		mTempPos[1] = new Vector2(v.x, v.w);
+		mTempPos[2] = new Vector2(v.z, v.w);
+		mTempPos[3] = new Vector2(v.z, v.y);
+
+		mTempUVs[0] = new Vector2(u.x, u.y);
+		mTempUVs[1] = new Vector2(u.x, u.w);
+		mTempUVs[2] = new Vector2(u.z, u.w);
+		mTempUVs[3] = new Vector2(u.z, u.y);
+
+		if (mFillAmount < 1f)
+		{
+			if (mFillDirection == FillDirection.Radial90)
+			{
+				if (RadialCut(mTempPos, mTempUVs, mFillAmount, mInvert, 0))
+				{
+					for (int i = 0; i < 4; ++i)
+					{
+						verts.Add(mTempPos[i]);
+						uvs.Add(mTempUVs[i]);
+						cols.Add(col);
+					}
+				}
+				return;
+			}
+
+			if (mFillDirection == FillDirection.Radial180)
+			{
+				for (int side = 0; side < 2; ++side)
+				{
+					float fx0, fx1, fy0, fy1;
+
+					fy0 = 0f;
+					fy1 = 1f;
+
+					if (side == 0) { fx0 = 0f; fx1 = 0.5f; }
+					else { fx0 = 0.5f; fx1 = 1f; }
+
+					mTempPos[0].x = Mathf.Lerp(v.x, v.z, fx0);
+					mTempPos[1].x = mTempPos[0].x;
+					mTempPos[2].x = Mathf.Lerp(v.x, v.z, fx1);
+					mTempPos[3].x = mTempPos[2].x;
+
+					mTempPos[0].y = Mathf.Lerp(v.y, v.w, fy0);
+					mTempPos[1].y = Mathf.Lerp(v.y, v.w, fy1);
+					mTempPos[2].y = mTempPos[1].y;
+					mTempPos[3].y = mTempPos[0].y;
+
+					mTempUVs[0].x = Mathf.Lerp(u.x, u.z, fx0);
+					mTempUVs[1].x = mTempUVs[0].x;
+					mTempUVs[2].x = Mathf.Lerp(u.x, u.z, fx1);
+					mTempUVs[3].x = mTempUVs[2].x;
+
+					mTempUVs[0].y = Mathf.Lerp(u.y, u.w, fy0);
+					mTempUVs[1].y = Mathf.Lerp(u.y, u.w, fy1);
+					mTempUVs[2].y = mTempUVs[1].y;
+					mTempUVs[3].y = mTempUVs[0].y;
+
+					float val = !mInvert ? fillAmount * 2f - side : mFillAmount * 2f - (1 - side);
+
+					if (RadialCut(mTempPos, mTempUVs, Mathf.Clamp01(val), !mInvert, NGUIMath.RepeatIndex(side + 3, 4)))
+					{
+						for (int i = 0; i < 4; ++i)
+						{
+							verts.Add(mTempPos[i]);
+							uvs.Add(mTempUVs[i]);
+							cols.Add(col);
+						}
+					}
+				}
+				return;
+			}
+
+			if (mFillDirection == FillDirection.Radial360)
+			{
+				for (int corner = 0; corner < 4; ++corner)
+				{
+					float fx0, fx1, fy0, fy1;
+
+					if (corner < 2) { fx0 = 0f; fx1 = 0.5f; }
+					else { fx0 = 0.5f; fx1 = 1f; }
+
+					if (corner == 0 || corner == 3) { fy0 = 0f; fy1 = 0.5f; }
+					else { fy0 = 0.5f; fy1 = 1f; }
+
+					mTempPos[0].x = Mathf.Lerp(v.x, v.z, fx0);
+					mTempPos[1].x = mTempPos[0].x;
+					mTempPos[2].x = Mathf.Lerp(v.x, v.z, fx1);
+					mTempPos[3].x = mTempPos[2].x;
+
+					mTempPos[0].y = Mathf.Lerp(v.y, v.w, fy0);
+					mTempPos[1].y = Mathf.Lerp(v.y, v.w, fy1);
+					mTempPos[2].y = mTempPos[1].y;
+					mTempPos[3].y = mTempPos[0].y;
+
+					mTempUVs[0].x = Mathf.Lerp(u.x, u.z, fx0);
+					mTempUVs[1].x = mTempUVs[0].x;
+					mTempUVs[2].x = Mathf.Lerp(u.x, u.z, fx1);
+					mTempUVs[3].x = mTempUVs[2].x;
+
+					mTempUVs[0].y = Mathf.Lerp(u.y, u.w, fy0);
+					mTempUVs[1].y = Mathf.Lerp(u.y, u.w, fy1);
+					mTempUVs[2].y = mTempUVs[1].y;
+					mTempUVs[3].y = mTempUVs[0].y;
+
+					float val = mInvert ?
+						mFillAmount * 4f - NGUIMath.RepeatIndex(corner + 2, 4) :
+						mFillAmount * 4f - (3 - NGUIMath.RepeatIndex(corner + 2, 4));
+
+					if (RadialCut(mTempPos, mTempUVs, Mathf.Clamp01(val), mInvert, NGUIMath.RepeatIndex(corner + 2, 4)))
+					{
+						for (int i = 0; i < 4; ++i)
+						{
+							verts.Add(mTempPos[i]);
+							uvs.Add(mTempUVs[i]);
+							cols.Add(col);
+						}
+					}
+				}
+				return;
+			}
+		}
+
+		// Fill the buffer with the quad for the sprite
+		for (int i = 0; i < 4; ++i)
+		{
+			verts.Add(mTempPos[i]);
+			uvs.Add(mTempUVs[i]);
+			cols.Add(col);
+		}
+	}
+
+	/// <summary>
+	/// Adjust the specified quad, making it be radially filled instead.
+	/// </summary>
+
+	static bool RadialCut (Vector2[] xy, Vector2[] uv, float fill, bool invert, int corner)
+	{
+		// Nothing to fill
+		if (fill < 0.001f) return false;
+
+		// Even corners invert the fill direction
+		if ((corner & 1) == 1) invert = !invert;
+
+		// Nothing to adjust
+		if (!invert && fill > 0.999f) return true;
+
+		// Convert 0-1 value into 0 to 90 degrees angle in radians
+		float angle = Mathf.Clamp01(fill);
+		if (invert) angle = 1f - angle;
+		angle *= 90f * Mathf.Deg2Rad;
+
+		// Calculate the effective X and Y factors
+		float cos = Mathf.Cos(angle);
+		float sin = Mathf.Sin(angle);
+
+		RadialCut(xy, cos, sin, invert, corner);
+		RadialCut(uv, cos, sin, invert, corner);
+		return true;
+	}
+
+	/// <summary>
+	/// Adjust the specified quad, making it be radially filled instead.
+	/// </summary>
+
+	static void RadialCut (Vector2[] xy, float cos, float sin, bool invert, int corner)
+	{
+		int i0 = corner;
+		int i1 = NGUIMath.RepeatIndex(corner + 1, 4);
+		int i2 = NGUIMath.RepeatIndex(corner + 2, 4);
+		int i3 = NGUIMath.RepeatIndex(corner + 3, 4);
+
+		if ((corner & 1) == 1)
+		{
+			if (sin > cos)
+			{
+				cos /= sin;
+				sin = 1f;
+
+				if (invert)
+				{
+					xy[i1].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+					xy[i2].x = xy[i1].x;
+				}
+			}
+			else if (cos > sin)
+			{
+				sin /= cos;
+				cos = 1f;
+
+				if (!invert)
+				{
+					xy[i2].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
+					xy[i3].y = xy[i2].y;
+				}
+			}
+			else
+			{
+				cos = 1f;
+				sin = 1f;
+			}
+
+			if (!invert) xy[i3].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+			else xy[i1].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
+		}
+		else
+		{
+			if (cos > sin)
+			{
+				sin /= cos;
+				cos = 1f;
+
+				if (!invert)
+				{
+					xy[i1].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
+					xy[i2].y = xy[i1].y;
+				}
+			}
+			else if (sin > cos)
+			{
+				cos /= sin;
+				sin = 1f;
+
+				if (invert)
+				{
+					xy[i2].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+					xy[i3].x = xy[i2].x;
+				}
+			}
+			else
+			{
+				cos = 1f;
+				sin = 1f;
+			}
+
+			if (invert) xy[i3].y = Mathf.Lerp(xy[i0].y, xy[i2].y, sin);
+			else xy[i1].x = Mathf.Lerp(xy[i0].x, xy[i2].x, cos);
+		}
+	}
+
+	/// <summary>
+	/// Advanced sprite fill function. Contributed by Nicki Hansen.
+	/// </summary>
+
+	protected void AdvancedFill (BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
+	{
+		if (!mSprite.hasBorder)
+		{
+			SimpleFill(verts, uvs, cols);
+			return;
+		}
+		
+		Texture tex = material.mainTexture;
+		if (tex == null) return;
+
+		Vector4 dr = drawingDimensions;
+		Vector4 br = border * atlas.pixelSize;
+
+		Vector2 tileSize = new Vector2(mInnerUV.width * tex.width, mInnerUV.height * tex.height);
+		tileSize *= atlas.pixelSize;
+
+		if (tileSize.x < 1f) tileSize.x = 1f;
+		if (tileSize.y < 1f) tileSize.y = 1f;
+
+		mTempPos[0].x = dr.x;
+		mTempPos[0].y = dr.y;
+		mTempPos[3].x = dr.z;
+		mTempPos[3].y = dr.w;
+
+		if (mFlip == Flip.Horizontally || mFlip == Flip.Both)
+		{
+			mTempPos[1].x = mTempPos[0].x + br.z;
+			mTempPos[2].x = mTempPos[3].x - br.x;
+
+			mTempUVs[3].x = mOuterUV.xMin;
+			mTempUVs[2].x = mInnerUV.xMin;
+			mTempUVs[1].x = mInnerUV.xMax;
+			mTempUVs[0].x = mOuterUV.xMax;
+		}
+		else
+		{
+			mTempPos[1].x = mTempPos[0].x + br.x;
+			mTempPos[2].x = mTempPos[3].x - br.z;
+
+			mTempUVs[0].x = mOuterUV.xMin;
+			mTempUVs[1].x = mInnerUV.xMin;
+			mTempUVs[2].x = mInnerUV.xMax;
+			mTempUVs[3].x = mOuterUV.xMax;
+		}
+
+		if (mFlip == Flip.Vertically || mFlip == Flip.Both)
+		{
+			mTempPos[1].y = mTempPos[0].y + br.w;
+			mTempPos[2].y = mTempPos[3].y - br.y;
+
+			mTempUVs[3].y = mOuterUV.yMin;
+			mTempUVs[2].y = mInnerUV.yMin;
+			mTempUVs[1].y = mInnerUV.yMax;
+			mTempUVs[0].y = mOuterUV.yMax;
+		}
+		else
+		{
+			mTempPos[1].y = mTempPos[0].y + br.y;
+			mTempPos[2].y = mTempPos[3].y - br.w;
+
+			mTempUVs[0].y = mOuterUV.yMin;
+			mTempUVs[1].y = mInnerUV.yMin;
+			mTempUVs[2].y = mInnerUV.yMax;
+			mTempUVs[3].y = mOuterUV.yMax;
+		}
+
+		Color colF = color;
+		colF.a = finalAlpha;
+		Color32 col = atlas.premultipliedAlpha ? NGUITools.ApplyPMA(colF) : colF;
+
+		for (int x = 0; x < 3; ++x)
+		{
+			int x2 = x + 1;
+
+			for (int y = 0; y < 3; ++y)
+			{
+				if (centerType == AdvancedType.Invisible && x == 1 && y == 1) continue;
+				int y2 = y + 1;
+
+				if (x == 1 && y == 1) // Center
+				{
+					if (centerType == AdvancedType.Tiled)
+					{
+						float startPositionX = mTempPos[x].x;
+						float endPositionX = mTempPos[x2].x;
+						float startPositionY = mTempPos[y].y;
+						float endPositionY = mTempPos[y2].y;
+						float textureStartX = mTempUVs[x].x;
+						float textureStartY = mTempUVs[y].y;
+						float tileStartY = startPositionY;
+
+						while (tileStartY < endPositionY)
+						{
+							float tileStartX = startPositionX;
+							float textureEndY = mTempUVs[y2].y;
+							float tileEndY = tileStartY + tileSize.y;
+							
+							if (tileEndY > endPositionY)
+							{
+								textureEndY = Mathf.Lerp(textureStartY, textureEndY, (endPositionY - tileStartY) / tileSize.y);
+								tileEndY = endPositionY;
+							}
+
+							while (tileStartX < endPositionX)
+							{
+								float tileEndX = tileStartX + tileSize.x;
+								float textureEndX = mTempUVs[x2].x;
+								
+								if (tileEndX > endPositionX)
+								{
+									textureEndX = Mathf.Lerp(textureStartX, textureEndX, (endPositionX - tileStartX) / tileSize.x);
+									tileEndX = endPositionX;
+								}
+
+								FillBuffers(tileStartX, tileEndX, tileStartY, tileEndY, textureStartX,
+									textureEndX, textureStartY, textureEndY, col, verts, uvs, cols);
+
+								tileStartX += tileSize.x;
+							}
+							tileStartY += tileSize.y;
+						}
+					}
+					else if (centerType == AdvancedType.Sliced)
+					{
+						FillBuffers(mTempPos[x].x, mTempPos[x2].x, mTempPos[y].y, mTempPos[y2].y,
+							mTempUVs[x].x, mTempUVs[x2].x, mTempUVs[y].y, mTempUVs[y2].y, col, verts, uvs, cols);
+					}
+				}
+				else if (x == 1) // Top or bottom
+				{
+					if ((y == 0 && bottomType == AdvancedType.Tiled) || (y == 2 && topType == AdvancedType.Tiled))
+					{
+						float startPositionX = mTempPos[x].x;
+						float endPositionX = mTempPos[x2].x;
+						float startPositionY = mTempPos[y].y;
+						float endPositionY = mTempPos[y2].y;
+						float textureStartX = mTempUVs[x].x;
+						float textureStartY = mTempUVs[y].y;
+						float textureEndY = mTempUVs[y2].y;
+						float tileStartX = startPositionX;
+
+						while (tileStartX < endPositionX)
+						{
+							float tileEndX = tileStartX + tileSize.x;
+							float textureEndX = mTempUVs[x2].x;
+
+							if (tileEndX > endPositionX)
+							{
+								textureEndX = Mathf.Lerp(textureStartX, textureEndX, (endPositionX - tileStartX) / tileSize.x);
+								tileEndX = endPositionX;
+							}
+
+							FillBuffers(tileStartX, tileEndX, startPositionY, endPositionY, textureStartX,
+								textureEndX, textureStartY, textureEndY, col, verts, uvs, cols);
+
+							tileStartX += tileSize.x;
+						}
+					}
+					else if ((y == 0 && bottomType == AdvancedType.Sliced) || (y == 2 && topType == AdvancedType.Sliced))
+					{
+						FillBuffers(mTempPos[x].x, mTempPos[x2].x, mTempPos[y].y, mTempPos[y2].y,
+							mTempUVs[x].x, mTempUVs[x2].x, mTempUVs[y].y, mTempUVs[y2].y, col, verts, uvs, cols);
+					}
+				}
+				else if (y == 1) // Left or right
+				{
+					if ((x == 0 && leftType == AdvancedType.Tiled) || (x == 2 && rightType == AdvancedType.Tiled))
+					{
+						float startPositionX = mTempPos[x].x;
+						float endPositionX = mTempPos[x2].x;
+						float startPositionY = mTempPos[y].y;
+						float endPositionY = mTempPos[y2].y;
+						float textureStartX = mTempUVs[x].x;
+						float textureEndX = mTempUVs[x2].x;
+						float textureStartY = mTempUVs[y].y;
+						float tileStartY = startPositionY;
+
+						while (tileStartY < endPositionY)
+						{
+							float textureEndY = mTempUVs[y2].y;
+							float tileEndY = tileStartY + tileSize.y;
+
+							if (tileEndY > endPositionY)
+							{
+								textureEndY = Mathf.Lerp(textureStartY, textureEndY, (endPositionY - tileStartY) / tileSize.y);
+								tileEndY = endPositionY;
+							}
+							
+							FillBuffers(startPositionX, endPositionX, tileStartY, tileEndY, textureStartX,
+								textureEndX, textureStartY, textureEndY, col, verts, uvs, cols);
+
+							tileStartY += tileSize.y;
+						}
+					}
+					else if ((x == 0 && leftType == AdvancedType.Sliced) || (x == 2 && rightType == AdvancedType.Sliced))
+					{
+						FillBuffers(mTempPos[x].x, mTempPos[x2].x, mTempPos[y].y, mTempPos[y2].y,
+							mTempUVs[x].x, mTempUVs[x2].x, mTempUVs[y].y, mTempUVs[y2].y, col, verts, uvs, cols);
+					}
+				}
+				else // Corner
+				{
+					FillBuffers(mTempPos[x].x, mTempPos[x2].x, mTempPos[y].y, mTempPos[y2].y,
+						mTempUVs[x].x, mTempUVs[x2].x, mTempUVs[y].y, mTempUVs[y2].y, col, verts, uvs, cols);
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Helper function used in AdvancedFill, above. Contributed by Nicki Hansen.
+	/// </summary>
+
+	void FillBuffers (float v0x, float v1x, float v0y, float v1y, float u0x, float u1x, float u0y, float u1y, Color col,
+		BetterList<Vector3> verts, BetterList<Vector2> uvs, BetterList<Color32> cols)
+	{
+		verts.Add(new Vector3(v0x, v0y));
+		verts.Add(new Vector3(v0x, v1y));
+		verts.Add(new Vector3(v1x, v1y));
+		verts.Add(new Vector3(v1x, v0y));
+
+		uvs.Add(new Vector2(u0x, u0y));
+		uvs.Add(new Vector2(u0x, u1y));
+		uvs.Add(new Vector2(u1x, u1y));
+		uvs.Add(new Vector2(u1x, u0y));
+
+		cols.Add(col);
+		cols.Add(col);
+		cols.Add(col);
+		cols.Add(col);
 	}
 #endregion
 }

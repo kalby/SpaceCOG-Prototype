@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -11,7 +11,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Camera))]
 [AddComponentMenu("NGUI/Interaction/Draggable Camera")]
-public class UIDraggableCamera : IgnoreTimeScale
+public class UIDraggableCamera : MonoBehaviour
 {
 	/// <summary>
 	/// Root object that will be used for drag-limiting bounds.
@@ -116,7 +116,7 @@ public class UIDraggableCamera : IgnoreTimeScale
 		{
 			Vector3 offset = CalculateConstrainOffset();
 
-			if (offset.magnitude > 0f)
+			if (offset.sqrMagnitude > 0f)
 			{
 				if (immediate)
 				{
@@ -215,7 +215,7 @@ public class UIDraggableCamera : IgnoreTimeScale
 
 	void Update ()
 	{
-		float delta = UpdateRealTimeDelta();
+		float delta = RealTime.deltaTime;
 
 		if (mPressed)
 		{

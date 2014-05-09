@@ -1,6 +1,6 @@
 //----------------------------------------------
 //			  NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 #if UNITY_3_5
@@ -18,7 +18,7 @@ public class NGUITransformInspector : Editor
 	public override void OnInspectorGUI ()
 	{
 		Transform trans = target as Transform;
-		EditorGUIUtility.LookLikeControls(15f);
+		NGUIEditorTools.SetLabelWidth(15f);
 
 		Vector3 pos;
 		Vector3 rot;
@@ -152,7 +152,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CanEditMultipleObjects]
-[CustomEditor(typeof(Transform))]
+[CustomEditor(typeof(Transform), true)]
 public class NGUITransformInspector : Editor
 {
 	static public NGUITransformInspector instance;
@@ -178,7 +178,7 @@ public class NGUITransformInspector : Editor
 
 	public override void OnInspectorGUI ()
 	{
-		EditorGUIUtility.LookLikeControls(15f);
+		NGUIEditorTools.SetLabelWidth(15f);
 
 		serializedObject.Update();
 
@@ -223,10 +223,9 @@ public class NGUITransformInspector : Editor
 		{
 			bool reset = GUILayout.Button("S", GUILayout.Width(20f));
 
+			if (isWidget) GUI.color = new Color(0.7f, 0.7f, 0.7f);
 			EditorGUILayout.PropertyField(mScale.FindPropertyRelative("x"));
 			EditorGUILayout.PropertyField(mScale.FindPropertyRelative("y"));
-
-			if (isWidget) GUI.color = new Color(0.7f, 0.7f, 0.7f);
 			EditorGUILayout.PropertyField(mScale.FindPropertyRelative("z"));
 			if (isWidget) GUI.color = Color.white;
 
@@ -331,6 +330,11 @@ public class NGUITransformInspector : Editor
 			bool reset = GUILayout.Button("R", GUILayout.Width(20f));
 
 			Vector3 visible = (serializedObject.targetObject as Transform).localEulerAngles;
+
+			visible.x = NGUIMath.WrapAngle(visible.x);
+			visible.y = NGUIMath.WrapAngle(visible.y);
+			visible.z = NGUIMath.WrapAngle(visible.z);
+
 			Axes changed = CheckDifference(mRot);
 			Axes altered = Axes.None;
 

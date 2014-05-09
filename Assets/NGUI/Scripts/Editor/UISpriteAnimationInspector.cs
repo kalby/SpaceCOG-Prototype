@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -20,7 +20,7 @@ public class UISpriteAnimationInspector : Editor
 	public override void OnInspectorGUI ()
 	{
 		NGUIEditorTools.DrawSeparator();
-		EditorGUIUtility.LookLikeControls(80f);
+		NGUIEditorTools.SetLabelWidth(80f);
 		UISpriteAnimation anim = target as UISpriteAnimation;
 
 		int fps = EditorGUILayout.IntField("Framerate", anim.framesPerSecond);

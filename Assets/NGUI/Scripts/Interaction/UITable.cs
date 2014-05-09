@@ -1,6 +1,6 @@
 //----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -12,9 +12,8 @@ using System.Collections.Generic;
 /// (think "table" tag in HTML).
 /// </summary>
 
-[ExecuteInEditMode]
 [AddComponentMenu("NGUI/Interaction/Table")]
-public class UITable : MonoBehaviour
+public class UITable : UIWidgetContainer
 {
 	public delegate void OnReposition ();
 
@@ -24,25 +23,70 @@ public class UITable : MonoBehaviour
 		Up,
 	}
 
-	public int columns = 0;
-	public Direction direction = Direction.Down;
-	public Vector2 padding = Vector2.zero;
-	public bool sorted = false;
-	public bool hideInactive = true;
-	public bool repositionNow = false;
-	public bool keepWithinPanel = false;
-	public OnReposition onReposition;
-
-	UIPanel mPanel;
-	UIDraggablePanel mDrag;
-	bool mStarted = false;
-	List<Transform> mChildren = new List<Transform>();
+	public enum Sorting
+	{
+		None,
+		Alphabetic,
+		Horizontal,
+		Vertical,
+		Custom,
+	}
 
 	/// <summary>
-	/// Function that sorts items by name.
+	/// How many columns there will be before a new line is started. 0 means unlimited.
 	/// </summary>
 
-	static public int SortByName (Transform a, Transform b) { return string.Compare(a.name, b.name); }
+	public int columns = 0;
+
+	/// <summary>
+	/// Which way the new lines will be added.
+	/// </summary>
+
+	public Direction direction = Direction.Down;
+
+	/// <summary>
+	/// How to sort the grid's elements.
+	/// </summary>
+
+	public Sorting sorting = Sorting.None;
+
+	/// <summary>
+	/// Whether inactive children will be discarded from the table's calculations.
+	/// </summary>
+
+	public bool hideInactive = true;
+
+	/// <summary>
+	/// Whether the parent container will be notified of the table's changes.
+	/// </summary>
+
+	public bool keepWithinPanel = false;
+
+	/// <summary>
+	/// Padding around each entry, in pixels.
+	/// </summary>
+
+	public Vector2 padding = Vector2.zero;
+
+	/// <summary>
+	/// Delegate function that will be called when the table repositions its content.
+	/// </summary>
+
+	public OnReposition onReposition;
+
+	protected UIPanel mPanel;
+	protected bool mInitDone = false;
+	protected bool mReposition = false;
+	protected List<Transform> mChildren = new List<Transform>();
+
+	// Use the 'sorting' property instead
+	[HideInInspector][SerializeField] bool sorted = false;
+
+	/// <summary>
+	/// Reposition the children on the next Update().
+	/// </summary>
+
+	public bool repositionNow { set { if (value) { mReposition = true; enabled = true; } } }
 
 	/// <summary>
 	/// Returns the list of table's children, sorted alphabetically if necessary.
@@ -60,20 +104,33 @@ public class UITable : MonoBehaviour
 				for (int i = 0; i < myTrans.childCount; ++i)
 				{
 					Transform child = myTrans.GetChild(i);
-
-					if (child && child.gameObject && (!hideInactive || NGUITools.GetActive(child.gameObject))) mChildren.Add(child);
+					if (child && child.gameObject && (!hideInactive || NGUITools.GetActive(child.gameObject)))
+						mChildren.Add(child);
 				}
-				if (sorted) mChildren.Sort(SortByName);
+				
+				if (sorting != Sorting.None || sorted)
+				{
+					if (sorting == Sorting.Alphabetic) mChildren.Sort(UIGrid.SortByName);
+					else if (sorting == Sorting.Horizontal) mChildren.Sort(UIGrid.SortHorizontal);
+					else if (sorting == Sorting.Vertical) mChildren.Sort(UIGrid.SortVertical);
+					else Sort(mChildren);
+				}
 			}
 			return mChildren;
 		}
 	}
 
 	/// <summary>
+	/// Want your own custom sorting logic? Override this function.
+	/// </summary>
+
+	protected virtual void Sort (List<Transform> list) { list.Sort(UIGrid.SortByName); }
+
+	/// <summary>
 	/// Positions the grid items, taking their own size into consideration.
 	/// </summary>
 
-	void RepositionVariableSize (List<Transform> children)
+	protected void RepositionVariableSize (List<Transform> children)
 	{
 		float xOffset = 0;
 		float yOffset = 0;
@@ -91,7 +148,7 @@ public class UITable : MonoBehaviour
 		for (int i = 0, imax = children.Count; i < imax; ++i)
 		{
 			Transform t = children[i];
-			Bounds b = NGUIMath.CalculateRelativeWidgetBounds(t);
+			Bounds b = NGUIMath.CalculateRelativeWidgetBounds(t, !hideInactive);
 
 			Vector3 scale = t.localScale;
 			b.min = Vector3.Scale(b.min, scale);
@@ -129,8 +186,8 @@ public class UITable : MonoBehaviour
 			}
 			else
 			{
-				pos.y = yOffset + b.extents.y - b.center.y;
-				pos.y += (b.max.y - b.min.y - bc.max.y + bc.min.y) * 0.5f - padding.y;
+				pos.y = yOffset + (b.extents.y - b.center.y);
+				pos.y -= (b.max.y - b.min.y - bc.max.y + bc.min.y) * 0.5f - padding.y;
 			}
 
 			xOffset += br.max.x - br.min.x + padding.x * 2f;
@@ -152,55 +209,62 @@ public class UITable : MonoBehaviour
 	/// Recalculate the position of all elements within the table, sorting them alphabetically if necessary.
 	/// </summary>
 
-	public void Reposition ()
+	[ContextMenu("Execute")]
+	public virtual void Reposition ()
 	{
-		if (mStarted)
+		if (Application.isPlaying && !mInitDone && NGUITools.GetActive(this))
 		{
-			Transform myTrans = transform;
-			mChildren.Clear();
-			List<Transform> ch = children;
-			if (ch.Count > 0) RepositionVariableSize(ch);
-
-			if (mDrag != null)
-			{
-				mDrag.UpdateScrollbars(true);
-				mDrag.RestrictWithinBounds(true);
-			}
-			else if (mPanel != null)
-			{
-				mPanel.ConstrainTargetToBounds(myTrans, true);
-			}
-			if (onReposition != null) onReposition();
+			mReposition = true;
+			return;
 		}
-		else repositionNow = true;
+
+		if (!mInitDone) Init();
+
+		mReposition = false;
+		Transform myTrans = transform;
+		mChildren.Clear();
+		List<Transform> ch = children;
+		if (ch.Count > 0) RepositionVariableSize(ch);
+
+		if (keepWithinPanel && mPanel != null)
+		{
+			mPanel.ConstrainTargetToBounds(myTrans, true);
+			UIScrollView sv = mPanel.GetComponent<UIScrollView>();
+			if (sv != null) sv.UpdateScrollbars(true);
+		}
+
+		if (onReposition != null)
+			onReposition();
 	}
 
 	/// <summary>
 	/// Position the grid's contents when the script starts.
 	/// </summary>
 
-	void Start ()
+	protected virtual void Start ()
 	{
-		mStarted = true;
-
-		if (keepWithinPanel)
-		{
-			mPanel = NGUITools.FindInParents<UIPanel>(gameObject);
-			mDrag = NGUITools.FindInParents<UIDraggablePanel>(gameObject);
-		}
+		Init();
 		Reposition();
+		enabled = false;
+	}
+
+	/// <summary>
+	/// Find the necessary components.
+	/// </summary>
+
+	protected virtual void Init ()
+	{
+		mInitDone = true;
+		mPanel = NGUITools.FindInParents<UIPanel>(gameObject);
 	}
 
 	/// <summary>
 	/// Is it time to reposition? Do so now.
 	/// </summary>
 
-	void LateUpdate ()
+	protected virtual void LateUpdate ()
 	{
-		if (repositionNow)
-		{
-			repositionNow = false;
-			Reposition();
-		}
+		if (mReposition) Reposition();
+		enabled = false;
 	}
 }

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 [AddComponentMenu("NGUI/UI/Tooltip")]
 public class UITooltip : MonoBehaviour
 {
-	static UITooltip mInstance;
+	static protected UITooltip mInstance;
 
 	public Camera uiCamera;
 	public UILabel text;
@@ -16,13 +16,19 @@ public class UITooltip : MonoBehaviour
 	public float appearSpeed = 10f;
 	public bool scalingTransitions = true;
 
-	Transform mTrans;
-	float mTarget = 0f;
-	float mCurrent = 0f;
-	Vector3 mPos;
-	Vector3 mSize;
+	protected Transform mTrans;
+	protected float mTarget = 0f;
+	protected float mCurrent = 0f;
+	protected Vector3 mPos;
+	protected Vector3 mSize = Vector3.zero;
 
-	UIWidget[] mWidgets;
+	protected UIWidget[] mWidgets;
+
+	/// <summary>
+	/// Whether the tooltip is currently visible.
+	/// </summary>
+
+	static public bool isVisible { get { return (mInstance != null && mInstance.mTarget == 1f); } }
 
 	void Awake () { mInstance = this; }
 	void OnDestroy () { mInstance = null; }
@@ -31,12 +37,11 @@ public class UITooltip : MonoBehaviour
 	/// Get a list of widgets underneath the tooltip.
 	/// </summary>
 
-	void Start ()
+	protected virtual void Start ()
 	{
 		mTrans = transform;
 		mWidgets = GetComponentsInChildren<UIWidget>();
 		mPos = mTrans.localPosition;
-		mSize = mTrans.localScale;
 		if (uiCamera == null) uiCamera = NGUITools.FindCameraForLayer(gameObject.layer);
 		SetAlpha(0f);
 	}
@@ -45,11 +50,11 @@ public class UITooltip : MonoBehaviour
 	/// Update the tooltip's alpha based on the target value.
 	/// </summary>
 
-	void Update ()
+	protected virtual void Update ()
 	{
 		if (mCurrent != mTarget)
 		{
-			mCurrent = Mathf.Lerp(mCurrent, mTarget, Time.deltaTime * appearSpeed);
+			mCurrent = Mathf.Lerp(mCurrent, mTarget, RealTime.deltaTime * appearSpeed);
 			if (Mathf.Abs(mCurrent - mTarget) < 0.001f) mCurrent = mTarget;
 			SetAlpha(mCurrent * mCurrent);
 
@@ -71,7 +76,7 @@ public class UITooltip : MonoBehaviour
 	/// Set the alpha of all widgets.
 	/// </summary>
 
-	void SetAlpha (float val)
+	protected virtual void SetAlpha (float val)
 	{
 		for (int i = 0, imax = mWidgets.Length; i < imax; ++i)
 		{
@@ -86,7 +91,7 @@ public class UITooltip : MonoBehaviour
 	/// Set the tooltip's text to the specified string.
 	/// </summary>
 
-	void SetText (string tooltipText)
+	protected virtual void SetText (string tooltipText)
 	{
 		if (text != null && !string.IsNullOrEmpty(tooltipText))
 		{
@@ -96,25 +101,25 @@ public class UITooltip : MonoBehaviour
 			// Orthographic camera positioning is trivial
 			mPos = Input.mousePosition;
 
+			Transform textTrans = text.transform;
+			Vector3 offset = textTrans.localPosition;
+			Vector3 textScale = textTrans.localScale;
+
+			// Calculate the dimensions of the printed text
+			mSize = text.printedSize;
+
+			// Scale by the transform and adjust by the padding offset
+			mSize.x *= textScale.x;
+			mSize.y *= textScale.y;
+
 			if (background != null)
 			{
-				Transform backgroundTrans = background.transform;
+				Vector4 border = background.border;
+				mSize.x += border.x + border.z + ( offset.x - border.x) * 2f;
+				mSize.y += border.y + border.w + (-offset.y - border.y) * 2f;
 
-				Transform textTrans = text.transform;
-				Vector3 offset = textTrans.localPosition;
-				Vector3 textScale = textTrans.localScale;
-
-				// Calculate the dimensions of the printed text
-				mSize = text.relativeSize;
-
-				// Scale by the transform and adjust by the padding offset
-				mSize.x *= textScale.x;
-				mSize.y *= textScale.y;
-				mSize.x += background.border.x + background.border.z + ( offset.x - background.border.x) * 2f;
-				mSize.y += background.border.y + background.border.w + (-offset.y - background.border.y) * 2f;
-				mSize.z = 1f;
-
-				backgroundTrans.localScale = mSize;
+				background.width = Mathf.RoundToInt(mSize.x);
+				background.height = Mathf.RoundToInt(mSize.y);
 			}
 
 			if (uiCamera != null)
