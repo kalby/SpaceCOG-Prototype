@@ -1,0 +1,7 @@
+#Visual Studio
+*.suo
+*.user
+*.sln.docstates
+
+#Unity
+Temp/UnityLockfile
