@@ -1,15 +1,8 @@
 ﻿<Properties>
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SpaceshipFlight.cs">
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\Users\hadronn\Desktop\Space Shooter\Assets\Scripts\PlayerController.cs">
     <Files>
-      <File FileName="Assets\Scripts\SpaceshipFlight.cs" Line="1" Column="1" />
-=======
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\GameController.cs">
-    <Files>
-      <File FileName="Assets\Scripts\GameController.cs" Line="4" Column="21" />
->>>>>>> 0e4120e26b643535e25f011debf2ea936cdc9404
+      <File FileName="..\..\Users\hadronn\Desktop\Space Shooter\Assets\Scripts\PlayerController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
