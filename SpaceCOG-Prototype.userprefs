@@ -1,7 +1,8 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\..\Users\hadronn\Desktop\Space Shooter\Assets\Scripts\PlayerController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\SpaceshipFlight.cs">
     <Files>
+      <File FileName="Assets\Scripts\SpaceshipFlight.cs" Line="1" Column="1" />
       <File FileName="..\..\Users\hadronn\Desktop\Space Shooter\Assets\Scripts\PlayerController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

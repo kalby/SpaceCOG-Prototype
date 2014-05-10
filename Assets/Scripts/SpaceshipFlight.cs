@@ -4,7 +4,7 @@ public class SpaceshipFlight : MonoBehaviour
 {
 
     public float currentSpeed;
-    public float rotationSpeed;
+    public float shipRotationSpeed;
     public float speedBoost;
 
     public GameObject LeftTurret;
@@ -17,8 +17,12 @@ public class SpaceshipFlight : MonoBehaviour
     private float defaultSpeed;
     private float delayShot;
 
-    public float tilt;
-    //public float tiltSpeed;
+    public float pitch;
+    public float roll;
+    public float thrusterPower;
+    public float shipAcceleration;
+    public float shipMaxSpeed;
+
     private float turnAngle = 0.0f;
 
 
@@ -74,21 +78,43 @@ public class SpaceshipFlight : MonoBehaviour
         float moveForwardBack = Input.GetAxis("Vertical");
 
         //Adjust the facing as the player turns
-        turnAngle = turnAngle + moveLeftRight;
+        turnAngle = turnAngle + (moveLeftRight*shipRotationSpeed); //*Mathf.Abs(transform.localEulerAngles.z%90)
+        currentSpeed = currentSpeed + (moveForwardBack*shipAcceleration);
+        if (currentSpeed < 0)
+        {
+            currentSpeed = 0;
+        }
+        else if (currentSpeed > shipMaxSpeed)
+        {
+            currentSpeed = shipMaxSpeed;
+        }
+
+        //calculate facing vector
+        float facingX = Mathf.Sin((transform.eulerAngles.y * Mathf.PI / 180));
+        float facingZ = Mathf.Cos((transform.eulerAngles.y * Mathf.PI / 180));
+        Vector3 facingXZ = new Vector3(facingX, 0.0f, facingZ);
+        Vector3 horizontal = new Vector3(facingZ, 0.0f, facingX);
 
         //give it forward momentum
-        transform.Translate(Vector3.forward * Time.deltaTime * currentSpeed, Space.World);
+        transform.Translate(facingXZ * Time.deltaTime * currentSpeed, Space.World);
 
-        //create the movement vector
-        Vector3 movement = new Vector3(moveLeftRight, 0.0f, moveForwardBack);
-        //make the movement affect velocity, essentially thrusters
-        rigidbody.velocity = movement;
+        //give it angular momentum
+        //transform.Translate(horizontal * Time.deltaTime * currentSpeed, Space.World);
+
+        //create the thruster vector
+        //Vector3 thruster = new Vector3(moveLeftRight, 0.0f, moveForwardBack);
+
+        //adjust velocity with thrusters
+        //rigidbody.velocity = thruster * Time.deltaTime * thrusterPower;
+
         //create a tilting rotation
-        Quaternion tiltRotation = Quaternion.Euler(rigidbody.velocity.z * +tilt, 0.0f, rigidbody.velocity.x * -tilt);
+        Quaternion tiltRotation = Quaternion.Euler(moveForwardBack * (+pitch), 0.0f, moveLeftRight * (-roll));
         //create a turn rotation about the y axis.
         Quaternion turnRotation = Quaternion.Euler(0.0f, turnAngle, 0.0f);
         //set the rotation to be the combination of all rotations.
         rigidbody.rotation = tiltRotation * turnRotation;
+        
+
     }
 
     void OnTriggerEnter(Collider other)
