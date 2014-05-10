@@ -9,7 +9,11 @@ git reset
 git checkout .
 git clean -fdx
 
-To do a full push and pull:
+To do a push and pull:
+
+//For the sake of safety, save your Unity Project, close Unity and wait 5-10 seconds before doing things with git.
+//Theoretically it ignores the lockfile and you should be able to leave it open but Unity temp files are annoying to deal with over git.
+//Do it at your own risk.
 
 git add --a
 git commit -m "Something for the team."
