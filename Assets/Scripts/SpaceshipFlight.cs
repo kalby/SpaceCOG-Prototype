@@ -91,6 +91,8 @@ public class SpaceshipFlight : MonoBehaviour
         rigidbody.rotation = tiltRotation * turnRotation;
     }
 
+
+    //This function is called when a gameobject enters the spaceships box collider.
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Lazer")
