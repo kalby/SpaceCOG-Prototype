@@ -8,7 +8,11 @@ TagManager:
   - Smelly
   - Fire
   - Lazer
+<<<<<<< HEAD
   - Crystals
+=======
+  - Gyro
+>>>>>>> a8627b57bb1d1460633308f40dd0323cd73e8163
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
