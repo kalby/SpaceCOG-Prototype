@@ -186,11 +186,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-<<<<<<< HEAD
-  m_Constraints: 4
-=======
   m_Constraints: 0
->>>>>>> a8627b57bb1d1460633308f40dd0323cd73e8163
   m_CollisionDetection: 0
 --- !u!95 &116963781
 Animator:
@@ -670,13 +666,6 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 5400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: m_Constraints
-<<<<<<< HEAD
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 100008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_TagString
-      value: Player
-=======
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
@@ -710,7 +699,6 @@ Prefab:
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: roll
       value: 30
->>>>>>> a8627b57bb1d1460633308f40dd0323cd73e8163
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
