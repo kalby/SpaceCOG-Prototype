@@ -19,11 +19,11 @@ public class SpaceshipFlight : MonoBehaviour
 
     public float pitch;
     public float roll;
-    public float thrusterPower;
+    public float thrusterPower; //probably unnecessary but I'll leave it in for now, the code using it is disabled -D
     public float shipAcceleration;
     public float shipMaxSpeed;
 
-    private float turnAngle = 0.0f;
+    private float yaw = 0.0f;
 
 
     // Use this for initialization
@@ -78,8 +78,16 @@ public class SpaceshipFlight : MonoBehaviour
         float moveForwardBack = Input.GetAxis("Vertical");
 
         //Adjust the facing as the player turns
-        turnAngle = turnAngle + (moveLeftRight*shipRotationSpeed); //*Mathf.Abs(transform.localEulerAngles.z%90)
-        currentSpeed = currentSpeed + (moveForwardBack*shipAcceleration);
+        yaw = yaw + (moveLeftRight * shipRotationSpeed);
+        
+        //make the yaw angle loop around so it's not counting rotations
+        //preventing silly high numbers
+        if(yaw > 360)
+        {
+            yaw = 0;
+        }
+        
+        currentSpeed = currentSpeed + (moveForwardBack * shipAcceleration);
         if (currentSpeed < 0)
         {
             currentSpeed = 0;
@@ -89,31 +97,34 @@ public class SpaceshipFlight : MonoBehaviour
             currentSpeed = shipMaxSpeed;
         }
 
-        //calculate facing vector
-        float facingX = Mathf.Sin((transform.eulerAngles.y * Mathf.PI / 180));
-        float facingZ = Mathf.Cos((transform.eulerAngles.y * Mathf.PI / 180));
-        Vector3 facingXZ = new Vector3(facingX, 0.0f, facingZ);
-        Vector3 horizontal = new Vector3(facingZ, 0.0f, facingX);
+        //facing and orthogonal axis
+        //cannot use transform.forward or transform.right due to the tilting pushing creating non-zero y component.
+        //calculate the x and z unit vector components
+        float scalarX = Mathf.Sin((transform.eulerAngles.y * Mathf.PI / 180));
+        float scalarZ = Mathf.Cos((transform.eulerAngles.y * Mathf.PI / 180));
+        
+        //create the ship facing unit vector
+        Vector3 facingXZ = new Vector3(scalarX, 0.0f, scalarZ);
+        Vector3 orthogonalXZ = Vector3.Cross(facingXZ, Vector3.up);
 
+        //momentum
         //give it forward momentum
         transform.Translate(facingXZ * Time.deltaTime * currentSpeed, Space.World);
 
-        //give it angular momentum
-        //transform.Translate(horizontal * Time.deltaTime * currentSpeed, Space.World);
+        //give it side-to-side momentum, emulates another engine firing to the side. Use to implement strafing later.
+        //transform.Translate((moveLeftRight) * orthogonalXZ * Time.deltaTime * thrusterPower, Space.World);
 
-        //create the thruster vector
-        //Vector3 thruster = new Vector3(moveLeftRight, 0.0f, moveForwardBack);
+        //rotation
+        //Make the ship tilt with pitch and roll based on horizontal and vertical input
+        Quaternion rollRotation = Quaternion.AngleAxis(moveLeftRight * (-roll), facingXZ);
+        //Quaternion pitchRotation = Quaternion.AngleAxis(moveForwardBack * (-pitch), orthogonalXZ);
 
-        //adjust velocity with thrusters
-        //rigidbody.velocity = thruster * Time.deltaTime * thrusterPower;
+        //simple turn rotation about the y axis for steering
+        Quaternion yawRotation = Quaternion.AngleAxis(yaw, Vector3.up);
 
-        //create a tilting rotation
-        Quaternion tiltRotation = Quaternion.Euler(moveForwardBack * (+pitch), 0.0f, moveLeftRight * (-roll));
-        //create a turn rotation about the y axis.
-        Quaternion turnRotation = Quaternion.Euler(0.0f, turnAngle, 0.0f);
         //set the rotation to be the combination of all rotations.
-        rigidbody.rotation = tiltRotation * turnRotation;
-        
+        transform.rotation = rollRotation * yawRotation;
+
 
     }
 
