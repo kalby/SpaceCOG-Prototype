@@ -7,25 +7,30 @@ public class Mining : MonoBehaviour {
      *is called and add an x amount of crystals to the players account every y amount of seconds. (x and y are defined in the editor)
      *When the ship exits the collider the coroutine is stopped and the player will no longer mine any crystals.
      *
+     * Visually a line renderer is used to indicate to the player that they are actually mining crystals as oppose to just watching a counter tick over
+     *
      * NOTE: To see that the player is mining crystals look at the consol for a "Crystal Count:"
      */
 
-    //TODO Visual indication that the player is mining crystals. Was thinking of using a line renderer but that is cause some weird problems atm.
 
-    public GameObject miningBeam;
-    public float miningRate;
+    public float miningRate;//Rate at which a player mines crystals
 
     private bool inRange;
     private LineRenderer lineRender;
     private GameObject mine;
 
+    //Players crystal count: This will be set as the players over all crystal count but is needed
+    //now to make sure mining is working
     private int crystalCount;
+
 
 	// Use this for initialization
 	void Start () {
         Debug.Log("Start Function");
         inRange = false;
         crystalCount = 0;
+        lineRender = gameObject.GetComponentInChildren<LineRenderer>();
+        lineRender.enabled = false;
 
 	}
 	
@@ -33,14 +38,12 @@ public class Mining : MonoBehaviour {
 	void Update () {
         if (inRange)
         {
-            
-            //Vector3 shipPos = gameObject.transform.position;
-            
-            //Instantiate(miningBeam, gameObject.transform.position, gameObject.transform.rotation);
-            //Draw the line between the ship and the mine
 
-            //lineRender.SetPosition(0, mine.transform.position);
-           // lineRender.SetPosition(1, gameObject.transform.position);//Set first position as the ships position
+            //Draw the line between the ship and the mine
+            Ray ray = new Ray(transform.position, transform.forward);
+
+            lineRender.SetPosition(0, ray.origin);//Set first position as the ships position
+            lineRender.SetPosition(1, mine.transform.position);//Set second position as the crystals position
             
             //lineRender.SetWidth(.45f, .45f);
             //lineRender.SetColors(Color.green, Color.green);      
@@ -53,24 +56,22 @@ public class Mining : MonoBehaviour {
         if (other.tag == "Crystals")
         {
             mine = other.gameObject;
-            //lineRender = gameObject.AddComponent<LineRenderer>();//Add a line renderer component to the gameObject 
-            //lineRender.SetPosition(0, gameObject.transform.position);
-            //lineRender.SetPosition(1, mine.transform.position);
             inRange = true;
             StartCoroutine("CrystalGathering");
+            lineRender.enabled = true;
             
             Debug.Log("In Range? " + inRange);
         }
     }
 
     //When the ships is no longer inside the sphere collider. 
-    //Set the inRange variable to false
+    //Set the inRange variable to false and turn of the line renderer
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Crystals")
         {
             inRange = false;
-            Destroy(gameObject.GetComponent<LineRenderer>());
+            lineRender.enabled = false;
         }
     }
 
@@ -80,7 +81,7 @@ public class Mining : MonoBehaviour {
         while (inRange)
         {
             if (!inRange) break;
-            crystalCount += 1;
+            crystalCount += 1;            
             Debug.Log("Crystal Count:" + crystalCount);
             yield return new WaitForSeconds(miningRate);
         }        
