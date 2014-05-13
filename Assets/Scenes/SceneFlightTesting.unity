@@ -151,7 +151,7 @@ MonoBehaviour:
   RightTurret: {fileID: 89556883}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
-  roll: 89
+  roll: 45
   rotationSpeed: .200000003
   acceleration: .100000001
   maxSpeed: 2.5
@@ -482,6 +482,18 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: rotationSpeed
+      value: .200000003
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: acceleration
+      value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: maxSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
   m_RootGameObject: {fileID: 116963776}
@@ -640,127 +652,3 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 116963777}
---- !u!1001 &1520764835
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400008, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: tilt
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: boundary.xMin
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: boundary.xMax
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: boundary.zMin
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: boundary.zMax
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: currentSpeed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: tiltSpeed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_Constraints
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: m_AngularDrag
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: rotationSpeed
-      value: .200000003
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: thrusterPower
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: shipAcceleration
-      value: .100000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: shipMaxSpeed
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: shipRotationSpeed
-      value: .400000006
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: pitch
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: roll
-      value: 89
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: speedBoost
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: acceleration
-      value: .100000001
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: maxSpeed
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: rollMax
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-      propertyPath: pitchMax
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
-  m_RootGameObject: {fileID: 116963776}
-  m_IsPrefabParent: 0
-  m_IsExploded: 1
