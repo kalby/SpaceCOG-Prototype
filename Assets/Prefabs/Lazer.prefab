@@ -43,7 +43,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: -1, y: 0, z: 0, w: 6.50041841e-07}
-  m_LocalPosition: {x: 0, y: -7.91232253e-08, z: .060860157}
+  m_LocalPosition: {x: 0, y: -2.82435195e-07, z: .21724391}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
@@ -54,7 +54,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.07958508}
+  m_LocalPosition: {x: 0, y: 0, z: 1.618173}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
@@ -75,7 +75,7 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
@@ -103,7 +103,7 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: .0299999993
-  m_Height: .289999992
+  m_Height: .589999974
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!198 &19800000
@@ -123,7 +123,7 @@ ParticleSystem:
   InitialModule:
     enabled: 1
     startLifetime:
-      scalar: .200000003
+      scalar: .589999974
       maxCurve:
         serializedVersion: 2
         m_Curve:

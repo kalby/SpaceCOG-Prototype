@@ -34,7 +34,7 @@ public class SpaceshipFlight : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        defaultSpeed = currentSpeed;
+	
     }
 
     // Update is called once per frame
