@@ -147,18 +147,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d798376ab7a0d4f917159321b5a909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSpeed: 0
-  shipRotationSpeed: 2
-  speedBoost: 4
   LeftTurret: {fileID: 792304579}
   RightTurret: {fileID: 89556883}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
-  pitch: 4
-  roll: 45
+  roll: 89
+  rotationSpeed: .200000003
+  acceleration: .100000001
+  maxSpeed: 2.5
+  currentSpeed: 0
+  speedBoost: 4
   thrusterPower: 1
-  shipAcceleration: .100000001
-  shipMaxSpeed: 2.5
 --- !u!65 &116963779
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -295,7 +294,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 277857428}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .0343017578, y: -.580049634, z: .673887074}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -674,7 +673,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: rotationSpeed
-      value: 2
+      value: .200000003
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: thrusterPower
@@ -690,15 +689,35 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: shipRotationSpeed
-      value: 2
+      value: .400000006
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: pitch
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: roll
-      value: 45
+      value: 89
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: speedBoost
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: acceleration
+      value: .100000001
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: maxSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: rollMax
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: pitchMax
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
