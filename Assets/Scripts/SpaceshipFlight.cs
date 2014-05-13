@@ -14,7 +14,6 @@ public class SpaceshipFlight : MonoBehaviour
     public float fireRate;
 
     private Vector3 moveDirection;
-    private float defaultSpeed;
     private float delayShot;
 
     public float pitch;
@@ -30,7 +29,6 @@ public class SpaceshipFlight : MonoBehaviour
     void Start()
     {
 
-        defaultSpeed = currentSpeed;
 
     }
 
