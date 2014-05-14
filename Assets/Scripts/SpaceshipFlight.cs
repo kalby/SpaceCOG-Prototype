@@ -28,11 +28,7 @@ public class SpaceshipFlight : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> c9b234e00712510dacf8cd12a511943683d62140
     }
 
     // Update is called once per frame
