@@ -13,6 +13,8 @@ public class CameraFollowScript : MonoBehaviour {
 
     public float rotationDamping;//How smooth we want the rotation to be.
 
+    public float center;
+
 
     void LateUpdate()
     {
