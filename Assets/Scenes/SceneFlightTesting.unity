@@ -151,7 +151,7 @@ MonoBehaviour:
   RightTurret: {fileID: 89556883}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
-  roll: 45
+  roll: 60
   rotationSpeed: .200000003
   acceleration: .100000001
   maxSpeed: 2.5
@@ -493,6 +493,10 @@ Prefab:
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: maxSpeed
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
+      propertyPath: roll
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
