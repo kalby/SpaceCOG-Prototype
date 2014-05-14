@@ -34,7 +34,7 @@ public class SpaceshipFlight : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-	
+
     }
 
     // Update is called once per frame
@@ -92,16 +92,23 @@ public class SpaceshipFlight : MonoBehaviour
         //ROTATION
         //Make the ship tilt with pitch and roll based on horizontal and vertical input
         Quaternion rollRotation = Quaternion.AngleAxis(horizontal * (-roll) * Mathf.Sign(currentSpeed), transform.forward);
+        //need to calculate what vector relative to the ship up and global up and pass it into the yaw rotation as the global up.
+        Vector3 relativeUp = new Vector3(0,1,0);
+        relativeUp = Quaternion.AngleAxis(-rollRotation.eulerAngles.z, transform.forward) * relativeUp;
+        relativeUp = Quaternion.AngleAxis(-rollRotation.eulerAngles.x, transform.right) * relativeUp;
+        relativeUp = Quaternion.AngleAxis(-rollRotation.eulerAngles.y, transform.up) * relativeUp;
+        Debug.Log(relativeUp);
+
         //Zero'd out by pitch, fix for gimbal lock related issue. For now no forward or backward tilt.
         //Quaternion pitchRotation = Quaternion.AngleAxis(vertical * (-pitch) * Mathf.Sign(currentSpeed), transform.right);
         //yaw rotation about the global y axis for steering locked to the XZ plane.
-        Quaternion yawRotation = Quaternion.AngleAxis(yaw, Vector3.up);
+        Quaternion yawRotation = Quaternion.AngleAxis(yaw, relativeUp);
         //set the rotation to be the combination of all rotations.
         Quaternion targetRotation = rollRotation * yawRotation;
         //Use slerp to sexy (spherical interpolate) up that rotation!
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 1);
-
-        /* SPECIAL NOTE: with this implementation itt doesn't cumulatively add small amounts to the transform and save each frame
+        Quaternion slerpedRotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 1);
+        transform.rotation = slerpedRotation;
+        /* SPECIAL NOTE: with this implementation it doesn't cumulatively add small amounts to the transform and save each frame
          * there are bugs with combined rotations and high roll. A 60 degree or lower roll is safe.*/
 
         //Give the player a speed boost when LeftShift is held down
