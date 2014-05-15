@@ -3,7 +3,7 @@ SpaceCOG-Prototype
 
 DECO3800 SpaceCOG Unity Prototype Codebase
 
-To remove all changes to your cache:
+To remove all changes to your cache, first do a pull-push if you have uncommitted work, see below. Then do:
 
 git reset
 
@@ -11,7 +11,7 @@ git checkout .
 
 git clean -fdx
 
-To do a push and pull:
+pull-push:
 
 //For the sake of safety, save your Unity Project, close Unity and wait 5-10 seconds before doing things with git.
 
