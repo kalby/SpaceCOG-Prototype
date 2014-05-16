@@ -268,7 +268,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: rotationSpeed
-      value: .5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: acceleration
@@ -276,7 +276,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
       propertyPath: maxSpeed
-      value: 5
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 92fc4e2f65f681b47845f3df8925adc4, type: 2}
@@ -422,9 +422,9 @@ MonoBehaviour:
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
   maxRollAngle: 45
-  rotationSpeed: .5
+  rotationSpeed: 2
   acceleration: 2
-  maxSpeed: 5
+  maxSpeed: 40
   currentSpeed: 0
   speedBoost: 4
   thrusterPower: 1
