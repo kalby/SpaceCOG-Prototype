@@ -30,5 +30,5 @@ bld/
 /Temp
 
 #SpaceCOG specific
-Assets/Atlas
-Assets/Textures
+/Assets/Atlas
+/Assets/Textures
