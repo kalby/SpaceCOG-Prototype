@@ -28,3 +28,7 @@ bld/
 /Library/ScriptAssemblies
 /obj
 /Temp
+
+#SpaceCOG specific
+Assets/Atlas
+Assets/Textures
