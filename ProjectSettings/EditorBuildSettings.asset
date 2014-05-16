@@ -31,19 +31,21 @@ EditorBuildSettings:
     path: Assets/Sample Assets/Sample Scenes/Scenes/AI Character.unity
   - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/Third Person Character.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Effects/Light Shafts/Scenes/LightShaft Directional.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Effects/Light Shafts/Scenes/LightShaft Spot.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/Car.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/First Person Character.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/Particles.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/Jet Plane (2 Axis).unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/Third Person Character.unity
-  - enabled: 1
+  - enabled: 0
     path: Assets/Sample Assets/Sample Scenes/Scenes/2D Character.unity
+  - enabled: 1
+    path: Assets/Scenes/SceneFlightTesting.unity

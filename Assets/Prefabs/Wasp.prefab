@@ -265,18 +265,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d798376ab7a0d4f917159321b5a909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSpeed: 0
-  shipRotationSpeed: 2
-  speedBoost: 4
   LeftTurret: {fileID: 100000}
   RightTurret: {fileID: 100002}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
-  pitch: 4
-  roll: 45
+  maxRollAngle: 90
+  rotationSpeed: 0
+  acceleration: 0
+  maxSpeed: 0
+  currentSpeed: 0
+  speedBoost: 4
   thrusterPower: 1
-  shipAcceleration: .100000001
-  shipMaxSpeed: 2.5
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

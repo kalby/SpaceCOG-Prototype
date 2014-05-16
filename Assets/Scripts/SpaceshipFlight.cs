@@ -57,9 +57,9 @@ public class SpaceshipFlight : MonoBehaviour
 
         //VELOCITY CONTROL
         currentSpeed = currentSpeed + (vertical * acceleration);
-        if (currentSpeed < -0.1f)
+        if (currentSpeed < 0)
         {
-            currentSpeed = -0.1f;
+            currentSpeed = 0;
         }
         else if (currentSpeed > maxSpeed)
         {
