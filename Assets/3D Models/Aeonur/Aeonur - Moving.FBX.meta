@@ -59,6 +59,33 @@ ModelImporter:
     100106: Aeonur_Spine08_Bone
     100108: Aeonur_Spine09_Bone
     100110: AeonurEye
+    100112: Aeonur_EyeDir_Ctrl
+    100114: Aeonur_HeadFinNub_Bone
+    100116: Aeonur_HeadNub_Bone
+    100118: Aeonur_L_BackFin_Ctrl
+    100120: Aeonur_L_BackFinNub_Bone
+    100122: Aeonur_L_BackFinTip_Ctrl
+    100124: Aeonur_L_FrontFin_Ctrl
+    100126: Aeonur_L_FrontFinNub_Bone
+    100128: Aeonur_L_FrontFinTip_Ctrl
+    100130: Aeonur_L_HeadFinTip_Ctrl
+    100132: Aeonur_L_TailFin_Ctrl
+    100134: Aeonur_L_TailFinNub_Bone
+    100136: Aeonur_L_TailFinTip_Ctrl
+    100138: Aeonur_NeckBase_Ctrl
+    100140: Aeonur_R_BackFin_Ctrl
+    100142: Aeonur_R_BackFinNub_Bone
+    100144: Aeonur_R_BackFinTip_Ctrl
+    100146: Aeonur_R_FrontFin_Ctrl
+    100148: Aeonur_R_FrontFinNub_Bone
+    100150: Aeonur_R_FrontFinTip_Ctrl
+    100152: Aeonur_R_HeadFin_Ctrl
+    100154: Aeonur_R_TailFin_Ctrl
+    100156: Aeonur_R_TailFinNub_Bone
+    100158: Aeonur_R_TailFinTip_Ctrl
+    100160: Aeonur_SpineBase_Ctrl
+    100162: Aeonur_SpineNub_Bone
+    100164: Aeonur_TailBase_Ctrl
     400000: Aeonur
     400002: //RootNode
     400004: Aeonur_CoM_Ctrl
@@ -115,6 +142,33 @@ ModelImporter:
     400106: Aeonur_Spine08_Bone
     400108: Aeonur_Spine09_Bone
     400110: AeonurEye
+    400112: Aeonur_EyeDir_Ctrl
+    400114: Aeonur_HeadFinNub_Bone
+    400116: Aeonur_HeadNub_Bone
+    400118: Aeonur_L_BackFin_Ctrl
+    400120: Aeonur_L_BackFinNub_Bone
+    400122: Aeonur_L_BackFinTip_Ctrl
+    400124: Aeonur_L_FrontFin_Ctrl
+    400126: Aeonur_L_FrontFinNub_Bone
+    400128: Aeonur_L_FrontFinTip_Ctrl
+    400130: Aeonur_L_HeadFinTip_Ctrl
+    400132: Aeonur_L_TailFin_Ctrl
+    400134: Aeonur_L_TailFinNub_Bone
+    400136: Aeonur_L_TailFinTip_Ctrl
+    400138: Aeonur_NeckBase_Ctrl
+    400140: Aeonur_R_BackFin_Ctrl
+    400142: Aeonur_R_BackFinNub_Bone
+    400144: Aeonur_R_BackFinTip_Ctrl
+    400146: Aeonur_R_FrontFin_Ctrl
+    400148: Aeonur_R_FrontFinNub_Bone
+    400150: Aeonur_R_FrontFinTip_Ctrl
+    400152: Aeonur_R_HeadFin_Ctrl
+    400154: Aeonur_R_TailFin_Ctrl
+    400156: Aeonur_R_TailFinNub_Bone
+    400158: Aeonur_R_TailFinTip_Ctrl
+    400160: Aeonur_SpineBase_Ctrl
+    400162: Aeonur_SpineNub_Bone
+    400164: Aeonur_TailBase_Ctrl
     4300000: Aeonur
     4300002: AeonurEye
     7400000: Take 001
