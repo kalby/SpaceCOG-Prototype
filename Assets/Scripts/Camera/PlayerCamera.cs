@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CameraFollowScript : MonoBehaviour {
+public class PlayerCamera : MonoBehaviour {
 
     public Transform target;//The target the camera needs to lookat and follow
 

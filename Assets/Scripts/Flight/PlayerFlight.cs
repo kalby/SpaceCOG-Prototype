@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-public class SpaceshipFlight : MonoBehaviour
+public class PlayerFlight : MonoBehaviour
 {
     //Firing
     public GameObject LeftTurret;
