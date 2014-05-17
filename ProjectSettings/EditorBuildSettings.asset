@@ -9,3 +9,5 @@ EditorBuildSettings:
     path: Assets/Scenes/UIMainMenu.unity
   - enabled: 1
     path: Assets/Scenes/UIMission.unity
+  - enabled: 1
+    path: Assets/Scenes/UIRaceFaction.unity

@@ -74,6 +74,83 @@ NavMeshSettings:
     widthInaccuracy: 16.666666
     heightInaccuracy: 10
   m_NavMesh: {fileID: 0}
+--- !u!1 &378036928
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 378036929}
+  - 114: {fileID: 378036931}
+  - 114: {fileID: 378036930}
+  m_Layer: 8
+  m_Name: Music Manager
+  m_TagString: MusicManager
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &378036929
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 378036928}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -910, y: 490, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1023840947}
+--- !u!114 &378036930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 378036928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce29b224c920d7a408be9d9514948f63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundMusic: {fileID: 8300000, guid: 025e028c06b41284f852fd3c8f3f2ec8, type: 3}
+--- !u!114 &378036931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 378036928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 858a20c1b21a3f94bb5b2d3b901c9aaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  rightAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  bottomAnchor:
+    target: {fileID: 0}
+    relative: 0
+    absolute: 0
+  topAnchor:
+    target: {fileID: 0}
+    relative: 1
+    absolute: 0
+  updateAnchors: 1
+  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mPivot: 4
+  mWidth: 100
+  mHeight: 100
+  mDepth: 8
+  autoResizeBoxCollider: 0
+  hideIfOffScreen: 0
+  keepAspectRatio: 0
+  aspectRatio: 1
 --- !u!1 &454242336
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +417,7 @@ GameObject:
   - 114: {fileID: 543084084}
   m_Layer: 8
   m_Name: Background
-  m_TagString: Untagged
+  m_TagString: Background
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -416,10 +493,9 @@ GameObject:
   - 114: {fileID: 606351531}
   - 114: {fileID: 606351530}
   - 114: {fileID: 606351534}
-  - 114: {fileID: 606351533}
   m_Layer: 8
-  m_Name: Start Click Area
-  m_TagString: Untagged
+  m_Name: Start Button
+  m_TagString: StartButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -526,17 +602,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 692, y: 150, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &606351533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 606351527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dec64f9886a03a4fbf05ce0e45a6fcb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &606351534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -556,8 +621,8 @@ MonoBehaviour:
   onDeselect: []
   onClick: []
   onDoubleClick:
-  - mTarget: {fileID: 606351533}
-    mMethodName: StartMissionsLevel
+  - mTarget: {fileID: 1807786891}
+    mMethodName: MissionSelect
     mParameters: []
     oneShot: 0
   onDragOver: []
@@ -574,8 +639,9 @@ GameObject:
   - 65: {fileID: 623412623}
   - 114: {fileID: 623412622}
   - 114: {fileID: 623412621}
+  - 114: {fileID: 623412624}
   m_Layer: 8
-  m_Name: Options Click Area
+  m_Name: Options Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -683,6 +749,31 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 692, y: 150, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &623412624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 623412618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e862f287df53bb64db191162f851a296, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onHoverOver: []
+  onHoverOut: []
+  onPress: []
+  onRelease: []
+  onSelect: []
+  onDeselect: []
+  onClick: []
+  onDoubleClick:
+  - mTarget: {fileID: 1807786891}
+    mMethodName: RaceFactionSelect
+    mParameters: []
+    oneShot: 0
+  onDragOver: []
+  onDragOut: []
 --- !u!1 &675986667
 GameObject:
   m_ObjectHideFlags: 0
@@ -973,6 +1064,7 @@ Transform:
   - {fileID: 1702125550}
   - {fileID: 543084083}
   - {fileID: 454242337}
+  - {fileID: 378036929}
   m_Father: {fileID: 0}
 --- !u!1 &1094391626
 GameObject:
@@ -986,9 +1078,10 @@ GameObject:
   - 65: {fileID: 1094391631}
   - 114: {fileID: 1094391630}
   - 114: {fileID: 1094391629}
+  - 114: {fileID: 1094391633}
   m_Layer: 8
-  m_Name: Quit Click Area
-  m_TagString: Untagged
+  m_Name: Quit Button
+  m_TagString: QuitButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1095,6 +1188,31 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 692, y: 150, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1094391633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1094391626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e862f287df53bb64db191162f851a296, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onHoverOver: []
+  onHoverOut: []
+  onPress: []
+  onRelease: []
+  onSelect: []
+  onDeselect: []
+  onClick: []
+  onDoubleClick:
+  - mTarget: {fileID: 1807786891}
+    mMethodName: Quit
+    mParameters: []
+    oneShot: 0
+  onDragOver: []
+  onDragOut: []
 --- !u!1 &1356266752
 GameObject:
   m_ObjectHideFlags: 0
@@ -1184,6 +1302,103 @@ MonoBehaviour:
   mMaxLineHeight: 0
   mLineWidth: 0
   mMultiline: 1
+--- !u!1 &1356512735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 1356512739}
+  - 114: {fileID: 1356512736}
+  - 82: {fileID: 1356512737}
+  m_Layer: 8
+  m_Name: Game Music
+  m_TagString: PersistentSingleton
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1356512736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1356512735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7d58c310ff52f468ab3a8a0b718526, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!82 &1356512737
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1356512735}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: .119999997
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+--- !u!4 &1356512739
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1356512735}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
 --- !u!1 &1539037140
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,7 +1645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: 1
-  dragEffect: 2
+  dragEffect: 0
   restrictWithinPanel: 1
   disableDragIfFits: 0
   smoothDragStart: 1
@@ -1500,6 +1715,7 @@ GameObject:
   - 65: {fileID: 1807786888}
   - 114: {fileID: 1807786887}
   - 114: {fileID: 1807786891}
+  - 114: {fileID: 1807786892}
   m_Layer: 8
   m_Name: Control - Simple Vertical Scroll Bar
   m_TagString: Untagged
@@ -1551,7 +1767,7 @@ BoxCollider:
   m_GameObject: {fileID: 1807786885}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 30, y: 450, z: 0}
   m_Center: {x: 0, y: 0, z: 0}
@@ -1643,6 +1859,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b782beb6433264fa26ef66c3188d1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1807786892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1807786885}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: cab912f3009b43843b0a48ac3120c6ad, type: 3}
+  trigger: 5
+  volume: 1
+  pitch: 1
 --- !u!1001 &1978309477
 Prefab:
   m_ObjectHideFlags: 0
@@ -1736,7 +1967,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 6500002, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11400010, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_Enabled
