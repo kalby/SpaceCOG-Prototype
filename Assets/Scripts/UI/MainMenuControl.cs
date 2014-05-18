@@ -133,7 +133,7 @@ public class MainMenuControl : MonoBehaviour
 
     public void RaceFactionSelect()
     {
-        Application.LoadLevel("UIRaceFaction");
+        Application.LoadLevel("UIRaceShip");
     }
 
     public void Quit()

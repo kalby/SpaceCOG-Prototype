@@ -12,7 +12,11 @@ TagManager:
   - MusicManager
   - BackEscape
   - PersistentSingleton
-  - MissionInfoBox
+  - Crystals
+  - AesopInfoBox
+  - FourcroyInfoBox
+  - HerronsInfoBox
+  - SantaroInfoBox
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

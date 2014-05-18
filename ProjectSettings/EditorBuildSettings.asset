@@ -10,4 +10,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/UIMission.unity
   - enabled: 1
-    path: Assets/Scenes/UIRaceFaction.unity
+    path: Assets/Scenes/UIRaceShip.unity

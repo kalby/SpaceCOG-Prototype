@@ -4,16 +4,33 @@ using System.Collections;
 public class MissionControl : MonoBehaviour
 {
     private UIPlaySound selectSound;
-    private GameObject missionInfoBox;
+    private UIPlaySound slideSound;
+    private GameObject aesopInfoBox;
+    private GameObject fourcroyInfoBox;
+    private GameObject herronsInfoBox;
+    private GameObject santaroInfoBox;
 
     // Use this for initialization
     void Start()
     {
-        //Get the audio from the quit button, the slide onto quit audio
+        //Get the audio from the back button
         GameObject backEscape = GameObject.FindWithTag("BackEscape");
         selectSound = backEscape.GetComponent<UIPlaySound>();
-        missionInfoBox = GameObject.FindWithTag("MissionInfoBox");
-        hideMissionText();
+        //Get the audio from the background, which is the slide sound
+        GameObject background = GameObject.FindWithTag("Background");
+        slideSound = background.GetComponent<UIPlaySound>();
+
+        //Get the Mission Info Boxes
+        aesopInfoBox = GameObject.FindWithTag("AesopInfoBox");
+        fourcroyInfoBox = GameObject.FindWithTag("FourcroyInfoBox");
+        herronsInfoBox = GameObject.FindWithTag("HerronsInfoBox");
+        santaroInfoBox = GameObject.FindWithTag("SantaroInfoBox");
+
+        //Hide them
+        HideAesopMissionText();
+        HideFourcroyMissionText();
+        HideHerronsMissionText();
+        HideSantaroMissionText();
 
     }
 
@@ -28,12 +45,26 @@ public class MissionControl : MonoBehaviour
         //if they hit escape load the previous scene
         if (Input.GetKeyDown("escape"))
         {
-            selectSound.Play();
-            while (selectSound.IsInvoking())
+            slideSound.Play();
+            while (slideSound.IsInvoking())
             {
                 //do nothing
             }
             MainMenuSelect();
+        }
+        if (Input.GetKeyDown("a"))
+        {
+            ShowAesopMissionText();
+            ShowFourcroyMissionText();
+            ShowHerronsMissionText();
+            ShowSantaroMissionText();
+        }
+        if (Input.GetKeyUp("a"))
+        {
+            HideAesopMissionText();
+            HideFourcroyMissionText();
+            HideHerronsMissionText();
+            HideSantaroMissionText();
         }
     }
 
@@ -42,13 +73,43 @@ public class MissionControl : MonoBehaviour
         Application.LoadLevel("UIMainMenu");
     }
 
-    public void ShowMissionText()
+    public void ShowAesopMissionText()
     {
-        missionInfoBox.SetActive(true);
+        aesopInfoBox.SetActive(true);
     }
 
-    public void hideMissionText()
+    public void HideAesopMissionText()
     {
-        missionInfoBox.SetActive(false);
+        aesopInfoBox.SetActive(false);
+    }
+
+    public void ShowFourcroyMissionText()
+    {
+        fourcroyInfoBox.SetActive(true);
+    }
+
+    public void HideFourcroyMissionText()
+    {
+        fourcroyInfoBox.SetActive(false);
+    }
+
+    public void ShowHerronsMissionText()
+    {
+        herronsInfoBox.SetActive(true);
+    }
+
+    public void HideHerronsMissionText()
+    {
+        herronsInfoBox.SetActive(false);
+    }
+
+    public void ShowSantaroMissionText()
+    {
+        santaroInfoBox.SetActive(true);
+    }
+
+    public void HideSantaroMissionText()
+    {
+        santaroInfoBox.SetActive(false);
     }
 }
