@@ -3,13 +3,16 @@
 --- !u!78 &1
 TagManager:
   tags:
-  - 
+  - Asteroid
   - Lazer
   - Boundary
   - QuitButton
   - StartButton
   - Background
   - MusicManager
+  - BackEscape
+  - PersistentSingleton
+  - MissionInfoBox
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

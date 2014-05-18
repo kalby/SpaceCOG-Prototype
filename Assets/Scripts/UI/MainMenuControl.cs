@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//This script handles UI Sounds and actions based on keypresses and provides public functions for onClicks and onDoubleClicks handled by NGUI to control the UI.
+//I would've liked to put all the UI sounds on one element and referenced them, however that doesn't take advantage of NGUIs built in UIPlaySound clicks for faster prototyping.
 public class MainMenuControl : MonoBehaviour
 {
     private UIPlaySound quitSlideSound;
@@ -13,6 +15,7 @@ public class MainMenuControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //Get components from the scene at init.
         //Get the audio from the quit button, the slide onto quit audio
         GameObject quitButton = GameObject.FindWithTag("QuitButton");
         quitSlideSound = quitButton.GetComponent<UIPlaySound>();
@@ -69,6 +72,11 @@ public class MainMenuControl : MonoBehaviour
         if (Input.GetKeyDown("return") && slider.value == 0.0f)
         {
             selectSound.Play();
+            while (selectSound.IsInvoking())
+            {
+                //do nothing
+            }
+            //then load level
             MissionSelect();
         }
         
@@ -76,12 +84,21 @@ public class MainMenuControl : MonoBehaviour
         if (Input.GetKeyDown("return") && slider.value == 0.5f)
         {
             selectSound.Play();
+            while (selectSound.IsInvoking())
+            {
+                //do nothing
+            }
+            //then load level
             RaceFactionSelect();
         }
         //they hit enter while QUIT was selected, quit the application
         if (Input.GetKeyDown("return") && slider.value == 1.0f)
         {
             selectSound.Play();
+            while (selectSound.IsInvoking())
+            {
+                //do nothing
+            }
             Application.Quit();
         }
 
