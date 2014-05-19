@@ -21,6 +21,7 @@ public class Aeonur : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
+        animation.Play();
         FindTarget();
 	}
 	
