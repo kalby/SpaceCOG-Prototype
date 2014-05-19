@@ -3,7 +3,6 @@ using System.Collections;
 
 public class MissionControl : MonoBehaviour
 {
-    private UIPlaySound selectSound;
     private UIPlaySound slideSound;
     private GameObject aesopInfoBox;
     private GameObject fourcroyInfoBox;
@@ -13,9 +12,6 @@ public class MissionControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //Get the audio from the back button
-        GameObject backEscape = GameObject.FindWithTag("BackEscape");
-        selectSound = backEscape.GetComponent<UIPlaySound>();
         //Get the audio from the background, which is the slide sound
         GameObject background = GameObject.FindWithTag("Background");
         slideSound = background.GetComponent<UIPlaySound>();

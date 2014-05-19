@@ -3,14 +3,10 @@ using System.Collections;
 
 public class RaceShipControl : MonoBehaviour {
 
-    private UIPlaySound selectSound;
     private UIPlaySound slideSound;
 
 	// Use this for initialization
 	void Start () {
-        //Get the audio from the back button
-        GameObject backEscape = GameObject.FindWithTag("BackEscape");
-        selectSound = backEscape.GetComponent<UIPlaySound>();
         //Get the audio from the background, which is the slide sound
         GameObject background = GameObject.FindWithTag("Background");
         slideSound = background.GetComponent<UIPlaySound>();
