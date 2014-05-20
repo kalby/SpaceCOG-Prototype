@@ -2,24 +2,37 @@
 using System.Collections;
 
 public class ProjectileLazer : MonoBehaviour {
-    public float speed;
 
+    public Transform player;
+
+    public int points;
+
+
+    private float delayShot;
 	// Use this for initialization
-	void Start () {
-        rigidbody.velocity = transform.forward * speed;	
+	void Start () {	
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
     void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Enemy")
         {
+            //This is to tell the player getting hit. Used for taking health from player getting hit
+            //other.gameObject.SendMessage("Hit");
+
+            //When the lazer was instantiated it was given a reference to who instantiated it.
+            //This is stores in the variable player
+            //players is then used to send a message back to the player to indicate whether or not the bullet hit the enemy
+            //The "AddToScore" is a method in the PlayerFlight script and point is a paramter of that method
+            player.SendMessage("AddToScore", points);
+
             //Destroys the lazer gameobject
-            Destroy(gameObject);
+            Destroy(gameObject);            
         }
     }
 

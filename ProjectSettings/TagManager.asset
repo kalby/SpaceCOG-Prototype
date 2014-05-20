@@ -17,6 +17,7 @@ TagManager:
   - FourcroyInfoBox
   - HerronsInfoBox
   - SantaroInfoBox
+<<<<<<< HEAD
   - RaceScrollBar
   - ShipScrollBar
   - MainMenuScrollBar
@@ -24,6 +25,9 @@ TagManager:
   - Fourcroy
   - Herrons
   - Santaro
+=======
+  - Enemy
+>>>>>>> 9f830f147b8dccbf878b223fd6b84c1a62c34bf8
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
