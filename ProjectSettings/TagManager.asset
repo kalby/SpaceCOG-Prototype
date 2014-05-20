@@ -17,6 +17,7 @@ TagManager:
   - FourcroyInfoBox
   - HerronsInfoBox
   - SantaroInfoBox
+  - Enemy
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
