@@ -5,6 +5,26 @@ TagManager:
   tags:
   - 
   - Lazer
+  - Boundary
+  - QuitButton
+  - StartButton
+  - Background
+  - MusicManager
+  - BackEscape
+  - PersistentSingleton
+  - Crystals
+  - AesopInfoBox
+  - FourcroyInfoBox
+  - HerronsInfoBox
+  - SantaroInfoBox
+  - RaceScrollBar
+  - ShipScrollBar
+  - MainMenuScrollBar
+  - Aesop
+  - Fourcroy
+  - Herrons
+  - Santaro
+  - Enemy
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
