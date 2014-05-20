@@ -90,7 +90,7 @@ GameObject:
   - 114: {fileID: 232495819}
   m_Layer: 0
   m_Name: MissionSantaro
-  m_TagString: Untagged
+  m_TagString: Santaro
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,8 +133,20 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
-  onDoubleClick: []
+  onClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: HighlightSantaro
+    mParameters: []
+    oneShot: 0
+  - mTarget: {fileID: 397166243}
+    mMethodName: Play
+    mParameters: []
+    oneShot: 0
+  onDoubleClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: LobbySelect
+    mParameters: []
+    oneShot: 0
   onDragOver: []
   onDragOut: []
 --- !u!114 &232495820
@@ -661,7 +673,7 @@ GameObject:
   - 114: {fileID: 406062880}
   m_Layer: 0
   m_Name: MissionFourcroy
-  m_TagString: Untagged
+  m_TagString: Fourcroy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -691,8 +703,20 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
-  onDoubleClick: []
+  onClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: HighlightFourcroy
+    mParameters: []
+    oneShot: 0
+  - mTarget: {fileID: 397166243}
+    mMethodName: Play
+    mParameters: []
+    oneShot: 0
+  onDoubleClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: LobbySelect
+    mParameters: []
+    oneShot: 0
   onDragOver: []
   onDragOut: []
 --- !u!114 &406062881
@@ -3116,7 +3140,7 @@ GameObject:
   - 114: {fileID: 1866761755}
   m_Layer: 0
   m_Name: MissionAesop
-  m_TagString: Untagged
+  m_TagString: Aesop
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3146,8 +3170,20 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
-  onDoubleClick: []
+  onClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: HighlightAesop
+    mParameters: []
+    oneShot: 0
+  - mTarget: {fileID: 397166243}
+    mMethodName: Play
+    mParameters: []
+    oneShot: 0
+  onDoubleClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: LobbySelect
+    mParameters: []
+    oneShot: 0
   onDragOver: []
   onDragOut: []
 --- !u!114 &1866761756
@@ -3468,7 +3504,7 @@ GameObject:
   - 114: {fileID: 2133899982}
   m_Layer: 0
   m_Name: MissionHerrons
-  m_TagString: Untagged
+  m_TagString: Herrons
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3498,8 +3534,20 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
-  onDoubleClick: []
+  onClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: HighlightHerrons
+    mParameters: []
+    oneShot: 0
+  - mTarget: {fileID: 397166243}
+    mMethodName: Play
+    mParameters: []
+    oneShot: 0
+  onDoubleClick:
+  - mTarget: {fileID: 1217927784}
+    mMethodName: LobbySelect
+    mParameters: []
+    oneShot: 0
   onDragOver: []
   onDragOut: []
 --- !u!114 &2133899983

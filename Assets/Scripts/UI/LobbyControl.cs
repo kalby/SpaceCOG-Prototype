@@ -1,21 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class RaceShipControl : MonoBehaviour {
+public class LobbyControl : MonoBehaviour {
 
     private UIPlaySound slideSound;
 
-	// Use this for initialization
 	void Start () {
         //Get the audio from the background, which is the slide sound
         GameObject background = GameObject.FindWithTag("Background");
         slideSound = background.GetComponent<UIPlaySound>();
-	
 	}
 	
 	// Update is called once per frame
-	void Update () 
-    {
+	void Update () {
         CheckKeys();
 	}
 
@@ -29,12 +26,12 @@ public class RaceShipControl : MonoBehaviour {
             {
                 //do nothing
             }
-            MainMenuSelect();
+            MissionSelect();
         }
     }
 
-    public void MainMenuSelect()
+    public void MissionSelect()
     {
-        Application.LoadLevel("UIMainMenu");
+        Application.LoadLevel("UIMission");
     }
 }

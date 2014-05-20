@@ -69,7 +69,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400008}
-  - 95: {fileID: 9500000}
   - 54: {fileID: 5400000}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400000}
@@ -92,9 +91,25 @@ GameObject:
   - 92: {fileID: 9200000}
   - 124: {fileID: 12400000}
   - 81: {fileID: 8100000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &100012
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 400012}
+  m_Layer: 0
+  m_Name: LookAtPoint
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,6 +169,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 400000}
+  - {fileID: 400012}
   - {fileID: 400010}
   - {fileID: 400002}
   - {fileID: 400006}
@@ -165,8 +181,19 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
-  m_LocalRotation: {x: .107636712, y: 0, z: 0, w: .994190335}
-  m_LocalPosition: {x: 0, y: 1.07508361, z: -1.65928161}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: .484466642, z: -1.14365852}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400008}
+--- !u!4 &400012
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100012}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400008}
@@ -187,7 +214,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: .300000012
-  far clip plane: 1000
+  far clip plane: 400
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -240,20 +267,6 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
   m_Enabled: 1
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100008}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 806f6d7c445826c4d8669ec8f4d8bb4a, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
-  m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -265,18 +278,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6d798376ab7a0d4f917159321b5a909, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSpeed: 0
-  shipRotationSpeed: 2
-  speedBoost: 4
-  LeftTurret: {fileID: 100000}
-  RightTurret: {fileID: 100002}
+  turrets:
+  - {fileID: 400000}
+  - {fileID: 400002}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   fireRate: .200000003
-  pitch: 4
-  roll: 45
+  lazerSpeed: 5000
+  maxRollAngle: 45
+  rotationSpeed: 2
+  acceleration: 2
+  maxSpeed: 10
+  currentSpeed: 0
+  speedBoost: 4
   thrusterPower: 1
-  shipAcceleration: .100000001
-  shipMaxSpeed: 2.5
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8bf6d66dce89f514b97a62bba2c0f432, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 400012}
+  distance: 3
+  height: 1
+  heightDamping: 1
+  rotationDamping: 5
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1

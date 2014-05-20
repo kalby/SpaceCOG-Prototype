@@ -9,10 +9,8 @@ public class MainMenuControl : MonoBehaviour
     private UIPlaySound slideSound;
     private UIPlaySound selectSound;
     
-    private UIScrollBar slider;
+    private UIScrollBar verticalScrollBar;
 
-
-    // Use this for initialization
     void Start()
     {
         //Get components from the scene at init.
@@ -24,11 +22,13 @@ public class MainMenuControl : MonoBehaviour
         GameObject startButton = GameObject.FindWithTag("StartButton");
         slideSound = startButton.GetComponent<UIPlaySound>();
 
-        //Get the control slider scrollbar.
-        slider = GetSlider();
+        //Get the vertical scroll bar.
+        GameObject verticalScrollBarObject = GameObject.FindWithTag("MainMenuScrollBar");
+        verticalScrollBar = verticalScrollBarObject.gameObject.GetComponent<UIScrollBar>();
 
-        //Get the audio from the slider, which happens to be the select sound
-        selectSound = slider.GetComponent<UIPlaySound>();
+        //Get the audio from the background, which happens to be the select sound
+        GameObject background = GameObject.FindWithTag("Background");
+        selectSound = background.GetComponent<UIPlaySound>();
     }
 
     // Update is called once per frame
@@ -50,14 +50,14 @@ public class MainMenuControl : MonoBehaviour
         if (Input.GetKeyDown("up") || Input.GetKeyDown("w"))
         {
             slideSound.Play();
-            slider.value = slider.value - 0.5f;
+            verticalScrollBar.value = verticalScrollBar.value - 0.5f;
         }
 
         //move the slider down one element
         if (Input.GetKeyDown("down") || Input.GetKeyDown("s"))
         {
             //If the next one down is quit play the slide onto quit sound
-            if(slider.value == 0.5f)
+            if(verticalScrollBar.value == 0.5f)
             {
                 quitSlideSound.Play();
             }
@@ -65,11 +65,11 @@ public class MainMenuControl : MonoBehaviour
             {
                 slideSound.Play();
             }
-            slider.value = slider.value + 0.5f;
+            verticalScrollBar.value = verticalScrollBar.value + 0.5f;
         }
 
         //they hit enter while START was selected, begin mission select
-        if (Input.GetKeyDown("return") && slider.value == 0.0f)
+        if (Input.GetKeyDown("return") && verticalScrollBar.value == 0.0f)
         {
             selectSound.Play();
             while (selectSound.IsInvoking())
@@ -80,8 +80,8 @@ public class MainMenuControl : MonoBehaviour
             MissionSelect();
         }
         
-        //they  hit enter while OPTIONS was selected, begin race/faction select
-        if (Input.GetKeyDown("return") && slider.value == 0.5f)
+        //they  hit enter while FACTION was selected, begin race/faction select
+        if (Input.GetKeyDown("return") && verticalScrollBar.value == 0.5f)
         {
             selectSound.Play();
             while (selectSound.IsInvoking())
@@ -92,7 +92,7 @@ public class MainMenuControl : MonoBehaviour
             RaceFactionSelect();
         }
         //they hit enter while QUIT was selected, quit the application
-        if (Input.GetKeyDown("return") && slider.value == 1.0f)
+        if (Input.GetKeyDown("return") && verticalScrollBar.value == 1.0f)
         {
             selectSound.Play();
             while (selectSound.IsInvoking())
@@ -105,25 +105,19 @@ public class MainMenuControl : MonoBehaviour
 
     }
 
-    private UIScrollBar GetSlider()
-    {
-        UISprite sprite = GetComponent<UISprite>();
-        return sprite.gameObject.GetComponent<UIScrollBar>();
-    }
-
     public void SetSliderToStart()
     {
-        GetSlider().value = 0.0f;
+        verticalScrollBar.value = 0.0f;
     }
 
-    public void SetSliderToOptions()
+    public void SetSliderToFaction()
     {
-        GetSlider().value = 0.50f;
+        verticalScrollBar.value = 0.50f;
     }
 
     public void SetSliderToQuit()
     {
-        GetSlider().value = 1.0f;
+        verticalScrollBar.value = 1.0f;
     }
 
     public void MissionSelect()
@@ -133,7 +127,7 @@ public class MainMenuControl : MonoBehaviour
 
     public void RaceFactionSelect()
     {
-        Application.LoadLevel("UIRaceShip");
+        Application.LoadLevel("UIFaction");
     }
 
     public void Quit()

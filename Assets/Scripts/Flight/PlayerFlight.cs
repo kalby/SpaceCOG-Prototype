@@ -3,10 +3,10 @@ using System.Collections;
 public class PlayerFlight : MonoBehaviour
 {
     //Firing
-    public GameObject LeftTurret;
-    public GameObject RightTurret;
+    public Transform[] turrets;
     public GameObject lazer;
     public float fireRate;
+    public float lazerSpeed;
 
     //rotation
     public float maxRollAngle;
@@ -23,12 +23,12 @@ public class PlayerFlight : MonoBehaviour
     //private Variables
     private float yaw = 0.0f;
     private float delayShot;
+    private int score;
 
 
     // Use this for initialization
     void Start()
     {
-
 
     }
 
@@ -89,35 +89,23 @@ public class PlayerFlight : MonoBehaviour
         Quaternion slerpedRotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
         transform.rotation = slerpedRotation;
 
-        //Give the player a speed boost when LeftShift is held down
-        //Returns to normal speed when LeftShift is released
-        /*if (Input.GetKey(KeyCode.LeftShift))
-        {
-            //Screen.lockCursor = false;
-            defaultSpeed = currentSpeed;
-            currentSpeed = speedBoost;
-        }
-        else
-        {
-            currentSpeed = defaultSpeed;
-            //Screen.lockCursor = true;
-        }*/
-
-
         //Players shoots when spacebar is held down
         if (Input.GetKey(KeyCode.Space))
         {
             //Time delay to simulate a fire rate
             if (Time.time > delayShot)
-            {
+            {                
                 //Shoot Lazers from both turrets
-                Instantiate(lazer, LeftTurret.transform.position, LeftTurret.transform.rotation);
-                Instantiate(lazer, RightTurret.transform.position, RightTurret.transform.rotation);
-                delayShot = Time.time + fireRate;
+                foreach (Transform t in turrets)
+                {                    
+                    GameObject lazerInstance;
+                    lazerInstance = Instantiate(lazer, t.position, t.rotation) as GameObject;
+                    lazerInstance.rigidbody.AddForce(t.forward * lazerSpeed);
+                    lazerInstance.GetComponent<ProjectileLazer>().player = transform;
+                }
+                    delayShot = Time.time + fireRate;
             }
         }
-
-
     }
 
     void FixedUpdate()
@@ -125,13 +113,27 @@ public class PlayerFlight : MonoBehaviour
         //physics and collision detection go here. Not Input controlled movement though.
     }
 
-
     //This function is called when a gameobject enters the spaceships box collider.
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Lazer")
+        //if (other.tag == "Lazer")
+        //{
+        //    return;
+        //}
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "Boundary")
         {
-            return;
+            Destroy(gameObject);
         }
+    }
+
+    //This is mainly used to check that a message is being received once a lazer hits an enemy
+    void AddToScore(int points)
+    {
+        score += points;
+        Debug.Log("Player score: " + score);
     }
 }
