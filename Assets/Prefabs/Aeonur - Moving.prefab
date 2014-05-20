@@ -1240,10 +1240,10 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400164}
-  - 95: {fileID: 9500000}
   - 54: {fileID: 5400000}
   - 65: {fileID: 6500000}
   - 114: {fileID: 11400000}
+  - 111: {fileID: 11100000}
   m_Layer: 0
   m_Name: Aeonur - Moving
   m_TagString: Untagged
@@ -2300,20 +2300,21 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: -255, y: -360, z: -1190}
   m_Center: {x: -65, y: -73, z: -290}
---- !u!95 &9500000
-Animator:
-  serializedVersion: 2
+--- !u!111 &11100000
+Animation:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100164}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 5b5cd581949d9c04392c52b250994bdc, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_ApplyRootMotion: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 5b5cd581949d9c04392c52b250994bdc, type: 3}
+  m_Animations:
+  - {fileID: 7400000, guid: 5b5cd581949d9c04392c52b250994bdc, type: 3}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
   m_AnimatePhysics: 0
-  m_HasTransformHierarchy: 1
+  m_CullingType: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 1

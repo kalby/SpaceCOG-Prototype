@@ -173,6 +173,7 @@ ModelImporter:
     4300002: AeonurEye
     7400000: Take 001
     9500000: //RootNode
+    11100000: //RootNode
     13700000: Aeonur
     13700002: AeonurEye
   materials:
@@ -189,7 +190,199 @@ ModelImporter:
     animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Take 001
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 400
+      wrapMode: 2
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Aeonur
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Head01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Head01_Bone/Aeonur_Head02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Head01_Bone/Aeonur_Head02_Bone/Aeonur_Eye_Hp
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Head01_Bone/Aeonur_Head02_Bone/Aeonur_EyeDir_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Head01_Bone/Aeonur_Head02_Bone/Aeonur_HeadNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_NeckBase_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone/Aeonur_HeadFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone/Aeonur_HeadFin02_Bone/Aeonur_HeadFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone/Aeonur_HeadFin02_Bone/Aeonur_HeadFin03_Bone/Aeonur_HeadFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone/Aeonur_HeadFin02_Bone/Aeonur_HeadFin03_Bone/Aeonur_HeadFin04_Bone/Aeonur_HeadFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_HeadFin01_Bone/Aeonur_HeadFin02_Bone/Aeonur_HeadFin03_Bone/Aeonur_HeadFin04_Bone/Aeonur_HeadFin05_Bone/Aeonur_HeadFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_R_HeadFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_R_HeadFin_Ctrl/Aeonur_L_HeadFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone/Aeonur_L_FrontFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone/Aeonur_L_FrontFin03_Bone/Aeonur_L_FrontFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone/Aeonur_L_FrontFin03_Bone/Aeonur_L_FrontFin04_Bone/Aeonur_L_FrontFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone/Aeonur_L_FrontFin03_Bone/Aeonur_L_FrontFin04_Bone/Aeonur_L_FrontFin05_Bone/Aeonur_L_FrontFin06_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin01_Bone/Aeonur_L_FrontFin02_Bone/Aeonur_L_FrontFin03_Bone/Aeonur_L_FrontFin04_Bone/Aeonur_L_FrontFin05_Bone/Aeonur_L_FrontFin06_Bone/Aeonur_L_FrontFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_L_FrontFin_Ctrl/Aeonur_L_FrontFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone/Aeonur_R_FrontFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone/Aeonur_R_FrontFin03_Bone/Aeonur_R_FrontFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone/Aeonur_R_FrontFin03_Bone/Aeonur_R_FrontFin04_Bone/Aeonur_R_FrontFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone/Aeonur_R_FrontFin03_Bone/Aeonur_R_FrontFin04_Bone/Aeonur_R_FrontFin05_Bone/Aeonur_R_FrontFin06_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin01_Bone/Aeonur_R_FrontFin02_Bone/Aeonur_R_FrontFin03_Bone/Aeonur_R_FrontFin04_Bone/Aeonur_R_FrontFin05_Bone/Aeonur_R_FrontFin06_Bone/Aeonur_R_FrontFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_R_FrontFin_Ctrl/Aeonur_R_FrontFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone/Aeonur_L_BackFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone/Aeonur_L_BackFin02_Bone/Aeonur_L_BackFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone/Aeonur_L_BackFin02_Bone/Aeonur_L_BackFin03_Bone/Aeonur_L_BackFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone/Aeonur_L_BackFin02_Bone/Aeonur_L_BackFin03_Bone/Aeonur_L_BackFin04_Bone/Aeonur_L_BackFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin01_Bone/Aeonur_L_BackFin02_Bone/Aeonur_L_BackFin03_Bone/Aeonur_L_BackFin04_Bone/Aeonur_L_BackFin05_Bone/Aeonur_L_BackFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_L_BackFin_Ctrl/Aeonur_L_BackFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone/Aeonur_R_BackFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone/Aeonur_R_BackFin02_Bone/Aeonur_R_BackFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone/Aeonur_R_BackFin02_Bone/Aeonur_R_BackFin03_Bone/Aeonur_R_BackFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone/Aeonur_R_BackFin02_Bone/Aeonur_R_BackFin03_Bone/Aeonur_R_BackFin04_Bone/Aeonur_R_BackFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin01_Bone/Aeonur_R_BackFin02_Bone/Aeonur_R_BackFin03_Bone/Aeonur_R_BackFin04_Bone/Aeonur_R_BackFin05_Bone/Aeonur_R_BackFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_R_BackFin_Ctrl/Aeonur_R_BackFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone/Aeonur_L_TailFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone/Aeonur_L_TailFin03_Bone/Aeonur_L_TailFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone/Aeonur_L_TailFin03_Bone/Aeonur_L_TailFin04_Bone/Aeonur_L_TailFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone/Aeonur_L_TailFin03_Bone/Aeonur_L_TailFin04_Bone/Aeonur_L_TailFin05_Bone/Aeonur_L_TailFin06_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin01_Bone/Aeonur_L_TailFin02_Bone/Aeonur_L_TailFin03_Bone/Aeonur_L_TailFin04_Bone/Aeonur_L_TailFin05_Bone/Aeonur_L_TailFin06_Bone/Aeonur_L_TailFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_L_TailFin_Ctrl/Aeonur_L_TailFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone/Aeonur_R_TailFin03_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone/Aeonur_R_TailFin03_Bone/Aeonur_R_TailFin04_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone/Aeonur_R_TailFin03_Bone/Aeonur_R_TailFin04_Bone/Aeonur_R_TailFin05_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone/Aeonur_R_TailFin03_Bone/Aeonur_R_TailFin04_Bone/Aeonur_R_TailFin05_Bone/Aeonur_R_TailFin06_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin01_Bone/Aeonur_R_TailFin02_Bone/Aeonur_R_TailFin03_Bone/Aeonur_R_TailFin04_Bone/Aeonur_R_TailFin05_Bone/Aeonur_R_TailFin06_Bone/Aeonur_R_TailFinNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_R_TailFin_Ctrl/Aeonur_R_TailFinTip_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_Spine01_Bone/Aeonur_Spine02_Bone/Aeonur_Spine03_Bone/Aeonur_Spine04_Bone/Aeonur_Spine05_Bone/Aeonur_Spine06_Bone/Aeonur_Spine07_Bone/Aeonur_Spine08_Bone/Aeonur_Spine09_Bone/Aeonur_SpineNub_Bone
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_SpineBase_Ctrl
+        weight: 1
+      - path: Aeonur_GLOBAL_Ctrl/Aeonur_CoM_Ctrl/Aeonur_TailBase_Ctrl
+        weight: 1
+      - path: AeonurEye
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -225,6 +418,6 @@ ModelImporter:
     feetSpacing: 0
     rootMotionBoneName: 
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 1
   additionalBone: 0
   userData: 
