@@ -17,6 +17,13 @@ TagManager:
   - FourcroyInfoBox
   - HerronsInfoBox
   - SantaroInfoBox
+  - RaceScrollBar
+  - ShipScrollBar
+  - MainMenuScrollBar
+  - Aesop
+  - Fourcroy
+  - Herrons
+  - Santaro
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

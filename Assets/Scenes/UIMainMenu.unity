@@ -179,6 +179,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1016029133}
+  - {fileID: 1807786886}
   - {fileID: 1776133141}
   m_Father: {fileID: 1023840947}
 --- !u!54 &454242338
@@ -415,6 +416,8 @@ GameObject:
   m_Component:
   - 4: {fileID: 543084083}
   - 114: {fileID: 543084084}
+  - 114: {fileID: 543084085}
+  - 114: {fileID: 543084086}
   m_Layer: 8
   m_Name: Background
   m_TagString: Background
@@ -480,6 +483,32 @@ MonoBehaviour:
   mMat: {fileID: 0}
   mShader: {fileID: 4800000, guid: e75727d9555d9d14ca51d91908c681bc, type: 3}
   mFlip: 0
+--- !u!114 &543084085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 543084082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25b782beb6433264fa26ef66c3188d1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &543084086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 543084082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioClip: {fileID: 8300000, guid: cab912f3009b43843b0a48ac3120c6ad, type: 3}
+  trigger: 5
+  volume: 1
+  pitch: 1
 --- !u!1 &568486708
 GameObject:
   m_ObjectHideFlags: 0
@@ -682,11 +711,7 @@ MonoBehaviour:
   pressedSprite: 
   disabledSprite: 
   pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 1807786891}
-    mMethodName: SetSliderToStart
-    mParameters: []
-    oneShot: 0
+  onClick: []
 --- !u!65 &606351532
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -716,9 +741,13 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
+  onClick:
+  - mTarget: {fileID: 543084085}
+    mMethodName: SetSliderToStart
+    mParameters: []
+    oneShot: 0
   onDoubleClick:
-  - mTarget: {fileID: 1807786891}
+  - mTarget: {fileID: 543084085}
     mMethodName: MissionSelect
     mParameters: []
     oneShot: 0
@@ -738,7 +767,7 @@ GameObject:
   - 114: {fileID: 623412621}
   - 114: {fileID: 623412624}
   m_Layer: 8
-  m_Name: Options Button
+  m_Name: Faction Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -829,11 +858,7 @@ MonoBehaviour:
   pressedSprite: 
   disabledSprite: 
   pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 1807786891}
-    mMethodName: SetSliderToOptions
-    mParameters: []
-    oneShot: 0
+  onClick: []
 --- !u!65 &623412623
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -863,9 +888,13 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
+  onClick:
+  - mTarget: {fileID: 543084085}
+    mMethodName: SetSliderToFaction
+    mParameters: []
+    oneShot: 0
   onDoubleClick:
-  - mTarget: {fileID: 1807786891}
+  - mTarget: {fileID: 543084085}
     mMethodName: RaceFactionSelect
     mParameters: []
     oneShot: 0
@@ -1013,7 +1042,6 @@ Transform:
   m_LocalPosition: {x: -293, y: -76, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1807786886}
   - {fileID: 623412619}
   - {fileID: 1094391627}
   - {fileID: 606351528}
@@ -1268,11 +1296,7 @@ MonoBehaviour:
   pressedSprite: 
   disabledSprite: 
   pixelSnap: 0
-  onClick:
-  - mTarget: {fileID: 1807786891}
-    mMethodName: SetSliderToQuit
-    mParameters: []
-    oneShot: 0
+  onClick: []
 --- !u!65 &1094391631
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1302,9 +1326,13 @@ MonoBehaviour:
   onRelease: []
   onSelect: []
   onDeselect: []
-  onClick: []
+  onClick:
+  - mTarget: {fileID: 543084085}
+    mMethodName: SetSliderToQuit
+    mParameters: []
+    oneShot: 0
   onDoubleClick:
-  - mTarget: {fileID: 1807786891}
+  - mTarget: {fileID: 543084085}
     mMethodName: Quit
     mParameters: []
     oneShot: 0
@@ -1320,7 +1348,7 @@ GameObject:
   - 4: {fileID: 1356266753}
   - 114: {fileID: 1356266754}
   m_Layer: 8
-  m_Name: Options Label
+  m_Name: Faction Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1377,7 +1405,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: OPTIONS
+  mText: FACTION
   mFontSize: 120
   mFontStyle: 0
   mAlignment: 1
@@ -1714,11 +1742,9 @@ GameObject:
   - 114: {fileID: 1807786889}
   - 65: {fileID: 1807786888}
   - 114: {fileID: 1807786887}
-  - 114: {fileID: 1807786891}
-  - 114: {fileID: 1807786892}
   m_Layer: 8
   m_Name: Control - Simple Vertical Scroll Bar
-  m_TagString: Untagged
+  m_TagString: MainMenuScrollBar
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1730,11 +1756,11 @@ Transform:
   m_PrefabInternal: {fileID: 1978309477}
   m_GameObject: {fileID: 1807786885}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -560, y: -12, z: 0}
+  m_LocalPosition: {x: -1055.44055, y: -88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 675986668}
-  m_Father: {fileID: 1016029133}
+  m_Father: {fileID: 454242337}
 --- !u!114 &1807786887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1848,46 +1874,20 @@ MonoBehaviour:
   rightType: 1
   bottomType: 1
   topType: 1
---- !u!114 &1807786891
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1807786885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25b782beb6433264fa26ef66c3188d1a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1807786892
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1807786885}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d44bc69c2ca5f943b845318866dc1bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioClip: {fileID: 8300000, guid: cab912f3009b43843b0a48ac3120c6ad, type: 3}
-  trigger: 5
-  volume: 1
-  pitch: 1
 --- !u!1001 &1978309477
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    m_TransformParent: {fileID: 1016029133}
+    m_TransformParent: {fileID: 454242337}
     m_Modifications:
     - target: {fileID: 400002, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_LocalPosition.x
-      value: -560
+      value: -1055.44055
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_LocalPosition.y
-      value: -12
+      value: -88
       objectReference: {fileID: 0}
     - target: {fileID: 400002, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_LocalPosition.z
@@ -1971,6 +1971,14 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400010, guid: df7390d50d06a4b4b893085286142266, type: 2}
       propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100002, guid: df7390d50d06a4b4b893085286142266, type: 2}
+      propertyPath: m_TagString
+      value: MainMenuScrollBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 11400010, guid: df7390d50d06a4b4b893085286142266, type: 2}
+      propertyPath: mDepth
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
