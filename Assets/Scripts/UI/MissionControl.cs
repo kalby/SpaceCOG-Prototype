@@ -20,12 +20,23 @@ public class MissionControl : MonoBehaviour
     private Vector3 santaroScale;
 
     private GameObject highlightedMission;
+    private GameObject selectEnter;
+    private GameObject selectEnterGreyed;
 
     void Start()
     {
         //Get the audio from the background, which is the slide sound
         GameObject background = GameObject.FindWithTag("Background");
         slideSound = background.GetComponent<UIPlaySound>();
+
+        //Get the SELECT [ENTER] label.
+        selectEnter = GameObject.FindWithTag("SelectEnter");
+        //Get the greyed out label
+        selectEnterGreyed = GameObject.FindWithTag("SelectEnterGreyed");
+
+        //Ensure the greyed out label is displayed at start
+        selectEnter.SetActive(false);
+        selectEnterGreyed.SetActive(true);
 
         //Get the Mission Info Boxes
         aesopInfoBox = GameObject.FindWithTag("AesopInfoBox");
@@ -151,6 +162,11 @@ public class MissionControl : MonoBehaviour
         //Set the selected for use on keypress Enter.
         highlightedMission = aesop;
 
+        //Make SELECT [ENTER] not greyed out.
+        selectEnterGreyed.SetActive(false);
+        selectEnter.SetActive(true);
+
+
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.2f;
         fourcroy.transform.localScale = fourcroyScale * 1.0f;
@@ -162,6 +178,10 @@ public class MissionControl : MonoBehaviour
     {
         //Set the selected for use on keypress Enter.
         highlightedMission = fourcroy;
+
+        //Make SELECT [ENTER] not greyed out.
+        selectEnterGreyed.SetActive(false);
+        selectEnter.SetActive(true);
 
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.0f;
@@ -175,6 +195,10 @@ public class MissionControl : MonoBehaviour
         //Set the selected for use on keypress Enter.
         highlightedMission = herrons;
 
+        //Make SELECT [ENTER] not greyed out.
+        selectEnterGreyed.SetActive(false);
+        selectEnter.SetActive(true);
+
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.0f;
         fourcroy.transform.localScale = fourcroyScale * 1.0f;
@@ -186,6 +210,10 @@ public class MissionControl : MonoBehaviour
     {
         //Set the selected for use on keypress Enter.
         highlightedMission = santaro;
+
+        //Make SELECT [ENTER] not greyed out.
+        selectEnterGreyed.SetActive(false);
+        selectEnter.SetActive(true);
 
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.0f;

@@ -40,6 +40,17 @@ public class FactionControl : MonoBehaviour {
             }
             MainMenuSelect();
         }
+        //if they hit enter pretend to save changes and load previous scene
+        if (Input.GetKeyDown("return"))
+        {
+            //This is where the settings would be saved.
+            slideSound.Play();
+            while (slideSound.IsInvoking())
+            {
+                //do nothing
+            }
+            MainMenuSelect();
+        }
     }
 
     public void MainMenuSelect()

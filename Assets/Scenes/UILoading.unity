@@ -85,7 +85,7 @@ GameObject:
   - 114: {fileID: 89514591}
   m_Layer: 8
   m_Name: Fluff4
-  m_TagString: Untagged
+  m_TagString: Fluff4
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -118,7 +118,7 @@ MonoBehaviour:
     relative: .5
     absolute: -2
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .819607854, g: .211764708, b: .0823529437, a: 1}
   mPivot: 4
   mWidth: 1664
   mHeight: 60
@@ -130,10 +130,10 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: Reanimation Complete.
+  mText: Reanimation Complete
   mFontSize: 60
   mFontStyle: 0
-  mAlignment: 1
+  mAlignment: 2
   mEncoding: 1
   mMaxLineCount: 0
   mEffectStyle: 0
@@ -174,7 +174,7 @@ GameObject:
   - 114: {fileID: 133621993}
   m_Layer: 8
   m_Name: Fluff3
-  m_TagString: Untagged
+  m_TagString: Fluff3
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -218,7 +218,7 @@ MonoBehaviour:
     relative: .5
     absolute: 75
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .0823529437, g: .690196097, b: .819607854, a: 1}
   mPivot: 4
   mWidth: 1664
   mHeight: 60
@@ -230,9 +230,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: 'Stabilising Biorhythms...
-
-'
+  mText: '> Stabilising Biorhythms'
   mFontSize: 60
   mFontStyle: 0
   mAlignment: 1
@@ -265,7 +263,7 @@ GameObject:
   - 114: {fileID: 522910884}
   m_Layer: 8
   m_Name: Fluff1
-  m_TagString: Untagged
+  m_TagString: Fluff1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -309,7 +307,7 @@ MonoBehaviour:
     relative: .5
     absolute: 241
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .0823529437, g: .690196097, b: .819607854, a: 1}
   mPivot: 4
   mWidth: 1664
   mHeight: 60
@@ -321,7 +319,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: 'Flushing Cryogenic Chambers...
+  mText: '> Flushing Cryogenic Chambers
 
 '
   mFontSize: 60
@@ -680,7 +678,7 @@ MonoBehaviour:
     relative: 0
     absolute: 110
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .0823529437, g: .690196097, b: .819607854, a: 1}
   mPivot: 4
   mWidth: 300
   mHeight: 60
@@ -692,9 +690,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: 'Loading...
-
-'
+  mText: Loading...
   mFontSize: 60
   mFontStyle: 0
   mAlignment: 1
@@ -855,7 +851,7 @@ GameObject:
   - 114: {fileID: 2127272068}
   m_Layer: 8
   m_Name: Fluff2
-  m_TagString: Untagged
+  m_TagString: Fluff2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -899,7 +895,7 @@ MonoBehaviour:
     relative: .5
     absolute: 155
   updateAnchors: 1
-  mColor: {r: 1, g: 1, b: 1, a: 1}
+  mColor: {r: .0823529437, g: .690196097, b: .819607854, a: 1}
   mPivot: 4
   mWidth: 1664
   mHeight: 60
@@ -911,7 +907,7 @@ MonoBehaviour:
   keepCrispWhenShrunk: 1
   mTrueTypeFont: {fileID: 0}
   mFont: {fileID: 11400000, guid: 8eaec361743e9e54ead8fbe860dec235, type: 2}
-  mText: 'Repressurising...
+  mText: '> Repressurising
 
 '
   mFontSize: 60

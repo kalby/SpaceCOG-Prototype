@@ -25,6 +25,12 @@ TagManager:
   - Herrons
   - Santaro
   - Enemy
+  - SelectEnter
+  - SelectEnterGreyed
+  - Fluff1
+  - Fluff2
+  - Fluff3
+  - Fluff4
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
