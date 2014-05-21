@@ -34,4 +34,9 @@ public class LobbyControl : MonoBehaviour {
     {
         Application.LoadLevel("UIMission");
     }
+
+    public void LoadingSelect()
+    {
+        Application.LoadLevel("UILoading");
+    }
 }

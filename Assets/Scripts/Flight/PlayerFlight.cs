@@ -57,9 +57,9 @@ public class PlayerFlight : MonoBehaviour
 
         //VELOCITY CONTROL
         currentSpeed = currentSpeed + (vertical * acceleration);
-        if (currentSpeed < -0.1f)
+        if (currentSpeed < 0f)
         {
-            currentSpeed = -0.1f;
+            currentSpeed = 0f;
         }
         else if (currentSpeed > maxSpeed)
         {
