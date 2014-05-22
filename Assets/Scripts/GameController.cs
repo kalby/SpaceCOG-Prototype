@@ -10,7 +10,9 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        Instantiate(player, spawnPoint.position, spawnPoint.rotation);
+        int playerNum = Random.Range(0, 2);
+
+        Instantiate(playerList[playerNum], spawnPoint.position, spawnPoint.rotation);
 	    
 	}
 

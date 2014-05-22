@@ -2253,7 +2253,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100164}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: .939692616, z: 0, w: -.342020124}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children:
@@ -2329,11 +2329,11 @@ MonoBehaviour:
   health: 1000
   speed: 9.99999975e-05
   damageTaken: 1
-  damageDealt: 20
   fireRange: 30
   fireRate: 2
   eyePosition: {fileID: 100166}
   maxDistance: 1000
+  explostion: {fileID: 0}
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
@@ -2379,8 +2379,8 @@ SkinnedMeshRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 2100000, guid: a89af2f39a4ec734ba26b84977c7a9c3, type: 2}
-  - {fileID: 2100000, guid: a89af2f39a4ec734ba26b84977c7a9c3, type: 2}
+  - {fileID: 0}
+  - {fileID: 2100000, guid: 25b18fc63ed8bd1438fb8b735ece2217, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0

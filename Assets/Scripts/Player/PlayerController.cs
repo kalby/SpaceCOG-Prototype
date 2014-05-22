@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour {
 
     void Hit(float damage)
     {
+        Debug.Log("Player Health: " + health);
         if (health >= 0)
         {
             health -= damage;
