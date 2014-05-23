@@ -31,15 +31,15 @@ TagManager:
   - Fluff2
   - Fluff3
   - Fluff4
-  - ReadyCheckbox1
-  - ReadyCheckbox2
-  - ReadyCheckbox3
-  - ReadyCheckbox4
-  - ReadyCheckbox5
-  - ReadyCheckbox6
-  - ReadyCheckbox7
-  - ReadyCheckbox8
-  - ReadyCheckbox9
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - SlotText1
   - SlotText2
   - SlotText3
@@ -58,6 +58,10 @@ TagManager:
   - Swap7
   - Swap8
   - Swap9
+  - StartMatch
+  - StartMatchGreyed
+  - 
+  - 
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

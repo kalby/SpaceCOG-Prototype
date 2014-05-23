@@ -47,7 +47,7 @@ public class ChatInput : MonoBehaviour
 			{
 				textList.Add(text);
 				mInput.value = "";
-				mInput.isSelected = false;
+				//mInput.isSelected = false;
 			}
 		}
 	}
