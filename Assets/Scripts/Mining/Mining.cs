@@ -43,10 +43,7 @@ public class Mining : MonoBehaviour {
             Ray ray = new Ray(transform.position, transform.forward);
 
             lineRender.SetPosition(0, ray.origin);//Set first position as the ships position
-            lineRender.SetPosition(1, mine.transform.position);//Set second position as the crystals position
-            
-            //lineRender.SetWidth(.45f, .45f);
-            //lineRender.SetColors(Color.green, Color.green);      
+            lineRender.SetPosition(1, mine.transform.position);//Set second position as the crystals position    
         }
 	}
 

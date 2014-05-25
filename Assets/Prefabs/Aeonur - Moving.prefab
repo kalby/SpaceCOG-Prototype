@@ -1253,12 +1253,13 @@ GameObject:
   m_IsActive: 1
 --- !u!1 &100166
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400166}
+  - 120: {fileID: 12000000}
   m_Layer: 0
   m_Name: AeonurEyePos
   m_TagString: Untagged
@@ -2219,10 +2220,11 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100158}
-  m_LocalRotation: {x: -.707106829, y: 0, z: -0, w: .707106829}
-  m_LocalPosition: {x: 2.14501179e-05, y: 4.55678558, z: 331.373962}
+  m_LocalRotation: {x: -.707106829, y: 1.22659405e-09, z: 1.22659405e-09, w: .707106829}
+  m_LocalPosition: {x: 2.75462662e-05, y: 4.55678558, z: 331.373932}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 400166}
   m_Father: {fileID: 400164}
 --- !u!4 &400160
 Transform:
@@ -2253,14 +2255,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100164}
-  m_LocalRotation: {x: 0, y: .939692616, z: 0, w: -.342020124}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: .100000001, y: .100000001, z: .100000001}
   m_Children:
   - {fileID: 400162}
   - {fileID: 400160}
   - {fileID: 400158}
-  - {fileID: 400166}
   m_Father: {fileID: 0}
 --- !u!4 &400166
 Transform:
@@ -2269,10 +2270,10 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100166}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -110, y: 85, z: 300}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalPosition: {x: -111.486557, y: 30.0403252, z: 76.4499207}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 400164}
+  m_Father: {fileID: 400158}
 --- !u!54 &5400000
 Rigidbody:
   m_ObjectHideFlags: 1
@@ -2327,13 +2328,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 1000
-  speed: 9.99999975e-05
+  speed: .0500000007
   damageTaken: 1
-  fireRange: 30
+  fireRange: 50
   fireRate: 2
-  eyePosition: {fileID: 100166}
+  eyePosition: {fileID: 100158}
   maxDistance: 1000
   explostion: {fileID: 0}
+  lineRender: {fileID: 12000000}
+--- !u!120 &12000000
+LineRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100166}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_LightmapIndex: 255
+  m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
+  m_Materials:
+  - {fileID: 0}
+  m_SubsetIndices: 
+  m_StaticBatchRoot: {fileID: 0}
+  m_UseLightProbes: 0
+  m_LightProbeAnchor: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortingLayerID: 0
+  m_Positions:
+  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 0, z: 1}
+  m_Parameters:
+    startWidth: .5
+    endWidth: .5
+    m_StartColor:
+      serializedVersion: 2
+      rgba: 4294967295
+    m_EndColor:
+      serializedVersion: 2
+      rgba: 4294967295
+  m_UseWorldSpace: 1
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

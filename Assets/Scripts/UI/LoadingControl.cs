@@ -64,16 +64,16 @@ public class LoadingControl : MonoBehaviour
     //A co-routine to display text every 1 seconds
     private IEnumerator EmulateTerminal()
     {
-        for (int i = 0; i < fluffText.Length + 1; i++)
+        for (int i = 0; i < fluffText.Length; i++)
         {
-            //check that the last text is true, then we must be on the last cycle, select GameWorld scene.
+            //check that the last text is true, then we must be on the null element, select GameWorld scene.
             if (fluff4.activeSelf == true)
             {
                 GameWorldSelect();
             }
-            //ensure null element doesn't cause an error or waiting
+            //ensure the null element doesn't cause an error
             if (fluffText[i] == null)
-            {
+            { 
                 break;
             }
             fluffText[i].SetActive(true);

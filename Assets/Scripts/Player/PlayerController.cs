@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
     //Firing
     public Transform[] turrets;
     public GameObject lazer;
+    public float lazerRange;
     public float fireRate;
     public float lazerSpeed;
     public float health;
@@ -36,13 +37,14 @@ public class PlayerController : MonoBehaviour {
                 {
                     GameObject lazerInstance;
                     lazerInstance = Instantiate(lazer, t.position, t.rotation) as GameObject;
+                    lazerInstance.SendMessage("SetRange", lazerRange);
                     lazerInstance.rigidbody.AddForce(t.forward * lazerSpeed);
-                    lazerInstance.GetComponent<ProjectileLazer>().player = transform;
+                    lazerInstance.tag = gameObject.tag;
+                    lazerInstance.GetComponent<ProjectileLazer>().player = gameObject;
                 }
                 delayShot = Time.time + fireRate;
             }
-        }
-	
+        }	
 	}
 
     //This function is called when a gameobject enters the spaceships box collider.
@@ -65,24 +67,22 @@ public class PlayerController : MonoBehaviour {
 
     //This is mainly used to check that a message is being received once a lazer hits an enemy
     void AddToScore(int points)
-    {
+    {        
         score += points;
         Debug.Log("Player score: " + score);
     }
 
-    void Hit(float damage)
+    void Hit(int damage)
     {
         Debug.Log("Player Health: " + health);
-        if (health >= 0)
+        if (health > 0)
         {
             health -= damage;
+            if (health <= 0)
+            {
+                Destroy(gameObject);
+                Instantiate(shipExplosion, transform.position, transform.rotation);
+            }
         }
-        else
-        {
-            Destroy(gameObject);
-            Instantiate(shipExplosion, transform.position, transform.rotation);
-        }
-        
-
     }
 }

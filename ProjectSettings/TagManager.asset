@@ -31,9 +31,9 @@ TagManager:
   - Fluff2
   - Fluff3
   - Fluff4
-  - 
-  - 
-  - 
+  - TeamOne
+  - TeamTwo
+  - TeamThree
   - 
   - 
   - 
@@ -62,6 +62,8 @@ TagManager:
   - StartMatchGreyed
   - 
   - 
+  - 
+  - Aeonur
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

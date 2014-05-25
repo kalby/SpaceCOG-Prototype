@@ -32,7 +32,7 @@ public class PlayerFlight : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         //forwards and backwards.
         float vertical = Input.GetAxis("Vertical");
-
+        
         //STEERING
         //Adjust the facing as the player turns.
         yaw = yaw + (horizontal * rotationSpeed);
