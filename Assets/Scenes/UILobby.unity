@@ -1511,7 +1511,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &202676709
 GameObject:
@@ -2692,7 +2692,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &361768927
 GameObject:
@@ -2884,7 +2884,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!114 &377968605
 MonoBehaviour:
@@ -5312,7 +5312,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &905195203
 GameObject:
@@ -6013,7 +6013,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1001 &930893241
 Prefab:
@@ -7559,7 +7559,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &1079294953
 GameObject:
@@ -7711,7 +7711,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &1088850841
 GameObject:
@@ -8383,7 +8383,7 @@ MonoBehaviour:
   checkSprite: {fileID: 0}
   checkAnimation: {fileID: 0}
   eventReceiver: {fileID: 0}
-  functionName: 
+  functionName: OnActivate
   startsChecked: 0
 --- !u!1 &1153313163
 GameObject:

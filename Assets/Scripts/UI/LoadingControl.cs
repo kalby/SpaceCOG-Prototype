@@ -73,7 +73,7 @@ public class LoadingControl : MonoBehaviour
             }
             //ensure the null element doesn't cause an error
             if (fluffText[i] == null)
-            { 
+            {
                 break;
             }
             fluffText[i].SetActive(true);
