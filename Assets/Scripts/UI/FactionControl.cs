@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FactionControl : MonoBehaviour {
+public class FactionControl : MonoBehaviour
+{
 
-   
+
     private UIPlaySound slideSound;
 
     private UIScrollBar raceScrollBar;
     private UIScrollBar shipScrollBar;
 
-	void Start () {
+    void Start()
+    {
         //Get components from the scene at init.
         //Get the audio from the background, which is the slide sound.
         GameObject background = GameObject.FindWithTag("Background");
@@ -20,13 +22,13 @@ public class FactionControl : MonoBehaviour {
         //Get the scroll bar from the ship scroll element.
         GameObject shipScrollBarObject = GameObject.FindWithTag("ShipScrollBar");
         shipScrollBar = shipScrollBarObject.GetComponent<UIScrollBar>();
-	}
-	
-	// Update is called once per frame
-	void Update () 
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         CheckKeys();
-	}
+    }
 
     private void CheckKeys()
     {
@@ -60,12 +62,12 @@ public class FactionControl : MonoBehaviour {
 
     public void MoveRaceScrollLeft()
     {
-        raceScrollBar.value += 1f;
+        raceScrollBar.value += 0.333333333f;
     }
 
     public void MoveRaceScrollRight()
     {
-        raceScrollBar.value -= 1f;
+        raceScrollBar.value -= 0.333333333f;
     }
 
     public void MoveShipScrollLeft()

@@ -67,6 +67,7 @@ public class MissionControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Main check for player keypresses
         CheckKeys();
     }
 
@@ -168,10 +169,13 @@ public class MissionControl : MonoBehaviour
 
 
         //Make the highlighted stand out a bit.
-        aesop.transform.localScale = aesopScale * 1.2f;
+        aesop.transform.localScale = aesopScale * 1.3f;
         fourcroy.transform.localScale = fourcroyScale * 1.0f;
         herrons.transform.localScale = herronsScale * 1.0f;
         santaro.transform.localScale = santaroScale * 1.0f;
+
+        //Make the selected Mission Text Box stay visible.
+        
     }
 
     public void HighlightFourcroy()
@@ -185,7 +189,7 @@ public class MissionControl : MonoBehaviour
 
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.0f;
-        fourcroy.transform.localScale = fourcroyScale * 1.2f;
+        fourcroy.transform.localScale = fourcroyScale * 1.3f;
         herrons.transform.localScale = herronsScale * 1.0f;
         santaro.transform.localScale = santaroScale * 1.0f;
     }
@@ -202,7 +206,7 @@ public class MissionControl : MonoBehaviour
         //Make the highlighted stand out a bit.
         aesop.transform.localScale = aesopScale * 1.0f;
         fourcroy.transform.localScale = fourcroyScale * 1.0f;
-        herrons.transform.localScale = herronsScale * 1.2f;
+        herrons.transform.localScale = herronsScale * 1.3f;
         santaro.transform.localScale = santaroScale * 1.0f;
     }
 
@@ -219,7 +223,7 @@ public class MissionControl : MonoBehaviour
         aesop.transform.localScale = aesopScale * 1.0f;
         fourcroy.transform.localScale = fourcroyScale * 1.0f;
         herrons.transform.localScale = herronsScale * 1.0f;
-        santaro.transform.localScale = santaroScale * 1.2f;
+        santaro.transform.localScale = santaroScale * 1.3f;
     }
 
 }
