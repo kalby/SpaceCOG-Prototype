@@ -64,6 +64,18 @@ TagManager:
   - 
   - 
   - Aeonur
+  - ThrustProgressBar
+  - HealthProgressBar
+  - LaserHeatProgressBar
+  - MissileSlot1ProgressBar
+  - MissileSlot2ProgressBar
+  - MissileSlot3ProgressBar
+  - MissileSlot4ProgressBar
+  - MissileSlot5ProgressBar
+  - KDRatioLabel
+  - PlayerSolLabel
+  - ScoreLabel
+  - Crosshair
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

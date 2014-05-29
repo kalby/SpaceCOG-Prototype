@@ -1,72 +1,74 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ProjectileLazer : MonoBehaviour {
+public class ProjectileLazer : MonoBehaviour
+{
 
+    //Player who fired the shot
     public GameObject player;
+    //Type of explosion on destruction
     public GameObject explosion;
-    
-
+    //Damage of lazer shot
+    public int damage;
+    //Score for hitting enemy players with lazer shot
     public int points;
+    //Lazer speed modifier, 10000 feels good, wasp can't outrun this speed
+    public float lazerSpeed;
 
-    //private int damage;
+    //Private variables
+    //Distance from spawnpoint before being destroyed
     private float range;
+    //Instantiation point
     private Vector3 spawnPoint;
-    private Vector3 currentPos;
 
 
     private float delayShot;
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
+        //Set the spawn point on instantiation
         spawnPoint = transform.position;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-        //currentPos = transform.position;
+        //Add a forward force to the lazer shot
+        rigidbody.AddForce(transform.forward * lazerSpeed);
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
+        //Difference between spawn and current position
         float distance = Vector3.Distance(spawnPoint, transform.position);
-
+        //Enforce a range limit
         if (distance >= range)
         {
             Destroy(gameObject);
             Instantiate(explosion, transform.position, transform.rotation);
         }
+    }
 
-	}
-
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider collidedWith)
     {
-        if (other.tag == "Boundary")
+        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals")
         {
             return;
         }
-        if (other.tag == "Crystals")
-        {
-            return;
-        }
-        
-        if (other.tag != player.tag)//If they player who fired the lazer's tag isnt the same as the gameobject's tag that the lazer hit, then do damage
-        {
-            Debug.Log("OtherTag: " + other.tag + " and Player Tag: " + player.tag);
-            //This is to tell the player getting hit. Used for taking health from player getting hit
-            other.gameObject.SendMessage("Hit", 5);
 
-            //When the lazer was instantiated it was given a reference to who instantiated it.
-            //This is stores in the variable player
-            //players is then used to send a message back to the player to indicate whether or not the bullet hit the enemy
-            //The "AddToScore" is a method in the PlayerController script and points is a paramter of that method
-            //player.SendMessage("AddToScore", points);
+        //Lazer shot has same tag as player who fired it
+        //If it isn't the same as the collided with object's tag, then do damage
+        if (collidedWith.tag != tag)
+        {
+            //Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + tag);
+            //This is to tell the player getting hit. Used for taking health from player getting hit
+            collidedWith.gameObject.SendMessage("Hit", damage);
+
+            //When the lazer was instantiated it was given a reference to whoever instantiated it, stored in player.
+            //Sends a message back to the player to indicate whether or not the bullet hit the enemy
+            //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
+            player.SendMessage("AddToScore", points);
 
             //Destroys the lazer gameobject
             Destroy(gameObject);
             Instantiate(explosion, transform.position, transform.rotation);
         }
-        //else if (other.tag == "Aeonur")
-        //{
-        //    other.gameObject.SendMessage("Hit", 5);//SendMessage to Hit method in Aeonur script to take 5 health
-        //}
-        
     }
 
 
@@ -80,6 +82,7 @@ public class ProjectileLazer : MonoBehaviour {
         }
     }
 
+    //For receiving new range via SendMessage from firing object
     void SetRange(float newRange)
     {
         range = newRange;
