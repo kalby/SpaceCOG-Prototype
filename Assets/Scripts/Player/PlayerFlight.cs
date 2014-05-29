@@ -3,59 +3,29 @@ using System.Collections;
 public class PlayerFlight : MonoBehaviour
 {
 
-    //rotation
+    //Rotation
     public float maxRollAngle;
     public float rotationSpeed;
 
     //Particle System Engine
     public GameObject[] engine;
 
-    //velocity variables
+    //Velocity variables
     public float acceleration;
     public float maxSpeed;
     public float currentSpeed;
-    public float speedBoost;
-    //To do for later, I'll leave it in for now, the code using it is disabled -D
-    public float thrusterPower;
 
-    //private Variables
-    private float yaw = 0.0f;
+    //Private Variables
+    private float yaw;
 
-    // Update is called once per frame
+    void Start()
+    {
+        Application.targetFrameRate = 60;
+    }
+
+    //Update is called once per frame
     void Update()
     {
-        //INPUTS
-        //set the inputs for wasd movement.
-        //should be in update not forcedUpdate() as "input flags aren't reset until update() is called."
-
-        //side-to-side.
-        float horizontal = Input.GetAxis("Horizontal");
-        //forwards and backwards.
-        float vertical = Input.GetAxis("Vertical");
-        
-        //STEERING
-        //Adjust the facing as the player turns.
-        yaw = yaw + (horizontal * rotationSpeed);
-
-        //make the yaw angle loop around so it's not counting rotations.
-        //prevents possible overflow.
-        if (yaw > 360 || yaw < -360)
-        {
-            yaw = 0;
-        }
-
-        //VELOCITY CONTROL
-        currentSpeed = currentSpeed + (vertical * acceleration);
-        if (currentSpeed < 0f)
-        {
-            currentSpeed = 0f;
-            
-        }
-        else if (currentSpeed > maxSpeed)
-        {
-            currentSpeed = maxSpeed;
-        }
-
         //Particle System control
         if (currentSpeed <= 0f)
         {
@@ -63,7 +33,6 @@ public class PlayerFlight : MonoBehaviour
             {
                 p.particleSystem.enableEmission = false;
             }
-            
         }
         else
         {
@@ -72,29 +41,62 @@ public class PlayerFlight : MonoBehaviour
                 p.particleSystem.enableEmission = true;
             }
         }
-        
+
+        //INPUTS
+        //Side-to-side.
+        float horizontal = Input.GetAxis("Horizontal");
+        //Forwards and backwards.
+        float vertical = Input.GetAxis("Vertical");
 
         //AXES
-        //cannot use raw transform.forward due to the rotation creating non-zero y component.
+        //Cannot use raw transform.forward due to the rotation creating non-zero y component
         float tx = transform.forward.x;
         float tz = transform.forward.z;
-
         //create the ship facing vector in the XZ plane.
         Vector3 facingXZ = new Vector3(tx, 0.0f, tz);
-        //create the horizontal vector in the XZ plane.
+        //create the sideways vector in the XZ plane.
         //Vector3 orthogonalXZ = Vector3.Cross(facingXZ, Vector3.up);
 
-        //MOMENTUM
-        //give it forward momentum in the XZ plane.
-        transform.Translate(facingXZ * Time.deltaTime * currentSpeed, Space.World);
+        //STEERING
+        //Adjust the facing as the player turns.
+        yaw = yaw + (horizontal * rotationSpeed * 1000) * Time.deltaTime * 0.01f;
 
-        //give it side-to-side momentum, emulates another engine firing to the side. Use to implement thrusters later.
-        //transform.Translate((horizontal) * orthogonalXZ * Time.deltaTime * thrusterPower, Space.World);
+        //Make the yaw angle loop around preventing possible overflow
+        //Causes a small stutter on loopback but is high enough... now... it will practically never occur
+        if (yaw > 36000 || yaw < -36000)
+        {
+            yaw = 0;
+        }
 
         //ROTATION
-        Quaternion rotation = Quaternion.Euler(0.0f, yaw, -maxRollAngle * horizontal * Mathf.Sign(currentSpeed));
-        //Use slerp to sexy (spherical interpolate) up that rotation!
-        Quaternion slerpedRotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10);
-        transform.rotation = slerpedRotation;        
+        //Add in "* Mathf.Sign(currentSpeed)" to the Z roll if correct rolling with reverse thrust is desired
+        Quaternion shipRotation = Quaternion.Euler(0.0f, yaw, -maxRollAngle * horizontal);
+        //Spherically Interpolate the rotation
+        Quaternion interpolatedRotation = Quaternion.Slerp(transform.rotation, shipRotation, Time.deltaTime * 5f);
+        transform.rotation = interpolatedRotation;
+
+        //VELOCITY CONTROL
+        //Increment velocity on vertical input by acceleration
+        currentSpeed = Mathf.Lerp(currentSpeed, currentSpeed + (vertical * acceleration), Time.deltaTime * 5f);
+        //Prevent reversing and enforce speed limit
+        if (currentSpeed < 0f)
+        {
+            currentSpeed = 0f;
+
+        }
+        else if (currentSpeed > maxSpeed)
+        {
+            currentSpeed = maxSpeed;
+        }
+
+        //MOVEMENT
+        //move it forward in the XZ plane with collision.
+        rigidbody.MovePosition(rigidbody.position + facingXZ * currentSpeed);
+        
+    }
+
+    void FixedUpdate()
+    {
+
     }
 }
