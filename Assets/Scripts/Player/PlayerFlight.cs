@@ -2,6 +2,7 @@
 using System.Collections;
 public class PlayerFlight : MonoBehaviour
 {
+    //This class is to be attached to any ship a player may fly
     //Rotation
     public float maxRollAngle;
     //Used for Yaw
@@ -18,22 +19,20 @@ public class PlayerFlight : MonoBehaviour
     //Private Variables
     //The current heading
     private float yaw;
-
     //Slider from Thrust Progress Bar
     private UISlider thrustSlider;
 
     void Start()
     {
-        //Ensure max speed is non-zero so that percentage calculations don't throw an exception
+        //Initialisiation values
+        //Ensure max speed is non-zero so that calculations don't divide by zero
         if (maxSpeed == 0)
         {
-            maxSpeed = 0.1f;
+            maxSpeed = 1;
         }
+        //Max speed should be units per second not per frame
+        maxSpeed /= 60;
 
-        //Set the frame rate
-        Application.targetFrameRate = 60;
-
-        //Get UI Elements
         //Thrust Progress Bar
         GameObject thrustProgressBar = GameObject.FindWithTag("ThrustProgressBar");
         thrustSlider = thrustProgressBar.GetComponent<UISlider>();
@@ -79,7 +78,7 @@ public class PlayerFlight : MonoBehaviour
         yaw = yaw + (horizontal * rotationSpeed) * Time.deltaTime * 10f;
         //Make the yaw angle loop around preventing possible overflow
         //Causes a small stutter on loopback but is high enough... now... it will practically never occur
-        if (yaw > 36000 || yaw < -36000)
+        if (yaw > 360 || yaw < -360)
         {
             yaw = 0;
         }

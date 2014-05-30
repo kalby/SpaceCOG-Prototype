@@ -12,7 +12,7 @@ public class ProjectileLazer : MonoBehaviour
     public int damage;
     //Score for hitting enemy players with lazer shot
     public int points;
-    //Lazer speed modifier, 10000 feels good, wasp can't outrun this speed
+    //Lazer speed modifier, wasp shouldn't outrun
     public float lazerSpeed;
 
     //Private variables
@@ -21,8 +21,6 @@ public class ProjectileLazer : MonoBehaviour
     //Instantiation point
     private Vector3 spawnPoint;
 
-
-    private float delayShot;
     // Use this for initialization
     void Start()
     {
@@ -47,28 +45,27 @@ public class ProjectileLazer : MonoBehaviour
 
     void OnTriggerEnter(Collider collidedWith)
     {
-        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals")
+        //First a null guard
+        if (collidedWith == null || player == null)
         {
             return;
         }
-
-        //Lazer shot has same tag as player who fired it
-        //If it isn't the same as the collided with object's tag, then do damage
-        if (collidedWith.tag != tag)
+        //Now check for things you're supposed to pass through, including friendly fire
+        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals" || collidedWith.tag == player.tag || collidedWith.tag == "Lazer")
         {
-            //Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + tag);
-            //This is to tell the player getting hit. Used for taking health from player getting hit
-            collidedWith.gameObject.SendMessage("Hit", damage);
-
-            //When the lazer was instantiated it was given a reference to whoever instantiated it, stored in player.
-            //Sends a message back to the player to indicate whether or not the bullet hit the enemy
-            //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
-            player.SendMessage("AddToScore", points);
-
-            //Destroys the lazer gameobject
-            Destroy(gameObject);
-            Instantiate(explosion, transform.position, transform.rotation);
+            return;
         }
+        //Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + player.tag);
+        //This is to tell the player getting hit. Used for taking health from player getting hit
+        collidedWith.SendMessage("Hit", damage);
+        collidedWith.SendMessage("CheckForKill", player);
+        //When the lazer was instantiated it was given a reference to whoever instantiated it, stored in player.
+        //Sends a message back to the player to indicate whether or not the bullet hit the enemy
+        //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
+        player.SendMessage("AddToScore", points);
+        //Destroys the lazer gameobject
+        Destroy(gameObject);
+        Instantiate(explosion, transform.position, transform.rotation);
     }
 
 

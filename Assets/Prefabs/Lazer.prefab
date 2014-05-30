@@ -96,7 +96,7 @@ MonoBehaviour:
   explosion: {fileID: 100000, guid: 817df3190a27b694688116fffebbb252, type: 2}
   damage: 5
   points: 5
-  lazerSpeed: 10000
+  lazerSpeed: 2000
 --- !u!136 &13600000
 CapsuleCollider:
   m_ObjectHideFlags: 1
@@ -160,16 +160,11 @@ ParticleSystem:
         m_PostInfinity: 2
       minMaxState: 0
     startSpeed:
-      scalar: 1.10000002
+      scalar: 1
       maxCurve:
         serializedVersion: 2
         m_Curve:
         - time: 0
-          value: 1
-          inSlope: 0
-          outSlope: 0
-          tangentMode: 0
-        - time: 1
           value: 1
           inSlope: 0
           outSlope: 0
@@ -284,10 +279,10 @@ ParticleSystem:
         rgba: 4294967295
       maxColor:
         serializedVersion: 2
-        rgba: 4278255611
+        rgba: 4294967295
       minMaxState: 0
     startSize:
-      scalar: .0700000003
+      scalar: .0199999996
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -366,7 +361,7 @@ ParticleSystem:
     boxY: 0
     boxZ: 0
     placementMode: 0
-    m_Mesh: {fileID: 0}
+    m_Mesh: {fileID: 4300002, guid: d7150b7eea700bd46a913b817f9c1903, type: 3}
     randomDirection: 0
   EmissionModule:
     enabled: 1
@@ -1174,7 +1169,7 @@ ParticleSystemRenderer:
   m_LightmapIndex: 255
   m_LightmapTilingOffset: {x: 1, y: 1, z: 0, w: 0}
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: ebf996884992847a8bf2f4f12b04677c, type: 2}
   m_SubsetIndices: 
   m_StaticBatchRoot: {fileID: 0}
   m_UseLightProbes: 0
@@ -1186,12 +1181,12 @@ ParticleSystemRenderer:
   m_RenderMode: 1
   m_MaxParticleSize: .5
   m_CameraVelocityScale: 0
-  m_VelocityScale: 0
-  m_LengthScale: 2
+  m_VelocityScale: 1
+  m_LengthScale: 3
   m_SortingFudge: 0
-  m_NormalDirection: 1
+  m_NormalDirection: 0
   m_SortMode: 0
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 4300002, guid: 5b5cd581949d9c04392c52b250994bdc, type: 3}
   m_Mesh1: {fileID: 0}
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}

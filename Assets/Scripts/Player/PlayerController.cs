@@ -5,6 +5,9 @@ public class PlayerController : MonoBehaviour
 {
     //This class is for everthing to do with the player except for flight
 
+    //Persistent GameObject for storing persistent variables
+    public GameObject background;
+
     //Firing
     //The list of transform positions to fire lazer shots from
     public Transform[] turrets;
@@ -12,35 +15,98 @@ public class PlayerController : MonoBehaviour
     public GameObject lazer;
     //The range until the lazer is destroyed
     public float lazerRange;
-    //Fire rate to simulate
-    public float fireRate;
-    //Scalar multiplier on forward vector
-    public float lazerSpeed;
-    //Damage taken before explosion
-    public float health;
-
+    //Coefficient of the lazer heat (how badly does the heat slow the lazers, lower means a better lazer)
+    public float lazerHeatEfficiency;
+    //Amount to increase lazer heat by each fire of the set of lazers
+    public float lazerHeatClimb;
+    //Amount of lazer heat dissipation occuring every frame
+    public float lazerHeatDissipate;
+    //Base fire rate for lower bound, starting fire rate to simulate
+    public float startFireRate;
+    //Starting health
+    public float maxHealth;
     //Explosion
     public GameObject shipExplosion;
 
     //Private variables
-    //Delay on shot
-    private float delayShot;
-    //Increases as game progresses used to acquire rank up. (future implementation, persistent reward)
-    private int score;
-    //For respawning ships and incrementing while mining sol
-    private int sol;
+    //Script of GameObject
+    private GameWorldControl gameWorldControlScript;
+    //Health remaining at any time
+    private float currentHealth;
+    //Health remaining as a percentage
+    private float healthPercentage;
     //For instantiating lazer shots
     private GameObject lazerShot;
+    //Delay shot using fire rate
+    private float lazerDelayShot;
+    //Lazer heat value
+    private float lazerHeat;
+    //Penalty on lazer use for hitting heat 100%
+    private bool blownLazerCapacitor;
+
+    //Slider from Health Progress Bar
+    private UISlider healthSlider;
+    //Slider from Lazer Heat Progress Bar
+    private UISlider lazerHeatSlider;
 
     void Start()
     {
+        //catch divide-by-zero
+        if (maxHealth == 0)
+        {
+            maxHealth = 1;
+        }
+        //Initialise values
+        currentHealth = maxHealth;
 
+        //Get the persistent script
+        gameWorldControlScript = background.GetComponent<GameWorldControl>();
+
+        //Get UI Elements
+        //Health Progress Bar
+        GameObject healthProgressBar = GameObject.FindWithTag("HealthProgressBar");
+        healthSlider = healthProgressBar.GetComponent<UISlider>();
+
+        //Laser Heat Progress Bar
+        GameObject lazerHeatProgressBar = GameObject.FindWithTag("LazerHeatProgressBar");
+        lazerHeatSlider = lazerHeatProgressBar.GetComponent<UISlider>();
     }
 
     void Update()
     {
+        //Calculate values
+        if (currentHealth < 0)
+        {
+            //Ensure current health non-negative at any frame
+            currentHealth = 0;
+        }
+        healthPercentage = currentHealth / maxHealth;
         //Check Inputs
         GetKeys();
+        //Update the UI
+        lazerHeatSlider.value = lazerHeat;
+        healthSlider.value = healthPercentage;
+
+        //Heat dissipation
+        if (lazerHeat > 0)
+        {
+            lazerHeat -= lazerHeatDissipate;
+            if (lazerHeat <= 0)
+            {
+                //Ensure it can't go negative
+                lazerHeat = 0;
+            }
+        }
+        //Check for overheat
+        if (lazerHeat >= 1)
+        {
+            //Upper bound of 1 for max heat
+            lazerHeat = 1;
+            //fired too much, overheated
+            blownLazerCapacitor = true;
+            //imaginary capacitor takes 2 seconds to repair/replace
+            StartCoroutine(ReplaceCapacitor(2.0f));
+        }
     }
 
     //INPUT
@@ -52,12 +118,28 @@ public class PlayerController : MonoBehaviour
             ShootLazer();
         }
     }
+    //CO-ROUTINES
+    //For enabling lazer fire again after overheat
+    private IEnumerator ReplaceCapacitor(float seconds)
+    {
+        //Bit of a hack, loop twice, first loop takes 'seconds' to complete
+        //On second loop replace capacitor
+        for (int i = 0; i < 2; i++)
+        {
+            //Second loop, capacitor replaced
+            if (i == 1)
+            {
+                blownLazerCapacitor = false;
+            }
+            yield return new WaitForSeconds(seconds);
+        }
+    }
 
     //WEAPONS
     void ShootLazer()
     {
         //Shoot Lazers from all turrets
-        if (Time.time > delayShot)
+        if (Time.time > lazerDelayShot && blownLazerCapacitor != true)
         {
             foreach (Transform turretPosition in turrets)
             {
@@ -67,10 +149,18 @@ public class PlayerController : MonoBehaviour
                 lazerShot.SendMessage("SetRange", lazerRange);
                 //Add the player object to the lazer for sending back successful hits to the player firing the shot
                 lazerShot.GetComponent<ProjectileLazer>().player = gameObject;
-                //Set the tag of the shot to be of the same type as the player who fired it
-                lazerShot.tag = gameObject.tag;
+                //Add the current ship velocity to the lazer shot, these are bolts of hot plasma or whatever, they act like bullets.
+                lazerShot.rigidbody.velocity += rigidbody.velocity;
             }
-            delayShot = Time.time + fireRate;
+            //Firing the lazer makes the turret hotter
+            //If the heat isn't already maxed out
+            if (lazerHeat < 1f)
+            {
+                //increase the laser heat value
+                lazerHeat += lazerHeatClimb;
+            }
+            //Set the delay until can fire again, modified by heat
+            lazerDelayShot = Time.time + startFireRate + (lazerHeatEfficiency * lazerHeat);
         }
     }
 
@@ -97,23 +187,55 @@ public class PlayerController : MonoBehaviour
     //Add to the players score when receiving back an AddToScore message
     void AddToScore(int points)
     {
-        score += points;
-        Debug.Log("Player score: " + score);
+        gameWorldControlScript.addScore(points);
     }
 
     void Hit(int damage)
     {
-        Debug.Log("Player Health: " + health);
-        if (health > 0)
+        if (currentHealth > 0)
         {
-            health -= damage;
-            if (health <= 0)
+            //apply the damage
+            currentHealth -= damage;
+            if (currentHealth <= 0)
             {
-                //Someone got a kill on you, update their kill count, update your death count
+                //Bound the health if it went negative
+                currentHealth = 0;
+                death();
                 //Start respawn method
-                Destroy(gameObject);
+                if (gameObject != null)
+                {
+                    Destroy(gameObject);
+                }
                 Instantiate(shipExplosion, transform.position, transform.rotation);
             }
         }
+    }
+
+    //Receive a check on hit that determines a killing blow
+    void CheckForKill(GameObject killingPlayer)
+    {
+        if (currentHealth == 0)
+        {
+            //ugh, don't know how to avoid this ping pong
+            killingPlayer.SendMessage("GotKillingBlow");
+        }
+    }
+
+    //Call this when the player reduces an enemy players current health to 0
+    void GotKillingBlow()
+    {
+        kill();
+    }
+
+    void death()
+    {
+        //You died, update your death count
+        gameWorldControlScript.addDeaths(1);
+    }
+
+    void kill()
+    {
+        //You got a kill, update your kill count
+        gameWorldControlScript.addKills(1);
     }
 }
