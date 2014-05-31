@@ -3,9 +3,6 @@ using System.Collections;
 
 public class ProjectileLazer : MonoBehaviour
 {
-
-    //Player who fired the shot
-    public GameObject player;
     //Type of explosion on destruction
     public GameObject explosion;
     //Damage of lazer shot
@@ -16,6 +13,8 @@ public class ProjectileLazer : MonoBehaviour
     public float lazerSpeed;
 
     //Private variables
+    //Player who fired the shot
+    private GameObject firingPlayer;
     //Distance from spawnpoint before being destroyed
     private float range;
     //Instantiation point
@@ -46,23 +45,24 @@ public class ProjectileLazer : MonoBehaviour
     void OnTriggerEnter(Collider collidedWith)
     {
         //First a null guard
-        if (collidedWith == null || player == null)
+        if (collidedWith == null || firingPlayer == null)
         {
             return;
         }
         //Now check for things you're supposed to pass through, including friendly fire
-        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals" || collidedWith.tag == player.tag || collidedWith.tag == "Lazer")
+        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals" || collidedWith.tag == firingPlayer.tag || collidedWith.tag == "Lazer")
         {
             return;
         }
-        //Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + player.tag);
+        Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + firingPlayer.tag);
+        Debug.Log(collidedWith);
         //This is to tell the player getting hit. Used for taking health from player getting hit
         collidedWith.SendMessage("Hit", damage);
-        collidedWith.SendMessage("CheckForKill", player);
+        collidedWith.SendMessage("CheckForKill", firingPlayer);
         //When the lazer was instantiated it was given a reference to whoever instantiated it, stored in player.
         //Sends a message back to the player to indicate whether or not the bullet hit the enemy
         //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
-        player.SendMessage("AddToScore", points);
+        firingPlayer.SendMessage("AddToScore", points);
         //Destroys the lazer gameobject
         Destroy(gameObject);
         Instantiate(explosion, transform.position, transform.rotation);
@@ -83,5 +83,11 @@ public class ProjectileLazer : MonoBehaviour
     void SetRange(float newRange)
     {
         range = newRange;
+    }
+
+    //For receiving the gameObject via SendMessage of the firing object, which is the player firing the lazer
+    void SetPlayer(GameObject player)
+    {
+        firingPlayer = player;
     }
 }

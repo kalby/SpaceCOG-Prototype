@@ -154,7 +154,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100006}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalPosition: {x: 0, y: .600000024, z: .800000012}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400010}
@@ -208,7 +208,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6a38f32ca92f9842b8666894e8b10f0, type: 3}
   m_Name: 
@@ -246,13 +246,14 @@ MonoBehaviour:
   startFireRate: .200000003
   maxHealth: 100
   shipExplosion: {fileID: 100000, guid: 817df3190a27b694688116fffebbb252, type: 2}
+  background: {fileID: 100000, guid: b6035bc440ab6264db14c112f642f69f, type: 2}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100010}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e6d798376ab7a0d4f917159321b5a909, type: 3}
   m_Name: 
@@ -263,7 +264,7 @@ MonoBehaviour:
   - {fileID: 100012}
   - {fileID: 100004}
   acceleration: .100000001
-  maxSpeed: 1
+  maxSpeed: 60
   currentSpeed: 0
 --- !u!137 &13700000
 SkinnedMeshRenderer:

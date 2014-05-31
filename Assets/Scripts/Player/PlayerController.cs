@@ -5,9 +5,6 @@ public class PlayerController : MonoBehaviour
 {
     //This class is for everthing to do with the player except for flight
 
-    //Persistent GameObject for storing persistent variables
-    public GameObject background;
-
     //Firing
     //The list of transform positions to fire lazer shots from
     public Transform[] turrets;
@@ -29,7 +26,9 @@ public class PlayerController : MonoBehaviour
     public GameObject shipExplosion;
 
     //Private variables
-    //Script of GameObject
+    //Persistent gameObject for holding the GameWorldControlScript
+    public GameObject background;
+    //Script for storing persistent variables
     private GameWorldControl gameWorldControlScript;
     //Health remaining at any time
     private float currentHealth;
@@ -59,7 +58,9 @@ public class PlayerController : MonoBehaviour
         //Initialise values
         currentHealth = maxHealth;
 
-        //Get the persistent script
+        //Get background GameObject
+        background = GameObject.FindWithTag("Background");
+        //Get GameWorldControl script from background object
         gameWorldControlScript = background.GetComponent<GameWorldControl>();
 
         //Get UI Elements
@@ -147,8 +148,8 @@ public class PlayerController : MonoBehaviour
                 lazerShot = Instantiate(lazer, turretPosition.position, turretPosition.rotation) as GameObject;
                 //Set the range the lazer shot can travel before being destroyed
                 lazerShot.SendMessage("SetRange", lazerRange);
-                //Add the player object to the lazer for sending back successful hits to the player firing the shot
-                lazerShot.GetComponent<ProjectileLazer>().player = gameObject;
+                //Send this gameObject to the lazer for sending back successful hits to the player firing the shot
+                lazerShot.SendMessage("SetPlayer", gameObject);
                 //Add the current ship velocity to the lazer shot, these are bolts of hot plasma or whatever, they act like bullets.
                 lazerShot.rigidbody.velocity += rigidbody.velocity;
             }
@@ -180,6 +181,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(gameObject);
             Instantiate(shipExplosion, transform.position, transform.rotation);
+            Death();
         }
     }
 
@@ -187,7 +189,7 @@ public class PlayerController : MonoBehaviour
     //Add to the players score when receiving back an AddToScore message
     void AddToScore(int points)
     {
-        gameWorldControlScript.addScore(points);
+        gameWorldControlScript.AddScore(points);
     }
 
     void Hit(int damage)
@@ -200,13 +202,13 @@ public class PlayerController : MonoBehaviour
             {
                 //Bound the health if it went negative
                 currentHealth = 0;
-                death();
                 //Start respawn method
                 if (gameObject != null)
                 {
                     Destroy(gameObject);
                 }
                 Instantiate(shipExplosion, transform.position, transform.rotation);
+                Death();
             }
         }
     }
@@ -224,18 +226,18 @@ public class PlayerController : MonoBehaviour
     //Call this when the player reduces an enemy players current health to 0
     void GotKillingBlow()
     {
-        kill();
+        Kill();
     }
 
-    void death()
+    void Death()
     {
         //You died, update your death count
-        gameWorldControlScript.addDeaths(1);
+        gameWorldControlScript.AddDeaths(1);
     }
 
-    void kill()
+    void Kill()
     {
         //You got a kill, update your kill count
-        gameWorldControlScript.addKills(1);
+        gameWorldControlScript.AddKills(1);
     }
 }

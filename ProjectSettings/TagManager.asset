@@ -34,10 +34,10 @@ TagManager:
   - TeamOne
   - TeamTwo
   - TeamThree
-  - 
-  - 
-  - 
-  - 
+  - SpawnPointTeamOne
+  - SpawnPointTeamTwo
+  - SpawnPointTeamThree
+  - ShipSelectionPanel
   - 
   - 
   - SlotText1
@@ -75,7 +75,13 @@ TagManager:
   - KDRatioLabel
   - PlayerSolLabel
   - ScoreLabel
-  - Crosshair
+  - Cursor
+  - SelectWaspButton
+  - SelectMustangButton
+  - SelectHermitButton
+  - 
+  - TeamTwoSpawnPoint
+  - TeamThreeSpawnPoint
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX
