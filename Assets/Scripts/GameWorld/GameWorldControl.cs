@@ -145,7 +145,7 @@ public class GameWorldControl : MonoBehaviour
         //Check for victory
         //This is odd in that it will be run by every player playing anytime they die to a player or otherwise
         //It needs to check that I'm alive and no one else is, which is netcode dependent
-        if (playerShip != null && CheckOtherPlayersDead())
+        if (playerShip != null && CheckEnemyStationsDead() && CheckOtherPlayersDead())
         {
             //Set Victory Panel active
             NGUITools.SetActive(victoryPanel, true);
@@ -202,6 +202,12 @@ public class GameWorldControl : MonoBehaviour
     public bool CheckOtherPlayersDead()
     {
         //Use netcode to determine if other players remain TODO
+        return false;
+    }
+
+    public bool CheckEnemyStationsDead()
+    {
+        //Use netcode to determine if other player's stations remain TODO
         return false;
     }
 }

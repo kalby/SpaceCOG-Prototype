@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
     public Transform[] turrets;
     //The lazer shot to instantiate
     public GameObject lazer;
+    //Lazer firing sound
+    public GameObject lazerSound;
     //The range until the lazer is destroyed
     public float lazerRange;
     //Coefficient of the lazer heat (how badly does the heat slow the lazers)
@@ -18,12 +20,16 @@ public class PlayerController : MonoBehaviour
     public float lazerHeatClimb;
     //Amount of lazer heat dissipation occuring every frame
     public float lazerHeatDissipate;
+    //Amount of time it takes to cool off from overheat/replace capacitor
+    public float lazerOverheatPenalty;
     //Base fire rate for lower bound, starting fire rate to simulate
     public float startFireRate;
     //Starting health
     public float maxHealth;
-    //Explosion
-    public GameObject shipExplosion;
+    //Explosion animation
+    public GameObject shipExplosionAnimation;
+    //Explosion Sound
+    public GameObject shipExplosionSound;
 
     //Private variables
     //Persistent gameObject for holding the GameWorldControlScript
@@ -82,13 +88,23 @@ public class PlayerController : MonoBehaviour
             currentHealth = 0;
         }
         healthPercentage = currentHealth / maxHealth;
-        //Check Inputs
-        GetKeys();
+
         //Update the UI
         lazerHeatSlider.value = lazerHeat;
         healthSlider.value = healthPercentage;
 
-        //Heat dissipation
+        //Check for overheat
+        if (lazerHeat >= 1)
+        {
+            //Upper bound of 1 for max heat
+            lazerHeat = 1;
+            //fired too much, overheated
+            blownLazerCapacitor = true;
+            //imaginary capacitor takes 0.5 seconds to repair/replace/cool-off
+            StartCoroutine(ReplaceCapacitor(lazerOverheatPenalty));
+        }
+
+        //Heat dissipation while not firing
         if (lazerHeat > 0)
         {
             lazerHeat -= lazerHeatDissipate;
@@ -98,16 +114,8 @@ public class PlayerController : MonoBehaviour
                 lazerHeat = 0;
             }
         }
-        //Check for overheat
-        if (lazerHeat >= 1)
-        {
-            //Upper bound of 1 for max heat
-            lazerHeat = 1;
-            //fired too much, overheated
-            blownLazerCapacitor = true;
-            //imaginary capacitor takes 2 seconds to repair/replace
-            StartCoroutine(ReplaceCapacitor(2.0f));
-        }
+        //Check Inputs
+        GetKeys();
     }
 
     //INPUT
@@ -152,6 +160,8 @@ public class PlayerController : MonoBehaviour
                 lazerShot.SendMessage("SetPlayer", gameObject);
                 //Add the current ship velocity to the lazer shot, these are bolts of hot plasma or whatever, they act like bullets.
                 lazerShot.rigidbody.velocity += rigidbody.velocity;
+                //play the shoot lazer sound
+                lazerSound.audio.Play();
             }
             //Firing the lazer makes the turret hotter
             //If the heat isn't already maxed out
@@ -167,20 +177,26 @@ public class PlayerController : MonoBehaviour
 
     //TRIGGERS
     //This function is called when a gameobject enters the spaceships box collider.
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider collidedWith)
     {
-        //if (other.tag == "Lazer")
-        //{
-        //    return;
-        //}
+        //First a null guard
+        if (collidedWith == null)
+        {
+            return;
+        }
+        //Now check for things you're supposed to pass through, including friendly fire
+        if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals" || collidedWith.tag == "Lazer")
+        {
+            return;
+        }
+        Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + tag);
+        Debug.Log(collidedWith);
     }
 
     void OnTriggerExit(Collider other)
     {
         if (other.tag == "Boundary")
         {
-            Destroy(gameObject);
-            Instantiate(shipExplosion, transform.position, transform.rotation);
             Death();
         }
     }
@@ -202,12 +218,7 @@ public class PlayerController : MonoBehaviour
             {
                 //Bound the health if it went negative
                 currentHealth = 0;
-                //Start respawn method
-                if (gameObject != null)
-                {
-                    Destroy(gameObject);
-                }
-                Instantiate(shipExplosion, transform.position, transform.rotation);
+                //Die
                 Death();
             }
         }
@@ -231,7 +242,16 @@ public class PlayerController : MonoBehaviour
 
     void Death()
     {
-        //You died, update your death count
+        //Explode animation
+        Instantiate(shipExplosionAnimation, transform.position, transform.rotation);
+        //Blow up sound
+        AudioSource.PlayClipAtPoint(shipExplosionSound.audio.clip, transform.position);
+        //Update your death count
+        //You died
+        if (gameObject != null)
+        {
+            Destroy(gameObject);
+        }
         gameWorldControlScript.AddDeaths(1);
     }
 

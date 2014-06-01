@@ -11,10 +11,13 @@ public class PlayerFlight : MonoBehaviour
     //Particle System Engines
     public GameObject[] engine;
 
-    //Velocity variables
+    //Velocity Variables
     public float acceleration;
     public float maxSpeed;
     public float currentSpeed;
+
+    //Sound Variables
+    public GameObject engineSound;
 
     //Private Variables
     //The current heading
@@ -66,10 +69,10 @@ public class PlayerFlight : MonoBehaviour
 
         //AXES
         //Can't use raw transform.forward due to non-zero y component
-        float tx = transform.forward.x;
-        float tz = transform.forward.z;
+        //float tx = transform.forward.x;
+        //float tz = transform.forward.z;
         //create the ship facing vector in the XZ plane.
-        Vector3 facingXZ = new Vector3(tx, 0.0f, tz);
+        //Vector3 facingXZ = new Vector3(tx, 0.0f, tz);
         //create the facing orthogonal vector in the XZ plane.
         //Vector3 orthogonalXZ = Vector3.Cross(facingXZ, Vector3.up);
 
@@ -77,7 +80,6 @@ public class PlayerFlight : MonoBehaviour
         //Adjust the facing as the player turns.
         yaw = yaw + (horizontal * rotationSpeed) * Time.deltaTime * 10f;
         //Make the yaw angle loop around preventing possible overflow
-        //Causes a small stutter on loopback but is high enough... now... it will practically never occur
         if (yaw > 360 || yaw < -360)
         {
             yaw = 0;
@@ -85,18 +87,18 @@ public class PlayerFlight : MonoBehaviour
 
         //ROTATION
         //Add in "* Mathf.Sign(currentSpeed)" to the Z roll if correct rolling with reverse thrust is desired
-        Quaternion shipRotation = Quaternion.Euler(0.0f, yaw, -maxRollAngle * horizontal);
+        Quaternion shipRotation = Quaternion.Euler(0.0f, yaw, -maxRollAngle * horizontal * Mathf.Sign(currentSpeed));
         //Spherically Interpolate the rotation
         Quaternion interpolatedRotation = Quaternion.Slerp(transform.rotation, shipRotation, Time.deltaTime * 5f);
         transform.rotation = interpolatedRotation;
 
         //VELOCITY CONTROL
         //Increment velocity on vertical input by acceleration
-        currentSpeed = Mathf.Lerp(currentSpeed, currentSpeed + (vertical * acceleration), Time.deltaTime * 5f);
-        //Prevent reversing and enforce speed limit
-        if (currentSpeed < 0f)
+        currentSpeed = Mathf.Lerp(currentSpeed, currentSpeed + (vertical * acceleration), Time.deltaTime * 40f);
+        //enforce speed limit
+        if (currentSpeed < 0)
         {
-            currentSpeed = 0f;
+            currentSpeed = 0;
 
         }
         else if (currentSpeed > maxSpeed)
@@ -107,7 +109,15 @@ public class PlayerFlight : MonoBehaviour
         thrustSlider.value = currentSpeed / maxSpeed;
 
         //MOVEMENT
-        //move it forward in the XZ plane, works with collidables
-        rigidbody.MovePosition(rigidbody.position + facingXZ * currentSpeed);
+        //move it forward in the XZ plane
+        //rigidbody.MovePosition(rigidbody.position + facingXZ * currentSpeed);
+
+        //THRUSTER AUDIO
+        engineSound.audio.volume = 0.2f * (currentSpeed / maxSpeed);
+    }
+
+    void FixedUpdate()
+    {
+        rigidbody.AddRelativeForce(Vector3.forward * currentSpeed * 100f);
     }
 }

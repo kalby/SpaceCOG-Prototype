@@ -3,7 +3,7 @@
 --- !u!78 &1
 TagManager:
   tags:
-  - 
+  - Asteroid
   - Lazer
   - Boundary
   - QuitButton
@@ -82,6 +82,9 @@ TagManager:
   - VictoryPanel
   - DefeatPanel
   - 
+  - 
+  - TeamTwoSpawnPoint
+  - TeamThreeSpawnPoint
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

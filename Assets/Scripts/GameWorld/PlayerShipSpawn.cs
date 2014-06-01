@@ -9,7 +9,7 @@ public class PlayerShipSpawn : MonoBehaviour
     public GameObject wasp;
     public GameObject mustang;
     public GameObject hermit;
-    //The GameWorldControl script where team values are set by the network
+    //The GameWorldControl script, contains team values are set by the network
     public GameWorldControl gameWorldControl;
 
     //Private Variables
@@ -151,6 +151,10 @@ public class PlayerShipSpawn : MonoBehaviour
                 //Enable PlayerControl and PlayerFlight
                 playerShip.GetComponent<PlayerController>().enabled = true;
                 playerShip.GetComponent<PlayerFlight>().enabled = true;
+                if (playerShip.GetComponent<Mining>() != null)
+                {
+                    playerShip.GetComponent<Mining>().enabled = true;
+                }
                 //Make the Ship Selection Panel inactive
                 NGUITools.SetActive(gameObject, false);
                 //Send the global GameWorldControl script the player ship

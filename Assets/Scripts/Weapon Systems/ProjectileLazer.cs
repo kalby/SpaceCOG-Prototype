@@ -3,8 +3,8 @@ using System.Collections;
 
 public class ProjectileLazer : MonoBehaviour
 {
-    //Type of explosion on destruction
-    public GameObject explosion;
+    //Explode animation on destruction
+    public GameObject explodeAnimation;
     //Damage of lazer shot
     public int damage;
     //Score for hitting enemy players with lazer shot
@@ -38,7 +38,7 @@ public class ProjectileLazer : MonoBehaviour
         if (distance >= range)
         {
             Destroy(gameObject);
-            Instantiate(explosion, transform.position, transform.rotation);
+            Instantiate(explodeAnimation, transform.position, transform.rotation);
         }
     }
 
@@ -63,9 +63,12 @@ public class ProjectileLazer : MonoBehaviour
         //Sends a message back to the player to indicate whether or not the bullet hit the enemy
         //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
         firingPlayer.SendMessage("AddToScore", points);
+        //Play the explode animation
+        Instantiate(explodeAnimation, transform.position - (6f * transform.forward), transform.rotation);
+        //Play the explode sound
+        AudioSource.PlayClipAtPoint(audio.clip, transform.position - (6f * transform.forward));
         //Destroys the lazer gameobject
         Destroy(gameObject);
-        Instantiate(explosion, transform.position, transform.rotation);
     }
 
 
@@ -75,7 +78,7 @@ public class ProjectileLazer : MonoBehaviour
         if (other.tag == "Boundary")
         {
             Destroy(gameObject);
-            Instantiate(explosion, transform.position, transform.rotation);
+            Instantiate(explodeAnimation, transform.position, transform.rotation);
         }
     }
 
