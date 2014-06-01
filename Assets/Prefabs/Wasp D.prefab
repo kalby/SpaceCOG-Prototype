@@ -240,10 +240,10 @@ MonoBehaviour:
   - {fileID: 400008}
   lazer: {fileID: 100002, guid: a994bb79924925142908e1346f3b128c, type: 2}
   lazerRange: 200
-  lazerHeatEfficiency: .100000001
-  lazerHeatClimb: .0500000007
-  lazerHeatDissipate: .00200000009
-  startFireRate: .200000003
+  lazerHeatDeficiency: .100000001
+  lazerHeatClimb: .150000006
+  lazerHeatDissipate: .00400000019
+  startFireRate: .166666672
   maxHealth: 100
   shipExplosion: {fileID: 100000, guid: 817df3190a27b694688116fffebbb252, type: 2}
   background: {fileID: 100000, guid: b6035bc440ab6264db14c112f642f69f, type: 2}

@@ -23,6 +23,10 @@ public class PlayerShipSpawn : MonoBehaviour
     private Transform spawnPoint;
     //The tag to assign to the instantiated player ship
     private string playerTag;
+    //The Sol cost to spawn this ship
+    private int shipCost;
+    //Not enough Sol Object with label on it
+    private GameObject notEnoughSolObject;
 
     // Use this for initialization
     void Start()
@@ -65,6 +69,12 @@ public class PlayerShipSpawn : MonoBehaviour
         //Get the Main Camera
         mainCamera = GameObject.FindWithTag("MainCamera");
         playerCameraScript = mainCamera.GetComponent<PlayerCamera>();
+
+        //Get the UI Elements
+        //Not enough Sol object
+        notEnoughSolObject = GameObject.FindWithTag("NotEnoughSolLabel");
+        //Hide the not enough Sol warning
+        NGUITools.SetActive(notEnoughSolObject, false);
     }
 
     // Update is called once per frame
@@ -75,6 +85,10 @@ public class PlayerShipSpawn : MonoBehaviour
 
     public void SelectWasp()
     {
+        //Hide the not enough Sol warning
+        NGUITools.SetActive(notEnoughSolObject, false);
+        //Set the cost of the ship
+        shipCost = 200;
         //Remove any old one, calling this on null seems fine
         Destroy(playerShip);
         //Instantiate the Wasp at the spawn point position with its rotation
@@ -85,6 +99,10 @@ public class PlayerShipSpawn : MonoBehaviour
 
     public void SelectMustang()
     {
+        //Hide the not enough Sol warning
+        NGUITools.SetActive(notEnoughSolObject, false);
+        //Set the cost of the ship
+        shipCost = 300;
         //Remove any old one, calling this on null seems fine
         Destroy(playerShip);
         //Replace with new one
@@ -95,6 +113,10 @@ public class PlayerShipSpawn : MonoBehaviour
 
     public void SelectHermit()
     {
+        //Hide the not enough Sol warning
+        NGUITools.SetActive(notEnoughSolObject, false);
+        //Set the cost of the ship
+        shipCost = 80;
         //Remove any old one, calling this on null seems fine
         Destroy(playerShip);
         //Replace with new one
@@ -105,7 +127,7 @@ public class PlayerShipSpawn : MonoBehaviour
 
     private void ConfigureShipSettings()
     {
-        //Give it the current players tage
+        //Give it the current players tag
         playerShip.tag = playerTag;
         //Make the Main Camera follow this newly minted ship
         Transform transform = playerShip.GetComponentInChildren<Transform>();
@@ -120,12 +142,24 @@ public class PlayerShipSpawn : MonoBehaviour
 
     public void BuyShip()
     {
-        //TODO: Subtract some Sol
-        //enable PlayerControl and PlayerFlight
-        playerShip.GetComponent<PlayerController>().enabled = true;
-        playerShip.GetComponent<PlayerFlight>().enabled = true;
-        //Make the Ship Selection Panel inactive
-        NGUITools.SetActive(gameObject, false);
-
+        if (playerShip != null)
+        {
+            //If the player has enough sol
+            if (gameWorldControl.GetSol() >= shipCost)
+            {
+                gameWorldControl.SubtractSol(shipCost);
+                //Enable PlayerControl and PlayerFlight
+                playerShip.GetComponent<PlayerController>().enabled = true;
+                playerShip.GetComponent<PlayerFlight>().enabled = true;
+                //Make the Ship Selection Panel inactive
+                NGUITools.SetActive(gameObject, false);
+                //Send the global GameWorldControl script the player ship
+                gameWorldControl.SendMessage("SetPlayerShip", playerShip);
+            }
+            else
+            {
+                NGUITools.SetActive(notEnoughSolObject, true);
+            }
+        }
     }
 }

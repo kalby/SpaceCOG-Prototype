@@ -38,7 +38,7 @@ TagManager:
   - SpawnPointTeamTwo
   - SpawnPointTeamThree
   - ShipSelectionPanel
-  - 
+  - NotEnoughSolLabel
   - 
   - SlotText1
   - SlotText2
@@ -79,9 +79,9 @@ TagManager:
   - SelectWaspButton
   - SelectMustangButton
   - SelectHermitButton
+  - VictoryPanel
+  - DefeatPanel
   - 
-  - TeamTwoSpawnPoint
-  - TeamThreeSpawnPoint
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

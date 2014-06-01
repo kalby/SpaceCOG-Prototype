@@ -9,6 +9,7 @@ public class GameWorldControl : MonoBehaviour
     public bool teamOne;
     public bool teamTwo;
     public bool teamThree;
+    public int startingSol;
 
     //Private Variables
     //Player Kills
@@ -19,6 +20,8 @@ public class GameWorldControl : MonoBehaviour
     private int score;
     //For respawning ships and incrementing while mining sol
     private int sol;
+    //The player ship
+    private GameObject playerShip;
 
     //Score Label
     private UILabel scoreLabel;
@@ -28,6 +31,10 @@ public class GameWorldControl : MonoBehaviour
     private UILabel playerSolLabel;
     //Game Object with Ship Selection Panel on it
     private GameObject shipSelectionPanel;
+    //GameObject with Victory Panel on it
+    private GameObject victoryPanel;
+    //GameObject with Defeat Panel on it
+    private GameObject defeatPanel;
 
     // Use this for initialization
     void Start()
@@ -35,11 +42,16 @@ public class GameWorldControl : MonoBehaviour
         //Set the frame rate
         Application.targetFrameRate = 60;
 
+        //Player Initialisation
         //Set the correct team from network code
         //For now hardcoded to TeamOne
         //teamOne = true;
         //teamTwo = false;
         //teamThree = false;
+
+        //Set the starting amount of Sol
+        sol = startingSol;
+        
 
         //Get UI Elements
         //Score Label
@@ -54,10 +66,21 @@ public class GameWorldControl : MonoBehaviour
         GameObject playerSolObject = GameObject.FindWithTag("PlayerSolLabel");
         playerSolLabel = playerSolObject.GetComponent<UILabel>();
 
+        //Victory Panel
+        victoryPanel = GameObject.FindWithTag("VictoryPanel");
+
+        //Defeat Panel
+        defeatPanel = GameObject.FindWithTag("DefeatPanel");
+        
+
         //Ship Selection Panel
         shipSelectionPanel = GameObject.FindWithTag("ShipSelectionPanel");
 
         //Set UI Elements
+        //Hide defeat panel
+        NGUITools.SetActive(defeatPanel, false);
+        //Hide victory panel
+        NGUITools.SetActive(victoryPanel, false);
         //Set the initial Score
         scoreLabel.text = "Score: " + score;
 
@@ -106,8 +129,28 @@ public class GameWorldControl : MonoBehaviour
     {
         deaths += number;
         kdRatioLabel.text = "Kills/Deaths:" + kills + "/" + deaths;
-        //Open the Ship Selection Panel again
-        NGUITools.SetActive(shipSelectionPanel, true);
+        
+        //check that they can afford the cheapest ship, developer has to maintain this if adding new ships
+        if (sol < 80)
+        {
+            //Player Defeat
+            NGUITools.SetActive(defeatPanel, true);
+        }
+        else
+        {
+            //Open the Ship Selection Panel again
+            NGUITools.SetActive(shipSelectionPanel, true);
+        }
+
+        //Check for victory
+        //This is odd in that it will be run by every player playing anytime they die to a player or otherwise
+        //It needs to check that I'm alive and no one else is, which is netcode dependent
+        if (playerShip != null && CheckOtherPlayersDead())
+        {
+            //Set Victory Panel active
+            NGUITools.SetActive(victoryPanel, true);
+        }
+        
     }
 
     public int GetDeaths()
@@ -128,18 +171,37 @@ public class GameWorldControl : MonoBehaviour
 
     public void AddSol(int amount)
     {
-        sol += amount;
-        playerSolLabel.text = "Sol: " + sol;
+        //only positive amounts can be added
+        if (amount > 0)
+        {
+            sol += amount;
+            playerSolLabel.text = "Sol: " + sol;
+        }
     }
 
     public void SubtractSol(int amount)
     {
-        sol -= amount;
-        playerSolLabel.text = "Sol: " + sol;
+        //only positive amounts can be subtracted and can't make sol go negative
+        if (amount > 0 && sol - amount >= 0)
+        {
+            sol -= amount;
+            playerSolLabel.text = "Sol: " + sol;
+        }
     }
 
     public int GetSol()
     {
         return sol;
+    }
+
+    public void SetPlayerShip(GameObject ship)
+    {
+        playerShip = ship;
+    }
+
+    public bool CheckOtherPlayersDead()
+    {
+        //Use netcode to determine if other players remain TODO
+        return false;
     }
 }

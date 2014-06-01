@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
     public GameObject lazer;
     //The range until the lazer is destroyed
     public float lazerRange;
-    //Coefficient of the lazer heat (how badly does the heat slow the lazers, lower means a better lazer)
-    public float lazerHeatEfficiency;
+    //Coefficient of the lazer heat (how badly does the heat slow the lazers)
+    public float lazerHeatDeficiency;
     //Amount to increase lazer heat by each fire of the set of lazers
     public float lazerHeatClimb;
     //Amount of lazer heat dissipation occuring every frame
@@ -161,7 +161,7 @@ public class PlayerController : MonoBehaviour
                 lazerHeat += lazerHeatClimb;
             }
             //Set the delay until can fire again, modified by heat
-            lazerDelayShot = Time.time + startFireRate + (lazerHeatEfficiency * lazerHeat);
+            lazerDelayShot = Time.time + startFireRate + (lazerHeatDeficiency * lazerHeat);
         }
     }
 
