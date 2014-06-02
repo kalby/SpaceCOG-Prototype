@@ -9,6 +9,7 @@ public class Aeonur : MonoBehaviour
     public GameObject eyePosition;
     public float maxDistance;
     public LineRenderer lineRender;
+    public GameObject aeonurAnimation;
 
     //Get the allPlayers list from the gameController
     public ArrayList pl;
@@ -21,7 +22,7 @@ public class Aeonur : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        animation.Play();
+        aeonurAnimation.animation.Play();
         FindTarget();
     }
 

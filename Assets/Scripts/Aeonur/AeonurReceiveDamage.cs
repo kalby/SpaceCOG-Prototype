@@ -3,7 +3,8 @@ using System.Collections;
 
 public class AeonurReceiveDamage : MonoBehaviour
 {
-
+    //Aeonur Animation
+    public GameObject aeonurAnimation;
     //Aeonur Death Animation
     public GameObject aeonurDeathAnimation;
     //Aeonur Enter Sound
@@ -90,7 +91,7 @@ public class AeonurReceiveDamage : MonoBehaviour
             mesh.renderer.material.SetColor("_TintColor", fadeAlpha);
         }
         //Death animation, in this case slow his animation to 15% suddenly
-        animation["Take 001"].speed = 0.15f;
+        aeonurAnimation.animation["Take 001"].speed = 0.15f;
 
         //Destroy Aeonur
         if (fadeAlpha.a <= 0)
