@@ -3,10 +3,11 @@ using System.Collections;
 
 public class AsteroidRotate : MonoBehaviour
 {
+    //The amount of torque applied to the asteroid.
+    public float rotationForce;
     //Some random axis of rotation for the asteroid to spin on.
     private Vector3 rotationAxisVector;
-    //The amount of torque applied to the asteroid.
-    private float rotationForce = 0.01f;
+    
 
     // Use this for initialization
     void Start()

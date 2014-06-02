@@ -9,8 +9,10 @@ public class PlayerShipSpawn : MonoBehaviour
     public GameObject wasp;
     public GameObject mustang;
     public GameObject hermit;
-    //The GameWorldControl script, contains team values are set by the network
+    //The Game World Control, contains team values that are set by the network
     public GameWorldControl gameWorldControl;
+    //The Player Ship Array, contains an array of all ships and allows some injection of fake players
+    public PlayerShipArray playerShipArray;
 
     //Private Variables
     //Main Camera
@@ -159,6 +161,8 @@ public class PlayerShipSpawn : MonoBehaviour
                 NGUITools.SetActive(gameObject, false);
                 //Send the global GameWorldControl script the player ship
                 gameWorldControl.SendMessage("SetPlayerShip", playerShip);
+                //Add the player ship to the game controller ship array
+                playerShipArray.SendMessage("AddPlayer", playerShip);
             }
             else
             {

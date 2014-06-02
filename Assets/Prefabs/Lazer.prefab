@@ -80,7 +80,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 116
   m_CollisionDetection: 0
 --- !u!82 &8200000
 AudioSource:
@@ -151,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbdcff1c6a05bed4bbcd1f556b2f1654, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explodeAnimation: {fileID: 100000, guid: 817df3190a27b694688116fffebbb252, type: 2}
+  explodeAnimation: {fileID: 100000, guid: 97206291e63a56d4b85fb00aee3f8187, type: 2}
   damage: 5
   points: 5
   lazerSpeed: 4000

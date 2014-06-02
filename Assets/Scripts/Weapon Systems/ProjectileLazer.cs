@@ -19,6 +19,8 @@ public class ProjectileLazer : MonoBehaviour
     private float range;
     //Instantiation point
     private Vector3 spawnPoint;
+    //Lazer surface hit location
+    private Vector3 surfaceHitPosition;
 
     // Use this for initialization
     void Start()
@@ -38,10 +40,12 @@ public class ProjectileLazer : MonoBehaviour
         if (distance >= range)
         {
             Destroy(gameObject);
-            Instantiate(explodeAnimation, transform.position, transform.rotation);
+            Instantiate(explodeAnimation, transform.position, explodeAnimation.transform.rotation);
         }
     }
 
+    //Trigger
+    //Using no physics on lazers due to performance load and really don't want it to be too realistic. Lazers should always fire straight.
     void OnTriggerEnter(Collider collidedWith)
     {
         //First a null guard
@@ -64,13 +68,12 @@ public class ProjectileLazer : MonoBehaviour
         //The "AddToScore" is a method in the PlayerController script and points is a parameter of that method
         firingPlayer.SendMessage("AddToScore", points);
         //Play the explode animation
-        Instantiate(explodeAnimation, transform.position - (6f * transform.forward), transform.rotation);
+        Instantiate(explodeAnimation, surfaceHitPosition, explodeAnimation.transform.rotation);
         //Play the explode sound
-        AudioSource.PlayClipAtPoint(audio.clip, transform.position - (6f * transform.forward));
+        AudioSource.PlayClipAtPoint(audio.clip, surfaceHitPosition);
         //Destroys the lazer gameobject
         Destroy(gameObject);
     }
-
 
     void OnTriggerExit(Collider other)
     {
@@ -92,5 +95,17 @@ public class ProjectileLazer : MonoBehaviour
     void SetPlayer(GameObject player)
     {
         firingPlayer = player;
+    }
+
+    void FixedUpdate()
+    {
+        //Use raycasting to find the point where the lazer hits, so the animation can be spawned there
+        //This prevents having to detect the position of the lazer when it enters the collider
+        //When doing this the position is polled too late and the animation and sound play in the object instead of on the surface
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.forward, out hit))
+        {
+            surfaceHitPosition = hit.point;
+        }
     }
 }

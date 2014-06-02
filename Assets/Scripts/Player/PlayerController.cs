@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     public float lazerHeatDissipate;
     //Amount of time it takes to cool off from overheat/replace capacitor
     public float lazerOverheatPenalty;
+    //LazerOverheatSound
+    public GameObject lazerOverheatSound;
     //Base fire rate for lower bound, starting fire rate to simulate
     public float startFireRate;
     //Starting health
@@ -30,6 +32,9 @@ public class PlayerController : MonoBehaviour
     public GameObject shipExplosionAnimation;
     //Explosion Sound
     public GameObject shipExplosionSound;
+    //Ship Collide Sound
+    public GameObject shipCollideSound;
+    
 
     //Private variables
     //Persistent gameObject for holding the GameWorldControlScript
@@ -100,6 +105,7 @@ public class PlayerController : MonoBehaviour
             lazerHeat = 1;
             //fired too much, overheated
             blownLazerCapacitor = true;
+            lazerOverheatSound.audio.Play();
             //imaginary capacitor takes 0.5 seconds to repair/replace/cool-off
             StartCoroutine(ReplaceCapacitor(lazerOverheatPenalty));
         }
@@ -179,18 +185,26 @@ public class PlayerController : MonoBehaviour
     //This function is called when a gameobject enters the spaceships box collider.
     void OnTriggerEnter(Collider collidedWith)
     {
-        //First a null guard
-        if (collidedWith == null)
-        {
-            return;
-        }
-        //Now check for things you're supposed to pass through, including friendly fire
+        //Check for things you're supposed to pass through without a hit sound or already has its own
         if (collidedWith.tag == "Boundary" || collidedWith.tag == "Crystals" || collidedWith.tag == "Lazer")
         {
             return;
         }
         Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + tag);
         Debug.Log(collidedWith);
+    }
+
+    //COLLISION
+    //This function is called when the ship begins touching another collider.
+    //One must be non-kinematic, always true if ship is non-kinematic, as I've set them.
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.relativeVelocity.magnitude > 2)
+        {
+            AudioSource.PlayClipAtPoint(shipCollideSound.audio.clip, transform.position);
+            //Take some damage relative to how hard you got hit
+            Hit((int) Mathf.Floor(collision.relativeVelocity.magnitude));
+        }
     }
 
     void OnTriggerExit(Collider other)

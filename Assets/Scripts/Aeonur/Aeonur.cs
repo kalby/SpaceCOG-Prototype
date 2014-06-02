@@ -1,18 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Aeonur : MonoBehaviour 
+public class Aeonur : MonoBehaviour
 {
-
-    public float health;
     public float speed;
-    public float damageTaken;
-    //public float damageDealt;
     public float fireRange;
     public float fireRate;
     public GameObject eyePosition;
     public float maxDistance;
-    public GameObject explostion;
     public LineRenderer lineRender;
 
     //Get the allPlayers list from the gameController
@@ -20,18 +15,18 @@ public class Aeonur : MonoBehaviour
 
     private GameObject targetedPlayer;
     private float delayShot;
-    private GameObject gameController;
+    private GameObject playerShipArray;
 
 
-	// Use this for initialization
-	void Start () 
+    // Use this for initialization
+    void Start()
     {
         animation.Play();
         FindTarget();
-	}
-	
-	// Update is called once per frame
-	void Update () 
+    }
+
+    // Update is called once per frame
+    void Update()
     {
         if (targetedPlayer != null)
         {
@@ -43,7 +38,7 @@ public class Aeonur : MonoBehaviour
             {
                 //Start firing at the target
                 if (Time.time > delayShot)
-                {                    
+                {
                     Ray ray = new Ray(eyePosition.transform.position, eyePosition.transform.forward);
                     lineRender.SetPosition(0, ray.origin);//Set first position as the Aeonur's position
                     lineRender.SetPosition(1, targetedPlayer.transform.position);//Set second position as the target's position
@@ -60,17 +55,17 @@ public class Aeonur : MonoBehaviour
         else
         {
             maxDistance = 1000;//Reset the maxDistance so that a new target can be found
-            FindTarget();            
+            FindTarget();
         }
-	}
+    }
 
     void FindTarget()
     {
-        //Reference the GameController in the scene to access its public variables;
-        GameController gc = GameObject.FindObjectOfType<GameController>();
+        //Reference the Player Ship Array in the scene to access its public variables;
+        PlayerShipArray playerShipArray = GameObject.FindObjectOfType<PlayerShipArray>();
 
-        //Set the allPlayers list from GameController
-        pl = gc.allPlayers;        
+        //Set the allPlayers list from the Player Ship Array
+        pl = playerShipArray.allPlayers;
 
         foreach (GameObject p in pl)
         {
@@ -83,40 +78,13 @@ public class Aeonur : MonoBehaviour
                     maxDistance = distance;
                     targetedPlayer = p;
                 }
-            }            
+            }
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Lazer")
-        {
-            if (health >= 0)
-            {
-                health -= damageTaken;
-            }
-            else
-            {
-                Destroy(gameObject);
-                
-            }
-            Destroy(other.gameObject);
-            Instantiate(explostion, other.gameObject.transform.position, other.gameObject.transform.rotation);
-        }
-    }
 
-    void Hit(int damage)
-    {
-        if (health > 0)
-        {
-            health -= damage;
-
-            if (health <= 0)
-            {
-                Destroy(gameObject);
-                Instantiate(explostion, transform.position, transform.rotation);
-            }
-        }
     }
 
     int CalculateDamageDealt()
@@ -131,10 +99,11 @@ public class Aeonur : MonoBehaviour
         {
             return 5;
         }
-        else if(number >= 5 && number <= 7)//5, 6 or 7
+        else if (number >= 5 && number <= 7)//5, 6 or 7
         {
             return 10;
-        }else if(number == 8 || number == 9)//8 or 9
+        }
+        else if (number == 8 || number == 9)//8 or 9
         {
             return 15;
         }

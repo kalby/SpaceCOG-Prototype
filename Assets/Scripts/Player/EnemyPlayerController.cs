@@ -18,11 +18,11 @@ public class EnemyPlayerController : MonoBehaviour {
     private float delayShot;
     private int score;
 
-    private GameController gc;
+    private PlayerShipArray playerShipArray;
 
 	// Use this for initialization
 	void Start () {
-        gc = GameObject.FindObjectOfType<GameController>();
+        playerShipArray = GameObject.FindObjectOfType<PlayerShipArray>();
 	
 	}
 	
@@ -64,7 +64,7 @@ public class EnemyPlayerController : MonoBehaviour {
         {
             Destroy(gameObject);
             //Remove this gameobject from the players list since it has been destroyed
-            gc.allPlayers.Remove(gameObject);
+            playerShipArray.allPlayers.Remove(gameObject);
 
             Instantiate(shipExplosion, transform.position, transform.rotation);
         }
