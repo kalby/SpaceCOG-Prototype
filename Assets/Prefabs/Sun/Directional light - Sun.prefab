@@ -10,6 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 108: {fileID: 10800000}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: Directional light - Sun
   m_TagString: Background
@@ -78,6 +79,25 @@ MonoBehaviour:
   teamTwo: 0
   teamThree: 0
   startingSol: 1000
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 131e2e10b873f7245ac408e9ce2e750d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyPlayers:
+  - {fileID: 100010, guid: ddaadf4b8a2b1394795b700949f4ec5d, type: 2}
+  stationOneSpawnPoints:
+  - {fileID: 0}
+  stationTwoSpawnPoints:
+  - {fileID: 0}
+  stationThreeSpawnPoints:
+  - {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1

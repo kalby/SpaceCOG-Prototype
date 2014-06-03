@@ -4,9 +4,6 @@ using System.Collections;
 public class ReceiveDamageImmortal : MonoBehaviour
 {
 
-    //Current Health of the object
-    public int currentHealth;
-
     // Use this for initialization
     void Start()
     {
@@ -21,41 +18,20 @@ public class ReceiveDamageImmortal : MonoBehaviour
 
     void Hit(int damage)
     {
-        if (currentHealth > 0)
-        {
-            //apply the damage
-            currentHealth -= damage;
-            if (currentHealth <= 0)
-            {
-                //Bound the health if it went negative
-                currentHealth = 0;
-                //Die
-                Death();
-            }
-        }
+        //Immortals take no damage
+        //Do nothing
     }
 
     //Receive a check on hit that determines a killing blow
     void CheckForKill(GameObject killingPlayer)
     {
-        if (currentHealth == 0)
-        {
-            //uncomment this if destroying this gives a kill.
-            //killingPlayer.SendMessage("GotKillingBlow");
-            //insert anything here that needs to be sent back to the player on death
-        }
+        //insert anything here that needs to be sent back to the player on hit
     }
 
-    //If it can die fill this in
     void Death()
     {
-        //Explode animation
-        //Blow up sound
-
-        //if (gameObject != null)
-        //{
-        //Destroy(gameObject);
-        //}
+        //Immortals don't die
+        //Do nothing
     }
 
 }
