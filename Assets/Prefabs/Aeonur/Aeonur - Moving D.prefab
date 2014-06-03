@@ -1179,8 +1179,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400286}
   - 111: {fileID: 11100002}
-  - 114: {fileID: 11400000}
-  - 114: {fileID: 11400030}
   m_Layer: 0
   m_Name: Aeonur - Moving D
   m_TagString: Aeonur
@@ -3170,21 +3168,6 @@ Animation:
   m_PlayAutomatically: 1
   m_AnimatePhysics: 0
   m_CullingType: 1
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 288c27f0ed0d53b4099cf6c46deefb21, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  aeonurDeathAnimation: {fileID: 100000, guid: 817df3190a27b694688116fffebbb252, type: 2}
-  aeonurEnterSound: {fileID: 100026}
-  aeonurDeathSound: {fileID: 100028}
-  maximumHealth: 1
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3339,23 +3322,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 128272a0c0fe06d418b543bcf6d450dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11400030
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ceb199a3ea278544386b27b840eaf716, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 1
-  fireRange: 1200
-  fireRate: .200000003
-  eyePosition: {fileID: 0}
-  maxDistance: 0
-  lineRender: {fileID: 0}
 --- !u!135 &13500000
 SphereCollider:
   m_ObjectHideFlags: 1

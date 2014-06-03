@@ -6,6 +6,8 @@ public class PlayerController : MonoBehaviour
     //This class is for everthing to do with the player except for flight
 
     //Firing
+    //The number of missiles carried
+    public int missileAmmo;
     //The list of transform positions to fire lazer shots from
     public Transform[] turrets;
     //The lazer shot to instantiate
@@ -25,7 +27,20 @@ public class PlayerController : MonoBehaviour
     //LazerOverheatSound
     public GameObject lazerOverheatSound;
     //Base fire rate for lower bound, starting fire rate to simulate
-    public float startFireRate;
+    public float lazerFireRate;
+
+    //The transform position to fire missiles from
+    public Transform[] missileLaunchPoints;
+    //The missile to instantiate
+    public GameObject missile;
+    //Missile firing sound
+    public GameObject missileSound;
+    //The range until the lazer is destroyed
+    public float missileRange;
+    //The missile fire rate
+    public float missileFireRate;
+
+    
     //Starting health
     public float maxHealth;
     //Explosion animation
@@ -54,10 +69,25 @@ public class PlayerController : MonoBehaviour
     //Penalty on lazer use for hitting heat 100%
     private bool blownLazerCapacitor;
 
+    //For instantiating missiles
+    private GameObject missileFired;
+    //Delay missile fire using
+    private float missileDelayFire;
+
     //Slider from Health Progress Bar
     private UISlider healthSlider;
     //Slider from Lazer Heat Progress Bar
     private UISlider lazerHeatSlider;
+    //Slider from Missile Slot 1
+    private UISlider missileSlot1Slider;
+    //Slider from Missile Slot 2
+    private UISlider missileSlot2Slider;
+    //Slider from Missile Slot 3
+    private UISlider missileSlot3Slider;
+    //Slider from Missile Slot 4
+    private UISlider missileSlot4Slider;
+    //Slider from Missile Slot 5
+    private UISlider missileSlot5Slider;
 
     void Start()
     {
@@ -82,6 +112,29 @@ public class PlayerController : MonoBehaviour
         //Laser Heat Progress Bar
         GameObject lazerHeatProgressBar = GameObject.FindWithTag("LazerHeatProgressBar");
         lazerHeatSlider = lazerHeatProgressBar.GetComponent<UISlider>();
+
+        //Missile Slot 1 Progress Bar
+        GameObject MissileSlot1ProgressBar = GameObject.FindWithTag("MissileSlot1ProgressBar");
+        missileSlot1Slider = MissileSlot1ProgressBar.GetComponent<UISlider>();
+
+        //Missile Slot 2 Progress Bar
+        GameObject MissileSlot2ProgressBar = GameObject.FindWithTag("MissileSlot2ProgressBar");
+        missileSlot2Slider = MissileSlot2ProgressBar.GetComponent<UISlider>();
+
+        //Missile Slot 3 Progress Bar
+        GameObject MissileSlot3ProgressBar = GameObject.FindWithTag("MissileSlot3ProgressBar");
+        missileSlot3Slider = MissileSlot3ProgressBar.GetComponent<UISlider>();
+
+        //Missile Slot 4 Progress Bar
+        GameObject MissileSlot4ProgressBar = GameObject.FindWithTag("MissileSlot4ProgressBar");
+        missileSlot4Slider = MissileSlot4ProgressBar.GetComponent<UISlider>();
+
+        //Missile Slot 5 Progress Bar
+        GameObject MissileSlot5ProgressBar = GameObject.FindWithTag("MissileSlot5ProgressBar");
+        missileSlot5Slider = MissileSlot5ProgressBar.GetComponent<UISlider>();
+
+        //Fill the missile Slots
+        SetMissileSliders();
     }
 
     void Update()
@@ -128,9 +181,13 @@ public class PlayerController : MonoBehaviour
     void GetKeys()
     {
         //Player shoots when space or left mouse button is pressed or held down
-        if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.Mouse0))
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             ShootLazer();
+        }
+        if (Input.GetKey(KeyCode.Space))
+        {
+            FireMissile();
         }
     }
     //CO-ROUTINES
@@ -177,7 +234,35 @@ public class PlayerController : MonoBehaviour
                 lazerHeat += lazerHeatClimb;
             }
             //Set the delay until can fire again, modified by heat
-            lazerDelayShot = Time.time + startFireRate + (lazerHeatDeficiency * lazerHeat);
+            lazerDelayShot = Time.time + lazerFireRate + (lazerHeatDeficiency * lazerHeat);
+        }
+            
+    }
+
+    void FireMissile()
+    {
+        //Shoot a missile from the launcher
+        if (Time.time > missileDelayFire && missileAmmo > 0)
+        {
+            foreach (Transform missileLauncher in missileLaunchPoints)
+            {
+                //Instantiate a self-propelled lazer shot at the turret's position
+                missileFired = Instantiate(missile, missileLauncher.position, missileLauncher.rotation) as GameObject;
+                //Set the range the missile can travel before being destroyed
+                missileFired.SendMessage("SetRange", missileRange);
+                //Send this gameObject to the missile for sending back successful hits to the player firing the shot
+                missileFired.SendMessage("SetPlayer", gameObject);
+                //Add the current ship velocity to the missile fired.
+                missileFired.rigidbody.velocity += rigidbody.velocity;
+                //play the shoot lazer sound
+                missileSound.audio.Play();
+                //reduce the missile carried by the ship by 1
+                missileAmmo -= 1;
+                //Update the UI
+                SetMissileSliders();
+            }
+            //Set the delay until can launch again
+            missileDelayFire = Time.time + missileFireRate;
         }
     }
 
@@ -273,5 +358,61 @@ public class PlayerController : MonoBehaviour
     {
         //You got a kill, update your kill count
         gameWorldControlScript.AddKills(1);
+    }
+
+    //UI Setters
+    //Set the sliders in the UI depending on the ammo count.
+    //Crap code but had to be done quick
+    void SetMissileSliders()
+    {
+        if (missileAmmo == 5)
+        {
+            missileSlot1Slider.value = 1;
+            missileSlot2Slider.value = 1;
+            missileSlot3Slider.value = 1;
+            missileSlot4Slider.value = 1;
+            missileSlot5Slider.value = 1;
+        }
+        if (missileAmmo == 4)
+        {
+            missileSlot1Slider.value = 1;
+            missileSlot2Slider.value = 1;
+            missileSlot3Slider.value = 1;
+            missileSlot4Slider.value = 1;
+            missileSlot5Slider.value = 0;
+        }
+        if (missileAmmo == 3)
+        {
+            missileSlot1Slider.value = 1;
+            missileSlot2Slider.value = 1;
+            missileSlot3Slider.value = 1;
+            missileSlot4Slider.value = 0;
+            missileSlot5Slider.value = 0;
+        }
+        if (missileAmmo == 2)
+        {
+            missileSlot1Slider.value = 1;
+            missileSlot2Slider.value = 1;
+            missileSlot3Slider.value = 0;
+            missileSlot4Slider.value = 0;
+            missileSlot5Slider.value = 0;
+        }
+        if (missileAmmo == 1)
+        {
+            missileSlot1Slider.value = 1;
+            missileSlot2Slider.value = 0;
+            missileSlot3Slider.value = 0;
+            missileSlot4Slider.value = 0;
+            missileSlot5Slider.value = 0;
+        }
+        if (missileAmmo == 0)
+        {
+            missileSlot1Slider.value = 0;
+            missileSlot2Slider.value = 0;
+            missileSlot3Slider.value = 0;
+            missileSlot4Slider.value = 0;
+            missileSlot5Slider.value = 0;
+        }
+
     }
 }

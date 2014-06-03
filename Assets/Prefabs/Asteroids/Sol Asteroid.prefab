@@ -31,7 +31,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400002}
   - 135: {fileID: 13500002}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: CrystalCollider
   m_TagString: Crystals
   m_Icon: {fileID: 0}

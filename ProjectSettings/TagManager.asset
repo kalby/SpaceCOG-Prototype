@@ -39,7 +39,7 @@ TagManager:
   - SpawnPointTeamThree
   - ShipSelectionPanel
   - NotEnoughSolLabel
-  - 
+  - Missile
   - SlotText1
   - SlotText2
   - SlotText3
@@ -81,6 +81,9 @@ TagManager:
   - SelectHermitButton
   - VictoryPanel
   - DefeatPanel
+  - 
+  - 
+  - 
   - 
   - 
   - TeamTwoSpawnPoint

@@ -3,13 +3,13 @@ using System.Collections;
 
 public class PropogateDamageToParent : MonoBehaviour {
 
-    //The root parent
+    //The root GameObject
     GameObject root;
 
     // Use this for initialization
     void Start()
     {
-        root = UnityEditor.PrefabUtility.FindRootGameObjectWithSameParentPrefab(gameObject);
+        root = transform.root.gameObject;
     }
 
     // Update is called once per frame
