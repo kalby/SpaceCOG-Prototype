@@ -10,6 +10,12 @@ public class GameWorldControl : MonoBehaviour
     public bool teamTwo;
     public bool teamThree;
     public int startingSol;
+    //The Aeonur Prefab
+    public GameObject aeonur;
+    //The Aeonur Spawn Point
+    public Transform aeonurSpawnPoint;
+    //Player Ship Array
+    public PlayerShipArray playerShipArray;
 
     //Private Variables
     //Player Kills
@@ -36,6 +42,11 @@ public class GameWorldControl : MonoBehaviour
     //GameObject with Defeat Panel on it
     private GameObject defeatPanel;
 
+    //Whether Aeonur has been spawned yet
+    private bool aeonurSpawned;
+    //private instance of Aeonur
+    private GameObject aeonurInstance;
+
     // Use this for initialization
     void Start()
     {
@@ -51,6 +62,9 @@ public class GameWorldControl : MonoBehaviour
 
         //Set the starting amount of Sol
         sol = startingSol;
+
+        //Aeonur Spawn set to false
+        aeonurSpawned = false;
         
 
         //Get UI Elements
@@ -96,6 +110,13 @@ public class GameWorldControl : MonoBehaviour
     {
         //Check Input
         CheckKeys();
+        //Check Sol Count
+        CheckSolCount();
+        //Check for victory
+        if(Input.GetKey(KeyCode.Backspace))
+        {
+            NGUITools.SetActive(victoryPanel, true);
+        }
     }
 
     private void CheckKeys()
@@ -209,5 +230,14 @@ public class GameWorldControl : MonoBehaviour
     {
         //Use netcode to determine if other player's stations remain TODO
         return false;
+    }
+
+    void CheckSolCount()
+    {
+        if (sol > 1200 && aeonurSpawned != true)
+        {
+            aeonurSpawned = true;
+            aeonurInstance = Instantiate(aeonur, aeonurSpawnPoint.position, aeonurSpawnPoint.rotation) as GameObject;
+        }
     }
 }

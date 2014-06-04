@@ -67,8 +67,8 @@ public class ProjectileMissile : MonoBehaviour
         {
             return;
         }
-        Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + firingPlayer.tag);
-        Debug.Log(collidedWith);
+        //Debug.Log("Collided Tag: " + collidedWith.tag + " and Player Tag: " + firingPlayer.tag);
+        //Debug.Log(collidedWith);
         //This is to tell the player getting hit. Used for taking health from player getting hit
         collidedWith.SendMessage("Hit", damage);
         collidedWith.SendMessage("CheckForKill", firingPlayer);

@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class EnemyFighterController : MonoBehaviour 
 {
-    //This class is for everthing to do with the player except for flight
 
     //Firing
     //The number of missiles carried
@@ -52,10 +51,6 @@ public class PlayerController : MonoBehaviour
     
 
     //Private variables
-    //Persistent gameObject for holding the GameWorldControlScript
-    public GameObject background;
-    //Script for storing persistent variables
-    private GameWorldControl gameWorldControlScript;
     //Health remaining at any time
     private float currentHealth;
     //Health remaining as a percentage
@@ -74,23 +69,11 @@ public class PlayerController : MonoBehaviour
     //Delay missile fire using
     private float missileDelayFire;
 
-    //Slider from Health Progress Bar
-    private UISlider healthSlider;
-    //Slider from Lazer Heat Progress Bar
-    private UISlider lazerHeatSlider;
-    //Slider from Missile Slot 1
-    private UISlider missileSlot1Slider;
-    //Slider from Missile Slot 2
-    private UISlider missileSlot2Slider;
-    //Slider from Missile Slot 3
-    private UISlider missileSlot3Slider;
-    //Slider from Missile Slot 4
-    private UISlider missileSlot4Slider;
-    //Slider from Missile Slot 5
-    private UISlider missileSlot5Slider;
+    private PlayerShipArray playerShipArray;
 
     void Start()
     {
+        playerShipArray = GameObject.FindObjectOfType<PlayerShipArray>();
         //catch divide-by-zero
         if (maxHealth == 0)
         {
@@ -98,47 +81,11 @@ public class PlayerController : MonoBehaviour
         }
         //Initialise values
         currentHealth = maxHealth;
-
-        //Get background GameObject
-        background = GameObject.FindWithTag("Background");
-        //Get GameWorldControl script from background object
-        gameWorldControlScript = background.GetComponent<GameWorldControl>();
-
-        //Get UI Elements
-        //Health Progress Bar
-        GameObject healthProgressBar = GameObject.FindWithTag("HealthProgressBar");
-        healthSlider = healthProgressBar.GetComponent<UISlider>();
-
-        //Laser Heat Progress Bar
-        GameObject lazerHeatProgressBar = GameObject.FindWithTag("LazerHeatProgressBar");
-        lazerHeatSlider = lazerHeatProgressBar.GetComponent<UISlider>();
-
-        //Missile Slot 1 Progress Bar
-        GameObject MissileSlot1ProgressBar = GameObject.FindWithTag("MissileSlot1ProgressBar");
-        missileSlot1Slider = MissileSlot1ProgressBar.GetComponent<UISlider>();
-
-        //Missile Slot 2 Progress Bar
-        GameObject MissileSlot2ProgressBar = GameObject.FindWithTag("MissileSlot2ProgressBar");
-        missileSlot2Slider = MissileSlot2ProgressBar.GetComponent<UISlider>();
-
-        //Missile Slot 3 Progress Bar
-        GameObject MissileSlot3ProgressBar = GameObject.FindWithTag("MissileSlot3ProgressBar");
-        missileSlot3Slider = MissileSlot3ProgressBar.GetComponent<UISlider>();
-
-        //Missile Slot 4 Progress Bar
-        GameObject MissileSlot4ProgressBar = GameObject.FindWithTag("MissileSlot4ProgressBar");
-        missileSlot4Slider = MissileSlot4ProgressBar.GetComponent<UISlider>();
-
-        //Missile Slot 5 Progress Bar
-        GameObject MissileSlot5ProgressBar = GameObject.FindWithTag("MissileSlot5ProgressBar");
-        missileSlot5Slider = MissileSlot5ProgressBar.GetComponent<UISlider>();
-
-        //Fill the missile Slots
-        SetMissileSliders();
     }
 
     void Update()
     {
+        ShootLazer();
         //Calculate values
         if (currentHealth < 0)
         {
@@ -146,10 +93,6 @@ public class PlayerController : MonoBehaviour
             currentHealth = 0;
         }
         healthPercentage = currentHealth / maxHealth;
-
-        //Update the UI
-        lazerHeatSlider.value = lazerHeat;
-        healthSlider.value = healthPercentage;
 
         //Check for overheat
         if (lazerHeat >= 1)
@@ -159,9 +102,11 @@ public class PlayerController : MonoBehaviour
             //fired too much, overheated
             blownLazerCapacitor = true;
             lazerOverheatSound.audio.Play();
+            FireMissile();
             //imaginary capacitor takes 0.5 seconds to repair/replace/cool-off
             StartCoroutine(ReplaceCapacitor(lazerOverheatPenalty));
         }
+        
 
         //Heat dissipation while not firing
         if (lazerHeat > 0)
@@ -172,22 +117,6 @@ public class PlayerController : MonoBehaviour
                 //Ensure it can't go negative
                 lazerHeat = 0;
             }
-        }
-        //Check Inputs
-        GetKeys();
-    }
-
-    //INPUT
-    void GetKeys()
-    {
-        //Player shoots when space or left mouse button is pressed or held down
-        if (Input.GetKey(KeyCode.Mouse0))
-        {
-            ShootLazer();
-        }
-        if (Input.GetKey(KeyCode.Space))
-        {
-            FireMissile();
         }
     }
     //CO-ROUTINES
@@ -211,7 +140,7 @@ public class PlayerController : MonoBehaviour
     void ShootLazer()
     {
         //Shoot Lazers from all turrets
-        if (Time.time > lazerDelayShot && blownLazerCapacitor != true)
+        if (Time.time > lazerDelayShot)
         {
             foreach (Transform turretPosition in turrets)
             {
@@ -258,8 +187,6 @@ public class PlayerController : MonoBehaviour
                 missileSound.audio.Play();
                 //reduce the missile carried by the ship by 1
                 missileAmmo -= 1;
-                //Update the UI
-                SetMissileSliders();
             }
             //Set the delay until can launch again
             missileDelayFire = Time.time + missileFireRate;
@@ -304,7 +231,7 @@ public class PlayerController : MonoBehaviour
     //Add to the players score when receiving back an AddToScore message
     void AddToScore(int points)
     {
-        gameWorldControlScript.AddScore(points);
+
     }
 
     void Hit(int damage)
@@ -347,72 +274,15 @@ public class PlayerController : MonoBehaviour
         AudioSource.PlayClipAtPoint(shipExplosionSound.audio.clip, transform.position);
         //Update your death count
         //You died
+        playerShipArray.allPlayers.Remove(gameObject);
         if (gameObject != null)
         {
             Destroy(gameObject);
         }
-        gameWorldControlScript.AddDeaths(1);
     }
 
     void Kill()
     {
         //You got a kill, update your kill count
-        gameWorldControlScript.AddKills(1);
-    }
-
-    //UI Setters
-    //Set the sliders in the UI depending on the ammo count.
-    //Crap code but had to be done quick
-    void SetMissileSliders()
-    {
-        if (missileAmmo == 5)
-        {
-            missileSlot1Slider.value = 1;
-            missileSlot2Slider.value = 1;
-            missileSlot3Slider.value = 1;
-            missileSlot4Slider.value = 1;
-            missileSlot5Slider.value = 1;
-        }
-        if (missileAmmo == 4)
-        {
-            missileSlot1Slider.value = 1;
-            missileSlot2Slider.value = 1;
-            missileSlot3Slider.value = 1;
-            missileSlot4Slider.value = 1;
-            missileSlot5Slider.value = 0;
-        }
-        if (missileAmmo == 3)
-        {
-            missileSlot1Slider.value = 1;
-            missileSlot2Slider.value = 1;
-            missileSlot3Slider.value = 1;
-            missileSlot4Slider.value = 0;
-            missileSlot5Slider.value = 0;
-        }
-        if (missileAmmo == 2)
-        {
-            missileSlot1Slider.value = 1;
-            missileSlot2Slider.value = 1;
-            missileSlot3Slider.value = 0;
-            missileSlot4Slider.value = 0;
-            missileSlot5Slider.value = 0;
-        }
-        if (missileAmmo == 1)
-        {
-            missileSlot1Slider.value = 1;
-            missileSlot2Slider.value = 0;
-            missileSlot3Slider.value = 0;
-            missileSlot4Slider.value = 0;
-            missileSlot5Slider.value = 0;
-        }
-        if (missileAmmo == 0)
-        {
-            missileSlot1Slider.value = 0;
-            missileSlot2Slider.value = 0;
-            missileSlot3Slider.value = 0;
-            missileSlot4Slider.value = 0;
-            missileSlot5Slider.value = 0;
-        }
-
     }
 }

@@ -39,7 +39,7 @@ Light:
   serializedVersion: 3
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: .75
+  m_Intensity: .560000002
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -79,6 +79,8 @@ MonoBehaviour:
   teamTwo: 0
   teamThree: 0
   startingSol: 1000
+  aeonur: {fileID: 100000, guid: 3691d9a6ae65b004ab2611ebd81197c5, type: 2}
+  aeonurSpawnPoint: {fileID: 0}
 --- !u!114 &11400002
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -91,12 +93,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPlayers:
-  - {fileID: 100010, guid: ddaadf4b8a2b1394795b700949f4ec5d, type: 2}
-  stationOneSpawnPoints:
-  - {fileID: 0}
+  - {fileID: 100010, guid: f4e5850127b89524db5f3181998109f5, type: 2}
+  - {fileID: 100030, guid: 621a17524525d944eb3f7ddd502399cb, type: 2}
+  - {fileID: 100020, guid: 704921417f7e14d4f911e5d0893d5b94, type: 2}
   stationTwoSpawnPoints:
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   stationThreeSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
