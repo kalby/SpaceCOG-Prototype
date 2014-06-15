@@ -14,7 +14,8 @@ public class Aeonur : MonoBehaviour
     //Get the allPlayers list from the gameController
     public ArrayList pl;
 
-    private GameObject targetedPlayer;
+    //This variable has been made public for testing purposes
+    public GameObject targetedPlayer;
     private float delayShot;
     private GameObject playerShipArray;
 
