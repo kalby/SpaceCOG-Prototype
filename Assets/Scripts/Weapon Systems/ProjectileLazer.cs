@@ -14,9 +14,9 @@ public class ProjectileLazer : MonoBehaviour
 
     //Private variables
     //Player who fired the shot
-    private GameObject firingPlayer;
+    public GameObject firingPlayer;
     //Distance from spawnpoint before being destroyed
-    private float range;
+    public float range;
     //Instantiation point
     private Vector3 spawnPoint;
     //Lazer surface hit location

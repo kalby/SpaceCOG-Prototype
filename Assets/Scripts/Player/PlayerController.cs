@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
     //Script for storing persistent variables
     private GameWorldControl gameWorldControlScript;
     //Health remaining at any time
-    private float currentHealth;
+    public float currentHealth;
     //Health remaining as a percentage
     private float healthPercentage;
     //For instantiating lazer shots
@@ -307,7 +307,7 @@ public class PlayerController : MonoBehaviour
         gameWorldControlScript.AddScore(points);
     }
 
-    void Hit(int damage)
+    public void Hit(int damage)
     {
         if (currentHealth > 0)
         {

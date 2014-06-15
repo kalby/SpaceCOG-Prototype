@@ -17,7 +17,7 @@ public class ProjectileMissile : MonoBehaviour
     //Player who fired the shot
     private GameObject firingPlayer;
     //Distance from spawnpoint before being destroyed
-    private float range;
+    public float range;
     //Instantiation point
     private Vector3 spawnPoint;
     //Missile propulsion speed, wasp shouldn't outrun?

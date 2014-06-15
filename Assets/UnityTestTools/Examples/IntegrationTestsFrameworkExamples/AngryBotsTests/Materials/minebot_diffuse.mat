@@ -29,6 +29,13 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
+          name: _Illum
+        second:
+          m_Texture: {fileID: 2800000, guid: 1717774fb55868c4d91fbd95393394b3, type: 3}
+          m_Scale: {x: 1, y: 1}
+          m_Offset: {x: 0, y: 0}
+      data:
+        first:
           name: _Cube
         second:
           m_Texture: {fileID: 8900000, guid: b66d7d28b3db14f7382a2887575a3439, type: 2}
@@ -43,13 +50,6 @@ Material:
           m_Offset: {x: 0, y: 0}
       data:
         first:
-          name: _Illum
-        second:
-          m_Texture: {fileID: 2800000, guid: 1717774fb55868c4d91fbd95393394b3, type: 3}
-          m_Scale: {x: 1, y: 1}
-          m_Offset: {x: 0, y: 0}
-      data:
-        first:
           name: _BRDFTex
         second:
           m_Texture: {fileID: 0}
@@ -58,16 +58,16 @@ Material:
     m_Floats:
       data:
         first:
-          name: _SelfIllumStrength
-        second: 0
-      data:
-        first:
           name: _Shininess
         second: .078125
       data:
         first:
           name: _EmissionLM
         second: 0
+      data:
+        first:
+          name: _SelfIllumStrength
+        second: 1
     m_Colors:
       data:
         first:

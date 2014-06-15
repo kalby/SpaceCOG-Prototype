@@ -19,8 +19,9 @@ public class AeonurReceiveDamage : MonoBehaviour
     private bool dieing;
     //Color object to pass in alpha values
     private Color fadeAlpha;
-    //Current Health of the object
-    private int currentHealth;
+    //Current Health of the object. 
+    //This variable has been made public for testing purposes
+    public int currentHealth;
 
     // Use this for initialization
     void Start()
@@ -43,7 +44,8 @@ public class AeonurReceiveDamage : MonoBehaviour
         }
     }
 
-    void Hit(int damage)
+    //This method has been made public for testing purposes
+    public void Hit(int damage)
     {
         if (currentHealth > 0)
         {
